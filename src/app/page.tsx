@@ -2,9 +2,44 @@ import Link from "next/link";
 
 import { HomeCard } from "@/app/home-card";
 import { SiteFooter, SiteHeader } from "@/app/site-header";
-import { CARE_TYPES, isCareType, listHomes, listSuburbsWithCounts } from "@/lib/homes";
+import { ALL_HOMES_ICON, CARE_TYPES, isCareType, listHomes, listSuburbsWithCounts } from "@/lib/homes";
 
 export const dynamic = "force-dynamic";
+
+function CategoryTab({
+  href,
+  label,
+  icon,
+  active,
+}: {
+  href: string;
+  label: string;
+  icon: string;
+  active: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={`flex flex-col items-center gap-1.5 px-3.5 pt-1 pb-2.5 text-xs font-semibold whitespace-nowrap border-b-[2.5px] ${
+        active ? "text-ink border-ink" : "text-muted border-transparent hover:text-ink"
+      }`}
+    >
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        dangerouslySetInnerHTML={{ __html: icon }}
+      />
+      {label}
+    </Link>
+  );
+}
 
 export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
   const params = await searchParams;
@@ -30,30 +65,24 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
     <>
       <SiteHeader query={query} />
 
-      {/* Care-type tabs, as in the prototype's category bar. */}
+      {/* Care-type category bar, icons and all, as in the prototype. */}
       <div className="bg-surface border-b border-line">
         <div className="mx-auto max-w-6xl px-5 overflow-x-auto">
-          <nav className="flex gap-6 min-w-max" aria-label="Type of care">
-            <Link
+          <nav className="flex gap-1 min-w-max" aria-label="Type of care">
+            <CategoryTab
               href={query ? `/?q=${encodeURIComponent(query)}` : "/"}
-              className={`py-3 text-sm whitespace-nowrap border-b-2 -mb-px ${
-                careType ? "border-transparent text-ink-2 hover:text-ink" : "border-ink font-semibold"
-              }`}
-            >
-              All homes
-            </Link>
+              label="All homes"
+              icon={ALL_HOMES_ICON}
+              active={!careType}
+            />
             {CARE_TYPES.map((c) => (
-              <Link
+              <CategoryTab
                 key={c.value}
                 href={`/?care=${c.value}${keep}`}
-                className={`py-3 text-sm whitespace-nowrap border-b-2 -mb-px ${
-                  careType === c.value
-                    ? "border-ink font-semibold"
-                    : "border-transparent text-ink-2 hover:text-ink"
-                }`}
-              >
-                {c.label}
-              </Link>
+                label={c.label}
+                icon={c.icon}
+                active={careType === c.value}
+              />
             ))}
           </nav>
         </div>
