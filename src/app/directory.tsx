@@ -153,38 +153,40 @@ function Card({
       <Link href={`/${home.suburb.slug}/${home.slug}`} target="_blank" rel="noopener">
         <h3 className="font-semibold text-[16px] leading-snug">{home.name}</h3>
       </Link>
-      <p className="text-[14.5px] text-ink-2">{home.suburb.name}</p>
-      {/* Availability and facilities share one row: stacked, they left a dead
-          strip down the right of every card. */}
-      <div className="mt-1.5 flex items-center justify-between gap-3">
-        <p className="inline-flex items-center gap-1.5 text-[14px] font-medium whitespace-nowrap">
-          <span
-            aria-hidden
-            className={`w-1.5 h-1.5 rounded-full ${home.bedsAvailable ? "bg-[#2b6a4e]" : "bg-turmeric"}`}
-          />
-          {home.bedsAvailable ? (
-            <span className="text-[#2b6a4e]">
-              {home.bedsAvailable} bed{home.bedsAvailable > 1 ? "s" : ""} free
-            </span>
-          ) : (
-            <span className="text-turmeric">Waiting list</span>
-          )}
-        </p>
+      {/* Facilities ride on the suburb line rather than a row of their own: at
+          18px they made a taller line than the text around them, which read as
+          a gap. Right-aligned here they fill space that was empty anyway. */}
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[14.5px] text-ink-2 truncate">{home.suburb.name}</p>
 
         {home.features.length ? (
-          <ul className="flex items-center gap-2 text-muted shrink-0">
+          <ul className="flex items-center gap-1.5 text-muted shrink-0">
             {home.features.slice(0, 4).map((f) => (
-              <li key={f} title={f} className="shrink-0">
-                <FeatureIcon feature={f} />
+              <li key={f} title={f} className="shrink-0 leading-none">
+                <FeatureIcon feature={f} className="w-4 h-4" />
                 <span className="sr-only">{f}</span>
               </li>
             ))}
             {home.features.length > 4 ? (
-              <li className="text-[12.5px] tabular-nums">+{home.features.length - 4}</li>
+              <li className="text-[12px] tabular-nums leading-none">+{home.features.length - 4}</li>
             ) : null}
           </ul>
         ) : null}
       </div>
+
+      <p className="inline-flex items-center gap-1.5 text-[14px] font-medium">
+        <span
+          aria-hidden
+          className={`w-1.5 h-1.5 rounded-full ${home.bedsAvailable ? "bg-[#2b6a4e]" : "bg-turmeric"}`}
+        />
+        {home.bedsAvailable ? (
+          <span className="text-[#2b6a4e]">
+            {home.bedsAvailable} bed{home.bedsAvailable > 1 ? "s" : ""} free
+          </span>
+        ) : (
+          <span className="text-turmeric">Waiting list</span>
+        )}
+      </p>
     </div>
   );
 }
