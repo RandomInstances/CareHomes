@@ -128,7 +128,7 @@ export function SearchTrigger({ query }: { query?: string }) {
             role="dialog"
             aria-modal="true"
             aria-label="Find a care home"
-            className="fixed z-[61] bg-surface overflow-y-auto inset-0 sm:inset-auto sm:top-[120px] sm:left-1/2 sm:-translate-x-1/2 sm:w-[880px] sm:max-w-[94vw] sm:max-h-[calc(100vh-148px)] sm:rounded-3xl sm:shadow-[0_16px_48px_rgba(23,48,45,0.24)] sm:border sm:border-line"
+            className="fixed z-[61] bg-surface overflow-y-auto inset-0 sm:absolute sm:inset-auto sm:top-full sm:-mt-2 sm:left-1/2 sm:-translate-x-1/2 sm:w-[880px] sm:max-w-[94vw] sm:max-h-[min(72vh,640px)] sm:rounded-3xl sm:shadow-[0_16px_48px_rgba(23,48,45,0.24)] sm:border sm:border-line"
           >
             <SearchPanel
               suburbs={suburbs}

@@ -44,7 +44,7 @@ function CategoryTab({
 /// rather than only on the directory.
 export function SiteHeader({ query, activeCare }: { query?: string; activeCare?: string }) {
   return (
-    <header className="bg-surface border-b border-line sticky top-0 z-10">
+    <header className="relative bg-surface border-b border-line sticky top-0 z-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-5">
         <div className="h-14 flex items-center gap-4 sm:gap-8">
           <Link href="/" className="shrink-0">
@@ -54,7 +54,7 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
           </Link>
 
           <nav
-            className="flex-1 min-w-0 h-full flex items-stretch gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex-1 min-w-0 h-full flex items-stretch gap-1 sm:gap-2 sm:justify-center overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             aria-label="Type of care"
           >
             <CategoryTab href="/" label="All homes" icon={ALL_HOMES_ICON} active={!activeCare} />
@@ -70,7 +70,7 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
           </nav>
         </div>
 
-        <div className="pb-3 pt-1 flex justify-center">
+        <div className="pb-5 pt-2.5 flex justify-center">
           <SearchTrigger query={query} />
         </div>
       </div>
