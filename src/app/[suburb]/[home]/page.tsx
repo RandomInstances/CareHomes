@@ -5,25 +5,12 @@ import { notFound } from "next/navigation";
 import { FeatureList } from "@/app/feature-icon";
 import { SiteFooter } from "@/app/site-footer";
 import { SiteHeader } from "@/app/site-header";
-import { ADMISSION_LABEL, formatFee } from "@/lib/catalog";
+import { ADMISSION_LABEL, CARE_LABEL, LANGUAGE_LABEL, formatFee } from "@/lib/catalog";
 import { getHome, whatsappLink } from "@/lib/homes";
 
 export const dynamic = "force-dynamic";
 
-const CARE_LABEL: Record<string, string> = {
-  ASSISTED_LIVING: "Assisted living",
-  NURSING: "Nursing care",
-  DEMENTIA: "Dementia care",
-  RESPITE: "Respite (short stay)",
-  PALLIATIVE: "Palliative care",
-  REHAB: "Post-surgery rehab",
-};
 
-const LANGUAGE_LABEL: Record<string, string> = {
-  SINHALA: "Sinhala",
-  TAMIL: "Tamil",
-  ENGLISH: "English",
-};
 
 export async function generateMetadata({
   params,

@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 
 import { FilterBar } from "@/app/filters";
 import { FeatureRow } from "@/app/feature-icon";
+import { CARE_LABEL, LANGUAGE_LABEL } from "@/lib/catalog";
 import { HomeScene } from "@/app/home-scene";
 
 // Leaflet touches window on import, so it must not run during SSR.
@@ -40,20 +41,7 @@ export type DirectoryHome = {
   suburb: { name: string; slug: string };
 };
 
-const CARE_LABEL: Record<string, string> = {
-  ASSISTED_LIVING: "Assisted living",
-  NURSING: "Nursing care",
-  DEMENTIA: "Dementia care",
-  RESPITE: "Respite",
-  PALLIATIVE: "Palliative care",
-  REHAB: "Rehab",
-};
 
-const LANG_LABEL: Record<string, string> = {
-  SINHALA: "Sinhala",
-  TAMIL: "Tamil",
-  ENGLISH: "English",
-};
 
 function money(n: number) {
   return `LKR ${n.toLocaleString("en-LK")}`;
@@ -257,7 +245,7 @@ function CompareTable({ homes, onClose }: { homes: DirectoryHome[]; onClose: () 
               {row("Night nurses", (h) => h.nightNurses ?? "—")}
               {row("Doctor", (h) => h.doctorArrangement ?? "—")}
               {row("Hospital", (h) => h.transferHospital ?? "—")}
-              {row("Languages", (h) => h.languages.map((l) => LANG_LABEL[l] ?? l).join(", ") || "—")}
+              {row("Languages", (h) => h.languages.map((l) => LANGUAGE_LABEL[l] ?? l).join(", ") || "—")}
               {row("Visited and verified", (h) => (h.tier === "VERIFIED" ? "Yes" : "Not yet"))}
             </tbody>
           </table>

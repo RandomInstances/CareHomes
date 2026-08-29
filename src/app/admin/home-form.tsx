@@ -39,12 +39,9 @@ type HomeValues = {
 };
 
 const CARE_TYPES = [
-  ["ASSISTED_LIVING", "Assisted living"],
-  ["NURSING", "Nursing care"],
-  ["DEMENTIA", "Dementia care"],
-  ["RESPITE", "Respite"],
-  ["PALLIATIVE", "Palliative"],
-  ["REHAB", "Post-surgery rehab"],
+  ["ELDER_HOME", "Elder Homes"],
+  ["NURSING_HOME", "Nursing Homes"],
+  ["REHAB", "Rehab"],
 ] as const;
 
 const ADMISSION = [
