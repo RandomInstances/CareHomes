@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import type { SearchDraft } from "@/app/search-trigger";
-import { ADMISSION, FEE_MAX, LANGUAGES } from "@/lib/catalog";
+import { FEE_MAX } from "@/lib/catalog";
 
 // The search panel. Where, age and budget come first because they are what a
 // family already knows and what the collapsed control shows — opening this
@@ -46,7 +46,7 @@ export function SearchPanel({
 }) {
   const router = useRouter();
 
-  const toggle = (key: "places" | "needs" | "requires", value: string) => {
+  const toggle = (key: "places" | "needs", value: string) => {
     const list = draft[key];
     setDraft({
       ...draft,
@@ -120,21 +120,32 @@ export function SearchPanel({
             </p>
           </section>
 
-          <section className="sm:w-[150px]">
-            <h2 className="font-semibold mb-2.5">How old are they?</h2>
+          <section className="sm:w-[190px]">
+            <div className="flex items-baseline justify-between gap-3 mb-2">
+              <h2 className="font-semibold">Their age</h2>
+              {draft.age ? (
+                <button
+                  type="button"
+                  onClick={() => setDraft({ ...draft, age: "" })}
+                  className="text-[13px] text-muted hover:text-ink"
+                >
+                  Any age
+                </button>
+              ) : null}
+            </div>
+            <output className="block text-[19px] font-bold tabular-nums mb-1">
+              {draft.age || "Any age"}
+            </output>
             <input
-              type="number"
-              min={40}
-              max={120}
-              inputMode="numeric"
-              value={draft.age}
+              type="range"
+              min={50}
+              max={100}
+              step={1}
+              value={draft.age || 78}
               onChange={(e) => setDraft({ ...draft, age: e.target.value })}
-              placeholder="e.g. 78"
-              className="w-full rounded-full border border-line-2 bg-surface px-4 py-2.5 text-[15px] focus:outline-none focus:border-teal"
+              aria-label="Age of the person needing care"
+              className="w-full accent-teal"
             />
-            <p className="text-[13px] text-muted mt-2.5">
-              Homes set the ages they accept, so this hides ones that would decline.
-            </p>
           </section>
 
           <section className="sm:w-[210px]">
@@ -177,43 +188,6 @@ export function SearchPanel({
           </div>
         </section>
 
-        <section>
-          <h2 className="font-semibold mb-1">Must the home accept anything specific?</h2>
-          <p className="text-[13.5px] text-ink-2 mb-2.5 max-w-[62ch]">
-            Homes tell us what they can and cannot take, so choosing here hides the ones
-            that would have said no — and you are not ringing round to find out.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {ADMISSION.map((a) => (
-              <button
-                key={a.value}
-                type="button"
-                onClick={() => toggle("requires", a.value)}
-                aria-pressed={draft.requires.includes(a.value)}
-                className={pill(draft.requires.includes(a.value))}
-              >
-                {a.label}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="font-semibold mb-2.5">Language of care</h2>
-          <div className="flex flex-wrap gap-2">
-            {LANGUAGES.map((l) => (
-              <button
-                key={l.value}
-                type="button"
-                onClick={() => setDraft({ ...draft, language: draft.language === l.value ? "" : l.value })}
-                aria-pressed={draft.language === l.value}
-                className={pill(draft.language === l.value)}
-              >
-                {l.label}
-              </button>
-            ))}
-          </div>
-        </section>
       </div>
 
       <div className="fixed bottom-0 inset-x-0 sm:static bg-surface border-t border-line">

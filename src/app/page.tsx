@@ -5,45 +5,11 @@ import { Suspense } from "react";
 import { Directory } from "@/app/directory";
 import { SiteFooter } from "@/app/site-footer";
 import { SiteHeader } from "@/app/site-header";
-import { ALL_HOMES_ICON, CARE_TYPES, isCareType, isSort } from "@/lib/catalog";
+import { CARE_TYPES, isCareType, isSort } from "@/lib/catalog";
 import { listHomes, listSuburbsWithCounts } from "@/lib/homes";
 
 export const dynamic = "force-dynamic";
 
-function CategoryTab({
-  href,
-  label,
-  icon,
-  active,
-}: {
-  href: string;
-  label: string;
-  icon: string;
-  active: boolean;
-}) {
-  return (
-    <Link
-      href={href}
-      aria-current={active ? "page" : undefined}
-      className={`flex flex-col items-center gap-1.5 px-3.5 pt-1 pb-2.5 text-xs font-semibold whitespace-nowrap border-b-[2.5px] ${
-        active ? "text-ink border-ink" : "text-muted border-transparent hover:text-ink"
-      }`}
-    >
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        dangerouslySetInnerHTML={{ __html: icon }}
-      />
-      {label}
-    </Link>
-  );
-}
 
 export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
   const params = await searchParams;
@@ -82,30 +48,7 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
 
   return (
     <>
-      <SiteHeader query={query} />
-
-      {/* Care-type category bar, icons and all, as in the prototype. */}
-      <div className="bg-surface border-b border-line">
-        <div className="mx-auto max-w-6xl px-4 sm:px-5 overflow-x-auto">
-          <nav className="flex gap-1 min-w-max" aria-label="Type of care">
-            <CategoryTab
-              href={query ? `/?q=${encodeURIComponent(query)}` : "/"}
-              label="All homes"
-              icon={ALL_HOMES_ICON}
-              active={!careType}
-            />
-            {CARE_TYPES.map((c) => (
-              <CategoryTab
-                key={c.value}
-                href={`/?care=${c.value}${keep}`}
-                label={c.label}
-                icon={c.icon}
-                active={careType === c.value}
-              />
-            ))}
-          </nav>
-        </div>
-      </div>
+      <SiteHeader query={query} activeCare={careType} />
 
       <main className="mx-auto max-w-6xl px-4 sm:px-5 py-6 sm:py-7 flex-1 w-full">
         {suburbs.length > 0 ? (

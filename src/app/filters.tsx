@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-import { FEATURES, FEE_MAX, LANGUAGES, SORTS } from "@/lib/catalog";
+import { ADMISSION, FEATURES, FEE_MAX, LANGUAGES, SORTS } from "@/lib/catalog";
 
 // Filters live in the URL rather than in component state, so a filtered view can
 // be shared, bookmarked and indexed. The sheet is only the way of editing them.
@@ -20,11 +20,12 @@ export function FilterBar({ basePath, extra }: { basePath: string; extra?: React
   const maxFee = Number(params.get("fee")) || FEE_MAX;
   const languages = params.getAll("lang");
   const features = params.getAll("feature");
+  const admits = params.getAll("accepts");
   const vacant = params.get("vacant") === "1";
   const sort = params.get("sort") ?? "updated";
 
   const activeCount =
-    (maxFee < FEE_MAX ? 1 : 0) + languages.length + features.length + (vacant ? 1 : 0);
+    (maxFee < FEE_MAX ? 1 : 0) + languages.length + features.length + admits.length + (vacant ? 1 : 0);
 
   const apply = (next: URLSearchParams) => {
     const qs = next.toString();
@@ -159,6 +160,20 @@ export function FilterBar({ basePath, extra }: { basePath: string; extra?: React
                   {LANGUAGES.map((l) => (
                     <button key={l.value} type="button" onClick={() => toggleMulti("lang", l.value)} className={chip(languages.includes(l.value))}>
                       {l.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <span className="block text-sm font-semibold mb-1">The home must accept</span>
+                <p className="text-[13px] text-ink-2 mb-2">
+                  Hides homes that have told us they cannot take this.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {ADMISSION.map((a) => (
+                    <button key={a.value} type="button" onClick={() => toggleMulti("accepts", a.value)} className={chip(admits.includes(a.value))}>
+                      {a.label}
                     </button>
                   ))}
                 </div>

@@ -96,17 +96,17 @@ export function SearchTrigger({ query }: { query?: string }) {
         type="button"
         onClick={() => setOpen(true)}
         aria-expanded={open}
-        className="flex-1 min-w-0 max-w-xl flex items-center border border-line-2 rounded-full bg-surface text-left hover:shadow-[0_2px_10px_rgba(23,48,45,0.12)] transition-shadow"
+        className="w-full max-w-2xl flex items-center border border-line-2 rounded-full bg-surface text-left shadow-[0_1px_4px_rgba(23,48,45,0.07)] hover:shadow-[0_3px_14px_rgba(23,48,45,0.14)] transition-shadow"
       >
         <Segment label="Where" value={query ?? placeLabel} muted={!query && !draft.places.length} className="flex-1" />
         <span className="w-px h-7 bg-line-2 shrink-0" aria-hidden />
-        <Segment label="Age" value={draft.age || "Any"} muted={!draft.age} className="w-[74px] shrink-0" />
+        <Segment label="Age" value={draft.age || "Any"} muted={!draft.age} className="w-[86px] shrink-0" />
         <span className="hidden sm:block w-px h-7 bg-line-2 shrink-0" aria-hidden />
         <Segment
           label="Budget"
           value={draft.budget < FEE_MAX ? money(draft.budget) : "Any"}
           muted={draft.budget >= FEE_MAX}
-          className="hidden sm:flex w-[130px] shrink-0"
+          className="hidden sm:flex w-[150px] shrink-0"
         />
         <span className="grid place-items-center w-9 h-9 rounded-full bg-teal text-white shrink-0 mr-1.5 ml-1">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" aria-hidden>
@@ -128,7 +128,7 @@ export function SearchTrigger({ query }: { query?: string }) {
             role="dialog"
             aria-modal="true"
             aria-label="Find a care home"
-            className="fixed z-[61] bg-surface overflow-y-auto inset-0 sm:inset-auto sm:top-[76px] sm:left-1/2 sm:-translate-x-1/2 sm:w-[880px] sm:max-w-[94vw] sm:max-h-[calc(100vh-104px)] sm:rounded-3xl sm:shadow-[0_16px_48px_rgba(23,48,45,0.24)] sm:border sm:border-line"
+            className="fixed z-[61] bg-surface overflow-y-auto inset-0 sm:inset-auto sm:top-[120px] sm:left-1/2 sm:-translate-x-1/2 sm:w-[880px] sm:max-w-[94vw] sm:max-h-[calc(100vh-148px)] sm:rounded-3xl sm:shadow-[0_16px_48px_rgba(23,48,45,0.24)] sm:border sm:border-line"
           >
             <SearchPanel
               suburbs={suburbs}
