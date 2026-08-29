@@ -1,0 +1,636 @@
+// Demo listings lifted from the original prototype.
+//
+// THESE ARE FICTIONAL HOMES WITH FAKE PHONE NUMBERS. They exist so the site
+// can be shown working before real listings are collected. Remove them before
+// carehomes.lk is public — a real family ringing an invented number looking
+// for care for a parent is the failure this guards against.
+//
+// Loaded and removed from the admin dashboard.
+
+export const DEMO_HOMES = [
+  {
+    "slug": "blanket-care-malabe",
+    "name": "Blanket Care Malabe",
+    "suburbName": "Malabe",
+    "suburbSlug": "malabe",
+    "description": "An eight-bed, doctor-led home where every resident has a private en-suite room and a named care plan. Small on purpose: one carer to two residents by day, daily physician rounds, and a weekly video update for family overseas.",
+    "lat": 6.906,
+    "lng": 79.958,
+    "feeFrom": 350000,
+    "feeTo": 350000,
+    "feeExcludes": [
+      "Medicines and specialist consultations"
+    ],
+    "bedsTotal": 8,
+    "bedsAvailable": 2,
+    "roomTypes": [
+      "All private, en-suite"
+    ],
+    "careTypes": [
+      "ASSISTED_LIVING",
+      "NURSING",
+      "REHAB"
+    ],
+    "features": [
+      "24h nursing",
+      "Doctor on call",
+      "Physiotherapy",
+      "Private rooms",
+      "Air-conditioned",
+      "Garden",
+      "Wheelchair accessible",
+      "Family video calls",
+      "Diabetic diets"
+    ],
+    "languages": [
+      "SINHALA",
+      "ENGLISH"
+    ],
+    "nightNurses": 2,
+    "doctorArrangement": "Doctor-led home; physician does daily rounds and is on call 24h",
+    "transferHospital": "Neville Fernando Teaching (10 min)",
+    "visitingHours": "Any time; family stays by arrangement",
+    "phone": "+94 11 000 0001",
+    "whatsapp": "+94 76 856 4198",
+    "isBlanketHome": true,
+    "verified": true,
+    "ownerUpdatedAt": "2026-08-28"
+  },
+  {
+    "slug": "sirimal-home-for-the-elderly",
+    "name": "Sirimal Home for the Elderly",
+    "suburbName": "Nugegoda",
+    "suburbSlug": "nugegoda",
+    "description": "A 24-bed home in a converted family house with a large back garden. Long-serving matron, strong on routine and Buddhist observances; less suited to residents with advanced dementia.",
+    "lat": 6.87,
+    "lng": 79.89,
+    "feeFrom": 140000,
+    "feeTo": 220000,
+    "feeExcludes": [
+      "Medicines",
+      "diapers",
+      "physio beyond twice a week"
+    ],
+    "bedsTotal": 24,
+    "bedsAvailable": 2,
+    "roomTypes": [
+      "Shared (2–3) and private"
+    ],
+    "careTypes": [
+      "ASSISTED_LIVING",
+      "NURSING"
+    ],
+    "features": [
+      "24h nursing",
+      "Doctor on call",
+      "Physiotherapy",
+      "Garden",
+      "Vegetarian meals",
+      "Family video calls"
+    ],
+    "languages": [
+      "SINHALA",
+      "ENGLISH"
+    ],
+    "nightNurses": 2,
+    "doctorArrangement": "Visiting GP three times a week; on call otherwise",
+    "transferHospital": "Nawaloka (15 min)",
+    "visitingHours": "8am – 8pm daily",
+    "phone": "+94 11 000 0002",
+    "whatsapp": "+94 11 000 0002",
+    "isBlanketHome": false,
+    "verified": true,
+    "ownerUpdatedAt": "2026-08-21"
+  },
+  {
+    "slug": "cinnamon-gardens-care-residence",
+    "name": "Cinnamon Gardens Care Residence",
+    "suburbName": "Colombo 7",
+    "suburbSlug": "colombo-7",
+    "description": "Hospital-grade nursing in a residential setting. Popular with families abroad because of the RMO on site and a daily WhatsApp update. Priciest home in the city.",
+    "lat": 6.91,
+    "lng": 79.862,
+    "feeFrom": 320000,
+    "feeTo": 450000,
+    "feeExcludes": [
+      "Consultant fees",
+      "specialist physio",
+      "hospital escorts"
+    ],
+    "bedsTotal": 18,
+    "bedsAvailable": 1,
+    "roomTypes": [
+      "All private, en-suite"
+    ],
+    "careTypes": [
+      "NURSING",
+      "REHAB",
+      "PALLIATIVE"
+    ],
+    "features": [
+      "24h nursing",
+      "Doctor on call",
+      "Physiotherapy",
+      "Private rooms",
+      "Air-conditioned",
+      "Family video calls",
+      "Diabetic diets"
+    ],
+    "languages": [
+      "ENGLISH",
+      "SINHALA",
+      "TAMIL"
+    ],
+    "nightNurses": 3,
+    "doctorArrangement": "Resident medical officer 24h; consultant physician visits weekly",
+    "transferHospital": "Asiri Central (5 min)",
+    "visitingHours": "Any time; overnight stays for family by arrangement",
+    "phone": "+94 11 000 0003",
+    "whatsapp": "+94 11 000 0003",
+    "isBlanketHome": false,
+    "verified": true,
+    "ownerUpdatedAt": "2026-08-02"
+  },
+  {
+    "slug": "mount-lavinia-seaside-home",
+    "name": "Mount Lavinia Seaside Home",
+    "suburbName": "Mount Lavinia",
+    "suburbSlug": "mount-lavinia",
+    "description": "Best suited to mobile, independent residents who want company and sea air. Two-week respite stays are a speciality for families travelling.",
+    "lat": 6.838,
+    "lng": 79.865,
+    "feeFrom": 110000,
+    "feeTo": 175000,
+    "feeExcludes": [
+      "Medicines",
+      "diapers",
+      "transport"
+    ],
+    "bedsTotal": 30,
+    "bedsAvailable": 4,
+    "roomTypes": [
+      "Shared (2–4) and a few private"
+    ],
+    "careTypes": [
+      "ASSISTED_LIVING",
+      "RESPITE"
+    ],
+    "features": [
+      "Doctor on call",
+      "Garden",
+      "Wheelchair accessible",
+      "Vegetarian meals"
+    ],
+    "languages": [
+      "SINHALA",
+      "ENGLISH"
+    ],
+    "nightNurses": 1,
+    "doctorArrangement": "On call; visits twice a week",
+    "transferHospital": "Colombo South Teaching (10 min)",
+    "visitingHours": "9am – 6pm",
+    "phone": "+94 11 000 0004",
+    "whatsapp": "+94 11 000 0004",
+    "isBlanketHome": false,
+    "verified": true,
+    "ownerUpdatedAt": "2026-07-30"
+  },
+  {
+    "slug": "lotus-memory-care",
+    "name": "Lotus Memory Care",
+    "suburbName": "Battaramulla",
+    "suburbSlug": "battaramulla",
+    "description": "Purpose-built for dementia: single level, circular corridor, secure garden, staff trained in non-pharmacological approaches. Waiting list of about three months.",
+    "lat": 6.9,
+    "lng": 79.918,
+    "feeFrom": 260000,
+    "feeTo": 340000,
+    "feeExcludes": [
+      "Medicines",
+      "diapers"
+    ],
+    "bedsTotal": 14,
+    "bedsAvailable": 0,
+    "roomTypes": [
+      "Private and shared (2)"
+    ],
+    "careTypes": [
+      "DEMENTIA",
+      "NURSING"
+    ],
+    "features": [
+      "24h nursing",
+      "Doctor on call",
+      "Secure garden",
+      "Physiotherapy",
+      "Family video calls",
+      "Air-conditioned"
+    ],
+    "languages": [
+      "SINHALA",
+      "ENGLISH"
+    ],
+    "nightNurses": 2,
+    "doctorArrangement": "Geriatrician visits weekly; GP on call",
+    "transferHospital": "Sri Jayewardenepura (10 min)",
+    "visitingHours": "10am – 7pm; quieter hours encouraged",
+    "phone": "+94 11 000 0005",
+    "whatsapp": "+94 11 000 0005",
+    "isBlanketHome": false,
+    "verified": true,
+    "ownerUpdatedAt": "2026-07-24"
+  },
+  {
+    "slug": "moratuwa-elders-rest",
+    "name": "Moratuwa Elders' Rest",
+    "suburbName": "Moratuwa",
+    "suburbSlug": "moratuwa",
+    "description": "A charitable trust home with modest fees and a large, active resident community. Not the place for heavy nursing needs, but very good value for someone who is still fairly independent.",
+    "lat": 6.78,
+    "lng": 79.882,
+    "feeFrom": 75000,
+    "feeTo": 110000,
+    "feeExcludes": [
+      "Medicines",
+      "diapers"
+    ],
+    "bedsTotal": 40,
+    "bedsAvailable": 6,
+    "roomTypes": [
+      "Dormitory (4–6) and shared (2)"
+    ],
+    "careTypes": [
+      "ASSISTED_LIVING"
+    ],
+    "features": [
+      "Doctor on call",
+      "Garden",
+      "Prayer room",
+      "Vegetarian meals"
+    ],
+    "languages": [
+      "SINHALA"
+    ],
+    "nightNurses": 1,
+    "doctorArrangement": "Visits weekly; on call",
+    "transferHospital": "Lunawa (5 min)",
+    "visitingHours": "9am – 5pm",
+    "phone": "+94 11 000 0006",
+    "whatsapp": "+94 11 000 0006",
+    "isBlanketHome": false,
+    "verified": true,
+    "ownerUpdatedAt": "2026-06-18"
+  },
+  {
+    "slug": "palm-grove-home",
+    "name": "Palm Grove Home",
+    "suburbName": "Dehiwela",
+    "suburbSlug": "dehiwela",
+    "description": "Trilingual staff and five minutes from Kalubowila Teaching Hospital. A safe middle option: proper nursing without the premium-home price.",
+    "lat": 6.851,
+    "lng": 79.867,
+    "feeFrom": 130000,
+    "feeTo": 190000,
+    "feeExcludes": [
+      "Medicines",
+      "diapers",
+      "physio"
+    ],
+    "bedsTotal": 20,
+    "bedsAvailable": 3,
+    "roomTypes": [
+      "Shared (2) and private"
+    ],
+    "careTypes": [
+      "ASSISTED_LIVING",
+      "NURSING"
+    ],
+    "features": [
+      "24h nursing",
+      "Doctor on call",
+      "Garden",
+      "Wheelchair accessible",
+      "Diabetic diets"
+    ],
+    "languages": [
+      "SINHALA",
+      "ENGLISH",
+      "TAMIL"
+    ],
+    "nightNurses": 1,
+    "doctorArrangement": "On call; visits three times a week",
+    "transferHospital": "Kalubowila Teaching (5 min)",
+    "visitingHours": "8am – 7pm",
+    "phone": "+94 11 000 0007",
+    "whatsapp": "+94 11 000 0007",
+    "isBlanketHome": false,
+    "verified": true,
+    "ownerUpdatedAt": "2026-08-25"
+  },
+  {
+    "slug": "lakeside-care-residence",
+    "name": "Lakeside Care Residence",
+    "suburbName": "Rajagiriya",
+    "suburbSlug": "rajagiriya",
+    "description": "Strong physiotherapy team overlooking the Diyawanna wetland; used as much for 6–12 week post-surgery recoveries as for long stays.",
+    "lat": 6.909,
+    "lng": 79.895,
+    "feeFrom": 200000,
+    "feeTo": 280000,
+    "feeExcludes": [
+      "Consultant fees",
+      "specialist physio"
+    ],
+    "bedsTotal": 16,
+    "bedsAvailable": 2,
+    "roomTypes": [
+      "Private and shared (2)"
+    ],
+    "careTypes": [
+      "NURSING",
+      "REHAB"
+    ],
+    "features": [
+      "24h nursing",
+      "Doctor on call",
+      "Physiotherapy",
+      "Private rooms",
+      "Air-conditioned",
+      "Family video calls"
+    ],
+    "languages": [
+      "SINHALA",
+      "ENGLISH"
+    ],
+    "nightNurses": 2,
+    "doctorArrangement": "Physician visits daily on weekdays; on call weekends",
+    "transferHospital": "Durdans (10 min)",
+    "visitingHours": "9am – 8pm",
+    "phone": "+94 11 000 0008",
+    "whatsapp": "+94 11 000 0008",
+    "isBlanketHome": false,
+    "verified": true,
+    "ownerUpdatedAt": "2026-08-12"
+  },
+  {
+    "slug": "serene-villa",
+    "name": "Serene Villa",
+    "suburbName": "Nawala",
+    "suburbSlug": "nawala",
+    "description": "A twelve-room villa with a quiet garden, popular with English-speaking families. Books out fast; respite slots go first.",
+    "lat": 6.888,
+    "lng": 79.889,
+    "feeFrom": 160000,
+    "feeTo": 230000,
+    "feeExcludes": [
+      "Medicines",
+      "diapers"
+    ],
+    "bedsTotal": 12,
+    "bedsAvailable": 1,
+    "roomTypes": [
+      "All private"
+    ],
+    "careTypes": [
+      "ASSISTED_LIVING",
+      "RESPITE"
+    ],
+    "features": [
+      "Doctor on call",
+      "Garden",
+      "Private rooms",
+      "Air-conditioned",
+      "Family video calls"
+    ],
+    "languages": [
+      "ENGLISH",
+      "SINHALA"
+    ],
+    "nightNurses": 1,
+    "doctorArrangement": "On call; visits twice a week",
+    "transferHospital": "Asiri Surgical (10 min)",
+    "visitingHours": "Any time by arrangement",
+    "phone": "+94 11 000 0009",
+    "whatsapp": "+94 11 000 0009",
+    "isBlanketHome": false,
+    "verified": true,
+    "ownerUpdatedAt": "2026-08-05"
+  },
+  {
+    "slug": "suwa-arana-elders-home",
+    "name": "Suwa Arana Elders' Home",
+    "suburbName": "Maharagama",
+    "suburbSlug": "maharagama",
+    "description": "Good value and well-run, with beds usually available. Sinhala-only staff and a strong temple connection; English-speaking families may find communication harder.",
+    "lat": 6.848,
+    "lng": 79.928,
+    "feeFrom": 95000,
+    "feeTo": 140000,
+    "feeExcludes": [
+      "Medicines",
+      "diapers"
+    ],
+    "bedsTotal": 26,
+    "bedsAvailable": 5,
+    "roomTypes": [
+      "Shared (2–3)"
+    ],
+    "careTypes": [
+      "ASSISTED_LIVING",
+      "NURSING"
+    ],
+    "features": [
+      "Doctor on call",
+      "Garden",
+      "Prayer room",
+      "Vegetarian meals",
+      "Diabetic diets"
+    ],
+    "languages": [
+      "SINHALA"
+    ],
+    "nightNurses": 1,
+    "doctorArrangement": "Visits twice a week; on call",
+    "transferHospital": "Maharagama (Apeksha adjacent, 10 min)",
+    "visitingHours": "8am – 6pm",
+    "phone": "+94 11 000 0010",
+    "whatsapp": "+94 11 000 0010",
+    "isBlanketHome": false,
+    "verified": true,
+    "ownerUpdatedAt": "2026-07-08"
+  },
+  {
+    "slug": "heritage-home-kotte",
+    "name": "Heritage Home Kotte",
+    "suburbName": "Kotte",
+    "suburbSlug": "kotte",
+    "description": "A small home with a hospice-trained matron near the parliament wetlands. Our team has not yet visited this home.",
+    "lat": 6.885,
+    "lng": 79.908,
+    "feeFrom": 120000,
+    "feeTo": 180000,
+    "feeExcludes": [
+      "Medicines",
+      "diapers"
+    ],
+    "bedsTotal": 15,
+    "bedsAvailable": 2,
+    "roomTypes": [
+      "Shared (2) and private"
+    ],
+    "careTypes": [
+      "ASSISTED_LIVING",
+      "PALLIATIVE"
+    ],
+    "features": [
+      "Doctor on call",
+      "Garden",
+      "Prayer room",
+      "Vegetarian meals"
+    ],
+    "languages": [
+      "SINHALA",
+      "ENGLISH"
+    ],
+    "nightNurses": 1,
+    "doctorArrangement": "On call; visits weekly",
+    "transferHospital": "Sri Jayewardenepura (5 min)",
+    "visitingHours": "8am – 8pm",
+    "phone": "+94 11 000 0011",
+    "whatsapp": "+94 11 000 0011",
+    "isBlanketHome": false,
+    "verified": false,
+    "ownerUpdatedAt": "2026-06-27"
+  },
+  {
+    "slug": "airfield-view-home",
+    "name": "Airfield View Home",
+    "suburbName": "Ratmalana",
+    "suburbSlug": "ratmalana",
+    "description": "A steady, unfussy home near the airport road with beds usually available. Our team has not yet visited this home.",
+    "lat": 6.82,
+    "lng": 79.883,
+    "feeFrom": 100000,
+    "feeTo": 150000,
+    "feeExcludes": [
+      "Medicines",
+      "diapers",
+      "transport"
+    ],
+    "bedsTotal": 22,
+    "bedsAvailable": 4,
+    "roomTypes": [
+      "Shared (2–3)"
+    ],
+    "careTypes": [
+      "ASSISTED_LIVING"
+    ],
+    "features": [
+      "Doctor on call",
+      "Garden",
+      "Wheelchair accessible"
+    ],
+    "languages": [
+      "SINHALA",
+      "ENGLISH"
+    ],
+    "nightNurses": 1,
+    "doctorArrangement": "On call; visits weekly",
+    "transferHospital": "Lunawa (10 min)",
+    "visitingHours": "9am – 6pm",
+    "phone": "+94 11 000 0012",
+    "whatsapp": "+94 11 000 0012",
+    "isBlanketHome": false,
+    "verified": false,
+    "ownerUpdatedAt": "2026-05-30"
+  },
+  {
+    "slug": "green-care-pannipitiya",
+    "name": "Green Care Pannipitiya",
+    "suburbName": "Pannipitiya",
+    "suburbSlug": "pannipitiya",
+    "description": "A leafy compound with a fenced garden and early-stage dementia experience at a fair price. Currently full; waiting list of 4–6 weeks.",
+    "lat": 6.847,
+    "lng": 79.95,
+    "feeFrom": 110000,
+    "feeTo": 165000,
+    "feeExcludes": [
+      "Medicines",
+      "diapers"
+    ],
+    "bedsTotal": 18,
+    "bedsAvailable": 0,
+    "roomTypes": [
+      "Shared (2) and private"
+    ],
+    "careTypes": [
+      "ASSISTED_LIVING",
+      "DEMENTIA"
+    ],
+    "features": [
+      "Doctor on call",
+      "Secure garden",
+      "Prayer room",
+      "Vegetarian meals"
+    ],
+    "languages": [
+      "SINHALA"
+    ],
+    "nightNurses": 1,
+    "doctorArrangement": "On call; visits twice a week",
+    "transferHospital": "Homagama Base (15 min)",
+    "visitingHours": "9am – 6pm",
+    "phone": "+94 11 000 0013",
+    "whatsapp": "+94 11 000 0013",
+    "isBlanketHome": false,
+    "verified": true,
+    "ownerUpdatedAt": "2026-08-16"
+  },
+  {
+    "slug": "ocean-breeze-home",
+    "name": "Ocean Breeze Home",
+    "suburbName": "Wellawatte",
+    "suburbSlug": "wellawatte",
+    "description": "Tamil-speaking staff, a vegetarian kitchen and a daily video-call slot for children overseas. Much of the resident community has family in Canada and the UK.",
+    "lat": 6.875,
+    "lng": 79.861,
+    "feeFrom": 170000,
+    "feeTo": 240000,
+    "feeExcludes": [
+      "Medicines",
+      "diapers"
+    ],
+    "bedsTotal": 14,
+    "bedsAvailable": 1,
+    "roomTypes": [
+      "Private and shared (2)"
+    ],
+    "careTypes": [
+      "ASSISTED_LIVING",
+      "NURSING"
+    ],
+    "features": [
+      "24h nursing",
+      "Doctor on call",
+      "Vegetarian meals",
+      "Air-conditioned",
+      "Family video calls"
+    ],
+    "languages": [
+      "TAMIL",
+      "ENGLISH",
+      "SINHALA"
+    ],
+    "nightNurses": 1,
+    "doctorArrangement": "On call; visits three times a week",
+    "transferHospital": "Durdans (10 min)",
+    "visitingHours": "8am – 8pm",
+    "phone": "+94 11 000 0014",
+    "whatsapp": "+94 11 000 0014",
+    "isBlanketHome": false,
+    "verified": true,
+    "ownerUpdatedAt": "2026-08-09"
+  }
+] as const;
+
+export const DEMO_SLUGS = DEMO_HOMES.map((h) => h.slug);

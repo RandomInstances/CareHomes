@@ -7,6 +7,7 @@ import { checkAdminPassword, generatePassword, hashPassword, requireAdmin } from
 import { createSession, destroySession } from "@/lib/session";
 import { db } from "@/lib/db";
 import { CareType, HomeStatus, HomeTier, Language } from "@/generated/prisma";
+import { DEMO_HOMES, DEMO_SLUGS } from "@/lib/demo-data";
 
 // Colombo suburb taxonomy. Filters and the SEO landing pages both key off this,
 // so it is reference data rather than something typed per home.
@@ -214,4 +215,77 @@ export async function createOwnerAccount(_prev: string | null | undefined, formD
   revalidatePath(`/admin/homes/${homeId}`);
   // Shown once. There is no reset flow yet, so it must be handed over now.
   return `Account created. Phone ${phone}, password ${password} — write this down, it is not shown again.`;
+}
+
+// ---------------------------------------------------------------------------
+// Demo listings — fictional homes from the prototype, for showing the site
+// working before real listings exist. See src/lib/demo-data.ts.
+// ---------------------------------------------------------------------------
+
+export async function loadDemoListings() {
+  await requireAdmin();
+
+  for (const home of DEMO_HOMES) {
+    // Create the suburb if the demo needs one that was not in the standard list.
+    const suburb =
+      (await db.suburb.findUnique({ where: { slug: home.suburbSlug } })) ??
+      (await db.suburb.create({
+        data: { name: home.suburbName, slug: home.suburbSlug, sortOrder: 99 },
+      }));
+
+    const data = {
+      name: home.name,
+      description: home.description,
+      suburbId: suburb.id,
+      lat: home.lat,
+      lng: home.lng,
+      feeFrom: home.feeFrom,
+      feeTo: home.feeTo,
+      feeExcludes: [...home.feeExcludes],
+      bedsTotal: home.bedsTotal,
+      bedsAvailable: home.bedsAvailable,
+      roomTypes: [...home.roomTypes],
+      careTypes: [...home.careTypes] as CareType[],
+      features: [...home.features],
+      languages: [...home.languages] as Language[],
+      nightNurses: home.nightNurses,
+      doctorArrangement: home.doctorArrangement,
+      transferHospital: home.transferHospital,
+      visitingHours: home.visitingHours,
+      phone: home.phone,
+      whatsapp: home.whatsapp,
+      isBlanketHome: home.isBlanketHome,
+      status: HomeStatus.LIVE,
+      tier: home.verified ? HomeTier.VERIFIED : HomeTier.UNVERIFIED,
+      verifiedAt: home.verified ? new Date(home.ownerUpdatedAt) : null,
+      ownerUpdatedAt: new Date(home.ownerUpdatedAt),
+    };
+
+    await db.home.upsert({
+      where: { slug: home.slug },
+      create: { slug: home.slug, ...data },
+      update: data,
+    });
+  }
+
+  await db.auditLog.create({
+    data: { actor: "admin", action: "demo.load", entity: "Home", entityId: "demo" },
+  });
+
+  revalidatePath("/", "layout");
+  revalidatePath("/admin");
+  revalidatePath("/admin/homes");
+}
+
+export async function removeDemoListings() {
+  await requireAdmin();
+
+  await db.home.deleteMany({ where: { slug: { in: [...DEMO_SLUGS] } } });
+  await db.auditLog.create({
+    data: { actor: "admin", action: "demo.remove", entity: "Home", entityId: "demo" },
+  });
+
+  revalidatePath("/", "layout");
+  revalidatePath("/admin");
+  revalidatePath("/admin/homes");
 }

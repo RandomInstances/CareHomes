@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { seedSuburbs } from "@/app/admin/actions";
+import { loadDemoListings, removeDemoListings, seedSuburbs } from "@/app/admin/actions";
+import { DEMO_SLUGS } from "@/lib/demo-data";
 import { requireAdmin } from "@/lib/auth";
 import { db } from "@/lib/db";
 
@@ -9,13 +10,14 @@ export const dynamic = "force-dynamic";
 export default async function AdminDashboard() {
   await requireAdmin();
 
-  const [homes, live, verified, suburbs, enquiries, owners] = await Promise.all([
+  const [homes, live, verified, suburbs, enquiries, owners, demoCount] = await Promise.all([
     db.home.count(),
     db.home.count({ where: { status: "LIVE" } }),
     db.home.count({ where: { tier: "VERIFIED" } }),
     db.suburb.count(),
     db.enquiry.count(),
     db.owner.count(),
+    db.home.count({ where: { slug: { in: [...DEMO_SLUGS] } } }),
   ]);
 
   const stats = [
@@ -68,6 +70,54 @@ export default async function AdminDashboard() {
           </form>
         </div>
       ) : null}
+
+      <div
+        className={`border rounded-xl p-5 space-y-3 ${
+          demoCount > 0 ? "bg-red-50 border-red-300" : "bg-white border-stone-200"
+        }`}
+      >
+        <div>
+          <h2 className="font-semibold">
+            {demoCount > 0 ? `${demoCount} demo listings are live` : "Demo listings"}
+          </h2>
+          <p className="text-sm text-stone-600 mt-1 max-w-prose">
+            {demoCount > 0 ? (
+              <>
+                These are <b>fictional homes with invented phone numbers</b>, showing on
+                the public site right now. Remove them before carehomes.lk goes live —
+                a family ringing a made-up number looking for care for their parent is
+                exactly what this must never do.
+              </>
+            ) : (
+              <>
+                Loads the 14 sample homes from the original prototype so you can see the
+                site working before real listings are collected. They are fictional, with
+                fake phone numbers, and can be removed in one click.
+              </>
+            )}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <form action={loadDemoListings}>
+            <button
+              type="submit"
+              className="rounded-full bg-stone-900 text-white text-sm font-semibold px-4 py-2"
+            >
+              {demoCount > 0 ? "Reload demo listings" : "Load 14 demo listings"}
+            </button>
+          </form>
+          {demoCount > 0 ? (
+            <form action={removeDemoListings}>
+              <button
+                type="submit"
+                className="rounded-full border border-red-300 bg-white text-red-700 text-sm font-semibold px-4 py-2"
+              >
+                Remove all demo listings
+              </button>
+            </form>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }
