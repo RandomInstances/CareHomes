@@ -84,7 +84,9 @@ export async function listSuburbsWithCounts() {
     orderBy: { sortOrder: "asc" },
     include: { _count: { select: { homes: { where: { status: "LIVE" } } } } },
   });
-  return suburbs.filter((s) => s._count.homes > 0);
+  return suburbs
+    .filter((s) => s._count.homes > 0)
+    .sort((a, b) => b._count.homes - a._count.homes || a.name.localeCompare(b.name));
 }
 
 /// Pre-fills the message so the home receives a readable enquiry rather than a

@@ -101,11 +101,13 @@ export default async function HomePage({ params }: PageProps<"/[suburb]/[home]">
 
         <header className="space-y-2">
           {home.tier === "VERIFIED" ? (
-            <span className="inline-flex items-center gap-1.5 bg-teal-soft text-teal rounded-full px-3 py-1 text-xs font-bold">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round">
-                <path d="m4 12 5 5L20 6" />
-              </svg>
-              Visited and verified
+            <span className="inline-flex items-center gap-2 bg-teal text-white rounded-full pl-2 pr-4 py-2 text-[13.5px] font-bold shadow-[0_2px_10px_rgba(14,92,85,0.3)]">
+              <span className="grid place-items-center w-5 h-5 rounded-full bg-white/25">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m4 12 5 5L20 6" />
+                </svg>
+              </span>
+              Visited and Verified
               {visit ? ` · ${visit.visitedOn.toLocaleDateString("en-GB")}` : ""}
             </span>
           ) : (

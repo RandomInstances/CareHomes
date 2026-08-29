@@ -85,18 +85,34 @@ export function FilterBar({ basePath, extra }: { basePath: string; extra?: React
         {extra}
 
         <label className="flex items-center gap-2 text-sm ml-auto">
-          <span className="hidden sm:inline text-muted">Sort</span>
-          <select
-            value={sort}
-            onChange={(e) => setParam("sort", e.target.value === "updated" ? null : e.target.value)}
-            className="rounded-full border border-line-2 bg-surface px-2.5 sm:px-3 py-1.5 text-[13px] sm:text-sm max-w-[9.5rem] sm:max-w-none"
-          >
-            {SORTS.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
+          <span className="hidden sm:inline text-muted shrink-0">Sort</span>
+          <span className="relative inline-flex items-center">
+            <select
+              value={sort}
+              onChange={(e) => setParam("sort", e.target.value === "updated" ? null : e.target.value)}
+              className="appearance-none rounded-full border border-line-2 bg-surface pl-3.5 pr-9 py-2 text-[13px] sm:text-sm leading-none text-ink cursor-pointer hover:border-teal focus:outline-none focus-visible:ring-2 focus-visible:ring-teal"
+            >
+              {SORTS.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+            <svg
+              aria-hidden
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="pointer-events-none absolute right-3 text-muted"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </span>
         </label>
       </div>
 

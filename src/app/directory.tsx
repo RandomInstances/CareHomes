@@ -122,11 +122,13 @@ function Card({
         </Link>
 
         {home.tier === "VERIFIED" ? (
-          <span className="pointer-events-none absolute top-2.5 left-2.5 inline-flex items-center gap-1.5 bg-white rounded-full px-2.5 py-1.5 text-[12.5px] font-bold text-ink">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-teal">
-              <path d="m4 12 5 5L20 6" />
-            </svg>
-            Visited and verified
+          <span className="pointer-events-none absolute top-2.5 left-2.5 inline-flex items-center gap-1.5 bg-teal text-white rounded-full pl-2 pr-3 py-1.5 text-[12.5px] font-bold shadow-[0_2px_10px_rgba(14,92,85,0.35)]">
+            <span className="grid place-items-center w-4 h-4 rounded-full bg-white/25">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m4 12 5 5L20 6" />
+              </svg>
+            </span>
+            Visited and Verified
           </span>
         ) : null}
 
@@ -135,9 +137,9 @@ function Card({
           onClick={() => onToggle(home.id)}
           aria-pressed={saved}
           aria-label={saved ? `Remove ${home.name} from your shortlist` : `Add ${home.name} to your shortlist`}
-          className="absolute right-2.5 top-2.5 w-8 h-8 rounded-full grid place-items-center"
+          className="absolute right-2.5 top-2.5 w-8 h-8 rounded-full grid place-items-center bg-white/85 backdrop-blur-sm shadow-[0_1px_4px_rgba(23,48,45,0.18)] hover:bg-white transition-colors"
         >
-          <svg viewBox="0 0 24 24" width="22" height="22" fill={saved ? "#b4780f" : "rgba(0,0,0,.35)"} stroke="#fff" strokeWidth="1.6">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill={saved ? "#b4780f" : "rgba(22,41,44,.32)"} stroke={saved ? "#b4780f" : "rgba(22,41,44,.32)"} strokeWidth="1.4">
             <path d="M12 21s-7.5-4.7-7.5-10A4.4 4.4 0 0 1 12 7.6 4.4 4.4 0 0 1 19.5 11c0 5.3-7.5 10-7.5 10z" />
           </svg>
         </button>
@@ -155,10 +157,10 @@ function Card({
         <p className="inline-flex items-center gap-1.5 text-[13.5px] font-medium whitespace-nowrap shrink-0">
           <span
             aria-hidden
-            className={`w-1.5 h-1.5 rounded-full ${home.bedsAvailable ? "bg-[#2b6a4e]" : "bg-turmeric"}`}
+            className={`w-2 h-2 rounded-full ${home.bedsAvailable ? "bg-[#12b76a]" : "bg-turmeric"}`}
           />
           {home.bedsAvailable ? (
-            <span className="text-[#2b6a4e]">
+            <span className="font-semibold text-[#07794f]">
               {home.bedsTotal ? `${home.bedsAvailable}/${home.bedsTotal}` : home.bedsAvailable} beds free
             </span>
           ) : (
@@ -176,7 +178,7 @@ function Card({
       </div>
 
       {fee ? (
-        <p className="mt-1.5 text-[14px] sm:text-[15.5px]">
+        <p className="mt-1.5 text-[13.5px] sm:text-[14.5px]">
           <span className="text-ink-2">from </span>
           <span className="font-bold tabular-nums">{fee}</span>
           <span className="text-ink-2"> / month</span>

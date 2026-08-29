@@ -105,7 +105,7 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
 
       <main className="mx-auto max-w-6xl px-4 sm:px-5 py-6 sm:py-7 flex-1 w-full">
         {suburbs.length > 0 ? (
-          <nav className="flex gap-2 mb-6 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap sm:overflow-visible pb-1" aria-label="Suburbs">
+          <nav className="flex gap-2 mb-6 overflow-x-auto -mx-4 px-4 sm:-mx-1 sm:px-1 pb-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Suburbs">
             {suburbs.map((s) => (
               <Link
                 key={s.id}
