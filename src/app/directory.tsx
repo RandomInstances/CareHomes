@@ -130,13 +130,6 @@ function Card({
           </span>
         ) : null}
 
-        {fee ? (
-          <span className="pointer-events-none absolute bottom-2.5 right-2.5 rounded-full bg-white/95 px-3 py-1.5 text-[13.5px] font-bold tabular-nums shadow-[0_2px_8px_rgba(23,48,45,0.18)]">
-            {fee}
-            <span className="font-medium text-ink-2"> /mo</span>
-          </span>
-        ) : null}
-
         <button
           type="button"
           onClick={() => onToggle(home.id)}
@@ -181,6 +174,14 @@ function Card({
 
         <FeatureRow features={home.features} />
       </div>
+
+      {fee ? (
+        <p className="mt-1.5 text-[15.5px]">
+          <span className="text-ink-2">from </span>
+          <span className="font-bold tabular-nums">{fee}</span>
+          <span className="text-ink-2"> / month</span>
+        </p>
+      ) : null}
 
     </div>
   );
