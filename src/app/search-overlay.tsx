@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import type { SearchDraft } from "@/app/search-trigger";
-import { FEE_MAX } from "@/lib/catalog";
+import { CARE_TYPES, FEE_MAX } from "@/lib/catalog";
 
 // The search panel. Where, age and budget come first because they are what a
 // family already knows and what the collapsed control shows — opening this
@@ -17,12 +17,22 @@ import { FEE_MAX } from "@/lib/catalog";
 
 type Suburb = { name: string; slug: string; count: number };
 
-/// Plain language on the left, the category it implies on the right.
-const NEEDS: { label: string; hint: string; care: string }[] = [
-  { label: "Help with day-to-day living", hint: "Washing, dressing, meals, company", care: "ELDER_HOME" },
-  { label: "Nursing care", hint: "Wounds, tubes, dementia, close monitoring", care: "NURSING_HOME" },
-  { label: "Recovering from surgery", hint: "Physiotherapy and rehabilitation", care: "REHAB" },
-];
+/// Plain language, mapped to the category it implies — and carrying that
+/// category's icon and colour, so the panel and the tabs read as one system.
+const NEEDS = [
+  { care: "ELDER_HOME", label: "Help day to day", hint: "Washing, dressing, meals, company" },
+  { care: "NURSING_HOME", label: "Nursing care", hint: "Wounds, tubes, dementia, monitoring" },
+  { care: "REHAB", label: "Recovering", hint: "Physiotherapy and rehabilitation" },
+].map((n) => {
+  const cat = CARE_TYPES.find((c) => c.value === n.care)!;
+  return { ...n, icon: cat.icon, color: cat.color };
+});
+
+const SECTION_ICONS = {
+  where: { color: "#0E5C55", path: '<path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>' },
+  age: { color: "#31456E", path: '<circle cx="12" cy="7" r="3.2"/><path d="M5.5 20v-1.5A5.5 5.5 0 0 1 11 13h2a5.5 5.5 0 0 1 5.5 5.5V20"/>' },
+  budget: { color: "#B4780F", path: '<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.4"/>' },
+};
 
 const BUDGETS = [
   { label: "Under 75,000", value: 75000 },
@@ -67,6 +77,25 @@ export function SearchPanel({
     router.push(qs ? `/?${qs}` : "/");
   };
 
+  const Heading = ({ k, children }: { k: keyof typeof SECTION_ICONS; children: React.ReactNode }) => (
+    <h2 className="flex items-center gap-2 font-semibold mb-2.5">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{ color: SECTION_ICONS[k].color }}
+        aria-hidden
+        dangerouslySetInnerHTML={{ __html: SECTION_ICONS[k].path }}
+      />
+      {children}
+    </h2>
+  );
+
   const pill = (active: boolean) =>
     `rounded-full border px-3.5 py-2 text-sm transition-colors ${
       active
@@ -94,35 +123,35 @@ export function SearchPanel({
       </div>
 
       <div className="px-4 sm:px-7 py-6 sm:py-7 pb-28 sm:pb-7 space-y-7">
-        <div className="grid gap-6 sm:grid-cols-[1fr_auto_auto] sm:gap-7 sm:items-start">
-          <section>
-            <h2 className="font-semibold mb-2.5">Where would suit?</h2>
-            {suburbs.length ? (
-              <div className="flex flex-wrap gap-2">
-                {suburbs.map((s) => (
-                  <button
-                    key={s.slug}
-                    type="button"
-                    onClick={() => toggle("places", s.slug)}
-                    aria-pressed={draft.places.includes(s.slug)}
-                    className={pill(draft.places.includes(s.slug))}
-                  >
-                    {s.name}
-                    <span className="text-muted ml-1.5 tabular-nums">{s.count}</span>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted">Loading suburbs…</p>
-            )}
-            <p className="text-[13px] text-muted mt-2.5">
-              Pick a few — widening beyond one suburb is usually what finds a bed.
-            </p>
-          </section>
+        <section>
+          <Heading k="where">Where would suit?</Heading>
+          {suburbs.length ? (
+            <div className="flex flex-wrap gap-2">
+              {suburbs.map((s) => (
+                <button
+                  key={s.slug}
+                  type="button"
+                  onClick={() => toggle("places", s.slug)}
+                  aria-pressed={draft.places.includes(s.slug)}
+                  className={pill(draft.places.includes(s.slug))}
+                >
+                  {s.name}
+                  <span className="text-muted ml-1.5 tabular-nums">{s.count}</span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted">Loading suburbs…</p>
+          )}
+          <p className="text-[13px] text-muted mt-2.5">
+            Pick a few — widening beyond one suburb is usually what finds a bed.
+          </p>
+        </section>
 
-          <section className="sm:w-[190px]">
-            <div className="flex items-baseline justify-between gap-3 mb-2">
-              <h2 className="font-semibold">Their age</h2>
+        <div className="grid gap-6 sm:grid-cols-2 sm:gap-7">
+          <section>
+            <div className="flex items-baseline justify-between gap-3">
+              <Heading k="age">Their age</Heading>
               {draft.age ? (
                 <button
                   type="button"
@@ -133,8 +162,8 @@ export function SearchPanel({
                 </button>
               ) : null}
             </div>
-            <output className="block text-[19px] font-bold tabular-nums mb-1">
-              {draft.age || "Any age"}
+            <output className="block text-[26px] font-bold tabular-nums leading-none mb-3" style={{ color: SECTION_ICONS.age.color }}>
+              {draft.age || "Any"}
             </output>
             <input
               type="range"
@@ -144,20 +173,29 @@ export function SearchPanel({
               value={draft.age || 78}
               onChange={(e) => setDraft({ ...draft, age: e.target.value })}
               aria-label="Age of the person needing care"
-              className="w-full accent-teal"
+              className="w-full"
+              style={{ accentColor: SECTION_ICONS.age.color }}
             />
+            <div className="flex justify-between text-[12px] text-muted mt-1 tabular-nums">
+              <span>50</span>
+              <span>100</span>
+            </div>
           </section>
 
-          <section className="sm:w-[210px]">
-            <h2 className="font-semibold mb-2.5">Monthly budget</h2>
-            <div className="flex flex-wrap gap-2">
+          <section>
+            <Heading k="budget">Monthly budget</Heading>
+            <div className="grid grid-cols-2 gap-2">
               {BUDGETS.map((b) => (
                 <button
                   key={b.value}
                   type="button"
                   onClick={() => setDraft({ ...draft, budget: b.value })}
                   aria-pressed={draft.budget === b.value}
-                  className={pill(draft.budget === b.value)}
+                  className={`rounded-xl border px-3 py-2.5 text-[14px] text-left transition-colors ${
+                    draft.budget === b.value
+                      ? "border-turmeric bg-turmeric-soft text-turmeric font-semibold"
+                      : "border-line-2 bg-surface hover:border-turmeric"
+                  }`}
                 >
                   {b.label}
                 </button>
@@ -166,28 +204,48 @@ export function SearchPanel({
           </section>
         </div>
 
-        <hr className="border-line" />
-
         <section>
           <h2 className="font-semibold mb-2.5">What kind of help do they need?</h2>
-          <div className="grid sm:grid-cols-3 gap-2.5">
-            {NEEDS.map((n) => (
-              <button
-                key={n.care}
-                type="button"
-                onClick={() => toggle("needs", n.care)}
-                aria-pressed={draft.needs.includes(n.care)}
-                className={card(draft.needs.includes(n.care))}
-              >
-                <span className="block text-[15px]">{n.label}</span>
-                <span className={`block text-[13px] mt-0.5 ${draft.needs.includes(n.care) ? "text-teal/80" : "text-muted"}`}>
-                  {n.hint}
-                </span>
-              </button>
-            ))}
+          <div className="grid sm:grid-cols-3 gap-3">
+            {NEEDS.map((n) => {
+              const on = draft.needs.includes(n.care);
+              return (
+                <button
+                  key={n.care}
+                  type="button"
+                  onClick={() => toggle("needs", n.care)}
+                  aria-pressed={on}
+                  className={`rounded-2xl border-2 p-4 text-left transition-colors ${
+                    on ? "bg-surface" : "border-line-2 bg-surface hover:border-line"
+                  }`}
+                  style={on ? { borderColor: n.color } : undefined}
+                >
+                  <span
+                    className="grid place-items-center w-11 h-11 rounded-full mb-2.5"
+                    style={{ backgroundColor: `${n.color}1A`, color: n.color }}
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.7"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden
+                      dangerouslySetInnerHTML={{ __html: n.icon }}
+                    />
+                  </span>
+                  <span className="block text-[15px] font-semibold" style={on ? { color: n.color } : undefined}>
+                    {n.label}
+                  </span>
+                  <span className="block text-[13px] text-muted mt-0.5">{n.hint}</span>
+                </button>
+              );
+            })}
           </div>
         </section>
-
       </div>
 
       <div className="fixed bottom-0 inset-x-0 sm:static bg-surface border-t border-line">
