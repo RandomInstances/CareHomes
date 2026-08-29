@@ -150,7 +150,7 @@ shortlisted.
 The WhatsApp message opens as a sentence a person can read at a glance, not a
 form dump:
 
-> Hi, I'm Bhanuka — looking for a care home in Nugegoda, Rajagiriya at a budget
+> Hi, I'm Kasun — looking for a care home in Nugegoda, Rajagiriya at a budget
 > of up to LKR 150,000 per month.
 >
 > Age: 78
