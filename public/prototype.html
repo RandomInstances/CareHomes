@@ -399,7 +399,7 @@
 </dialog>
 
 <dialog id="compare" aria-labelledby="cTitle">
-  <div class="dlg-head"><div><h2 id="cTitle">Compare shortlist</h2><div class="where">Side by side, so you can ring them with the same questions.</div></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
+  <div class="dlg-head"><div><h2 id="cTitle">Compare shortlist</h2><div class="where">Side by side. Tell us what you are looking for and we will assess first, then confirm which of these fit.</div></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
   <div class="dlg-body"><div class="full" id="cBody" style="overflow-x:auto"></div></div>
 </dialog>
 
@@ -797,8 +797,12 @@ function openCompare(){
     ${row("Hospital", h=>h.hospital)}
     ${row("Languages", h=>h.languages.join(", "))}
     ${row("Visited by our team", h=>h.visited ? "Yes" : "Not yet")}
-    ${row("Phone", h=>`<a href="tel:${h.phone}">${h.phone}</a>`, "mono")}
-  </table>`;
+  </table>
+  <div class="steps-cta">
+    <button class="btn-solid" type="button" id="cAsk">Ask us about these homes</button>
+    <span class="note">We assess your relative first, then confirm which of these can meet the need.</span>
+  </div>`;
+  $("#cAsk").onclick = () => { $("#compare").close(); openEnquiry(null); };
   $("#compare").showModal();
 }
 
