@@ -53,7 +53,7 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 sm:relative">
         <div className="h-14 sm:h-[72px] flex sm:grid sm:grid-cols-[1fr_auto_1fr] items-center gap-4">
           <Link href="/" className="shrink-0 sm:absolute sm:left-6 lg:left-10 sm:top-1/2 sm:-translate-y-1/2 sm:z-10">
-            <span className="block font-display font-bold text-[17px] sm:text-[23px] leading-none">
+            <span className="block font-display font-bold text-[17px] sm:text-[26px] leading-none">
               carehomes<span className="text-teal">.lk</span>
             </span>
           </Link>
@@ -78,7 +78,7 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
               nav stays on the container centre. */}
           <Link
             href="/list-your-home"
-            className="hidden sm:inline-flex sm:col-start-3 items-center justify-self-end rounded-full border border-line-2 px-4 py-2 text-[13px] font-semibold whitespace-nowrap hover:border-teal hover:text-teal transition-colors"
+            className="hidden sm:inline-flex items-center sm:absolute sm:right-6 lg:right-10 sm:top-1/2 sm:-translate-y-1/2 sm:z-10 rounded-full border border-line-2 px-5 py-2.5 text-[15px] font-semibold whitespace-nowrap hover:border-teal hover:text-teal transition-colors"
           >
             List your care home
           </Link>
