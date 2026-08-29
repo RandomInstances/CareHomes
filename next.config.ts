@@ -1,8 +1,16 @@
 import type { NextConfig } from "next";
 
-// The prototype is no longer served at the root — the directory is now real,
-// database-backed pages so each home has its own indexable URL. The original
-// prototype stays reachable at /prototype.html for reference.
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  async rewrites() {
+    return {
+      // Rolled back: the prototype serves the homepage again while its visual
+      // design is ported into the database-backed pages. Those pages are still
+      // live at /[suburb]/[home] — this only changes what "/" shows.
+      beforeFiles: [{ source: "/", destination: "/prototype.html" }],
+      afterFiles: [],
+      fallback: [],
+    };
+  },
+};
 
 export default nextConfig;
