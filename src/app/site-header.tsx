@@ -1,39 +1,25 @@
 import Link from "next/link";
 
-export function SiteHeader({ query }: { query?: string }) {
+import { SearchTrigger } from "@/app/search-trigger";
+import { listSuburbsWithCounts } from "@/lib/homes";
+
+export async function SiteHeader({ query }: { query?: string }) {
+  const suburbs = await listSuburbsWithCounts();
+
   return (
     <header className="bg-surface border-b border-line sticky top-0 z-10">
       <div className="mx-auto max-w-6xl px-4 sm:px-5 h-14 sm:h-16 flex items-center gap-3 sm:gap-5">
         <Link href="/" className="shrink-0">
           <span className="block font-display font-bold text-[17px] sm:text-xl leading-none">
             carehomes<span className="text-teal">.lk</span>
-          </span>        </Link>
+          </span>
+        </Link>
 
-        <form action="/" className="flex-1 min-w-0 max-w-md">
-          <label htmlFor="q" className="sr-only">
-            Search a suburb or home
-          </label>
-          <div className="flex items-center gap-2 border border-line-2 rounded-full px-3 sm:px-4 py-2 bg-bg focus-within:border-teal min-w-0">
-            <span className="hidden sm:block text-sm text-muted shrink-0">Colombo</span>
-            <span className="hidden sm:block w-px h-4 bg-line-2" aria-hidden />
-            <input
-              id="q"
-              name="q"
-              type="search"
-              defaultValue={query ?? ""}
-              placeholder="Search a suburb or home"
-              className="flex-1 bg-transparent text-sm outline-none min-w-0"
-            />
-            <button type="submit" aria-label="Search" className="text-teal shrink-0">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round">
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-3.5-3.5" />
-              </svg>
-            </button>
-          </div>
-        </form>
+        <SearchTrigger
+          query={query}
+          suburbs={suburbs.map((s) => ({ name: s.name, slug: s.slug, count: s._count.homes }))}
+        />
       </div>
     </header>
   );
 }
-

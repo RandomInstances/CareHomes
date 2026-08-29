@@ -58,6 +58,9 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
     listHomes({
       query,
       careType,
+      careTypes: many(params.care),
+      accepts: many(params.accepts),
+      suburbSlugs: many(params.suburb),
       maxFee: Number(params.fee) || undefined,
       languages: many(params.lang),
       features: many(params.feature),

@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { FeatureList } from "@/app/feature-icon";
 import { SiteFooter } from "@/app/site-footer";
 import { SiteHeader } from "@/app/site-header";
-import { formatFee } from "@/lib/catalog";
+import { ADMISSION_LABEL, formatFee } from "@/lib/catalog";
 import { getHome, whatsappLink } from "@/lib/homes";
 
 export const dynamic = "force-dynamic";
@@ -215,6 +215,47 @@ export default async function HomePage({ params }: PageProps<"/[suburb]/[home]">
             </Detail>
           ) : null}
         </div>
+
+        {home.accepts.length || home.notAccepted.length || home.minAge || home.maxAge ? (
+          <div className="mt-5">
+            <Detail label="Who this home takes">
+              <div className="grid sm:grid-cols-2 gap-4 mt-1">
+                {home.accepts.length ? (
+                  <div>
+                    <p className="text-[13px] font-semibold text-[#07794f] mb-1.5">Will accept</p>
+                    <ul className="space-y-1">
+                      {home.accepts.map((a) => (
+                        <li key={a} className="flex gap-2 text-[14.5px]">
+                          <span className="text-[#07794f]" aria-hidden>✓</span>
+                          {ADMISSION_LABEL[a] ?? a}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+                {home.notAccepted.length ? (
+                  <div>
+                    <p className="text-[13px] font-semibold text-turmeric mb-1.5">Cannot take</p>
+                    <ul className="space-y-1">
+                      {home.notAccepted.map((a) => (
+                        <li key={a} className="flex gap-2 text-[14.5px] text-ink-2">
+                          <span className="text-turmeric" aria-hidden>✕</span>
+                          {ADMISSION_LABEL[a] ?? a}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+              {home.minAge || home.maxAge ? (
+                <p className="text-[14px] text-ink-2 mt-3">
+                  Accepts residents{home.minAge ? ` from ${home.minAge}` : ""}
+                  {home.maxAge ? ` up to ${home.maxAge}` : ""} years old.
+                </p>
+              ) : null}
+            </Detail>
+          </div>
+        ) : null}
 
         {home.features.length ? (
           <div className="mt-5">

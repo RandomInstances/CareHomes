@@ -1,6 +1,7 @@
 import "server-only";
 
 import { db } from "@/lib/db";
+import type { CareType, Language, Prisma } from "@/generated/prisma";
 import { FEE_MAX, type CareTypeValue, type SortValue } from "@/lib/catalog";
 
 // Verified homes rank ahead of unverified ones, then most recently updated by
@@ -16,8 +17,13 @@ export type ListedHome = Awaited<ReturnType<typeof listHomes>>[number];
 
 export type HomeFilters = {
   suburbSlug?: string;
+  suburbSlugs?: string[];
   query?: string;
   careType?: CareTypeValue;
+  careTypes?: string[];
+  /// The home must accept every one of these, and must not list any of them as
+  /// something it cannot take.
+  accepts?: string[];
   maxFee?: number;
   languages?: string[];
   features?: string[];
@@ -42,29 +48,43 @@ function orderFor(sort: SortValue | undefined) {
 }
 
 export async function listHomes(options: HomeFilters = {}) {
-  const { suburbSlug, query, careType, maxFee, languages, features, vacantOnly, sort } = options;
+  const {
+    suburbSlug, suburbSlugs, query, careType, careTypes, accepts,
+    maxFee, languages, features, vacantOnly, sort,
+  } = options;
 
-  return db.home.findMany({
-    where: {
-      status: "LIVE",
-      ...(careType ? { careTypes: { has: careType } } : {}),
-      ...(suburbSlug ? { suburb: { slug: suburbSlug } } : {}),
-      ...(maxFee && maxFee < FEE_MAX ? { feeFrom: { lte: maxFee } } : {}),
-      ...(languages?.length ? { languages: { hasEvery: languages as never } } : {}),
-      ...(features?.length ? { features: { hasEvery: features } } : {}),
-      ...(vacantOnly ? { bedsAvailable: { gt: 0 } } : {}),
-      ...(query
-        ? {
-            OR: [
-              { name: { contains: query, mode: "insensitive" as const } },
-              { suburb: { name: { contains: query, mode: "insensitive" as const } } },
-            ],
-          }
-        : {}),
-    },
-    orderBy: orderFor(sort),
-    include: { suburb: true },
-  });
+  // Built imperatively rather than with conditional spreads: the spreads
+  // produced a union type Prisma's generated input would not accept.
+  const where: Prisma.HomeWhereInput = { status: "LIVE" };
+
+  // Several needs widen the search rather than narrowing it — a home offering
+  // any of them is worth showing.
+  if (careTypes?.length) where.careTypes = { hasSome: careTypes as CareType[] };
+  else if (careType) where.careTypes = { has: careType as CareType };
+
+  // The home must accept everything asked for, and must not list any of it as
+  // something it cannot take.
+  if (accepts?.length) {
+    where.accepts = { hasEvery: accepts };
+    where.NOT = { notAccepted: { hasSome: accepts } };
+  }
+
+  if (suburbSlugs?.length) where.suburb = { slug: { in: suburbSlugs } };
+  else if (suburbSlug) where.suburb = { slug: suburbSlug };
+
+  if (maxFee && maxFee < FEE_MAX) where.feeFrom = { lte: maxFee };
+  if (languages?.length) where.languages = { hasEvery: languages as Language[] };
+  if (features?.length) where.features = { hasEvery: features };
+  if (vacantOnly) where.bedsAvailable = { gt: 0 };
+
+  if (query) {
+    where.OR = [
+      { name: { contains: query, mode: "insensitive" } },
+      { suburb: { name: { contains: query, mode: "insensitive" } } },
+    ];
+  }
+
+  return db.home.findMany({ where, orderBy: orderFor(sort), include: { suburb: true } });
 }
 
 export async function getHome(suburbSlug: string, homeSlug: string) {

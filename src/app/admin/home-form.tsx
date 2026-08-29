@@ -30,6 +30,10 @@ type HomeValues = {
   email?: string | null;
   status?: string;
   tier?: string;
+  accepts?: string[];
+  notAccepted?: string[];
+  minAge?: number | null;
+  maxAge?: number | null;
   nseRegistered?: boolean | null;
   isBlanketHome?: boolean;
 };
@@ -41,6 +45,19 @@ const CARE_TYPES = [
   ["RESPITE", "Respite"],
   ["PALLIATIVE", "Palliative"],
   ["REHAB", "Post-surgery rehab"],
+] as const;
+
+const ADMISSION = [
+  ["BEDRIDDEN", "Bedridden residents"],
+  ["DEMENTIA_WANDERING", "Dementia with wandering"],
+  ["FEEDING_TUBE", "Feeding tube (NG or PEG)"],
+  ["CATHETER", "Catheter or stoma care"],
+  ["OXYGEN", "Oxygen dependency"],
+  ["BEHAVIOURAL", "Behavioural challenges"],
+  ["WHEELCHAIR", "Wheelchair users"],
+  ["DIALYSIS", "Dialysis, with transport"],
+  ["COUPLES", "Couples sharing a room"],
+  ["SHORT_STAY", "Short stays"],
 ] as const;
 
 const LANGUAGES = [
@@ -215,6 +232,47 @@ export function HomeForm({
           <label className="space-y-1.5 block">
             <span className={labelText}>Transfers to which hospital</span>
             <input name="transferHospital" defaultValue={values.transferHospital ?? ""} className={field} />
+          </label>
+        </div>
+      </Section>
+
+      <Section
+        title="Who this home will take"
+        hint="The most useful thing you can record. Families filter on it, so the home stops fielding calls it always has to refuse — and nobody rings round to find out."
+      >
+        <fieldset className="space-y-2">
+          <legend className={labelText}>Will accept</legend>
+          <div className="grid sm:grid-cols-2 gap-2">
+            {ADMISSION.map(([value, label]) => (
+              <label key={value} className="flex items-center gap-2 text-sm">
+                <input type="checkbox" name="accepts" value={value} defaultChecked={values.accepts?.includes(value)} className="rounded border-stone-400" />
+                {label}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset className="space-y-2 pt-2">
+          <legend className={labelText}>Cannot take</legend>
+          <p className="text-sm text-stone-500 -mt-0.5">Say so explicitly — it is what stops the wasted call.</p>
+          <div className="grid sm:grid-cols-2 gap-2">
+            {ADMISSION.map(([value, label]) => (
+              <label key={value} className="flex items-center gap-2 text-sm">
+                <input type="checkbox" name="notAccepted" value={value} defaultChecked={values.notAccepted?.includes(value)} className="rounded border-stone-400" />
+                {label}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <div className="grid sm:grid-cols-2 gap-4 pt-1">
+          <label className="space-y-1.5 block">
+            <span className={labelText}>Youngest resident accepted</span>
+            <input name="minAge" defaultValue={values.minAge ?? ""} placeholder="e.g. 55" className={field} />
+          </label>
+          <label className="space-y-1.5 block">
+            <span className={labelText}>Oldest resident accepted</span>
+            <input name="maxAge" defaultValue={values.maxAge ?? ""} placeholder="Leave blank for no limit" className={field} />
           </label>
         </div>
       </Section>

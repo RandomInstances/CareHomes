@@ -86,6 +86,33 @@ export const FEATURES = [
   "Security",
 ];
 
+/// What a home will and will not take. The single most useful field for
+/// stopping families and homes wasting calls on each other — "will you take my
+/// bedridden father with a feeding tube" is answerable from data, not a phone
+/// call to twenty homes.
+export const ADMISSION = [
+  { value: "BEDRIDDEN", label: "Bedridden residents" },
+  { value: "DEMENTIA_WANDERING", label: "Dementia with wandering" },
+  { value: "FEEDING_TUBE", label: "Feeding tube (NG or PEG)" },
+  { value: "CATHETER", label: "Catheter or stoma care" },
+  { value: "OXYGEN", label: "Oxygen dependency" },
+  { value: "BEHAVIOURAL", label: "Behavioural challenges" },
+  { value: "WHEELCHAIR", label: "Wheelchair users" },
+  { value: "DIALYSIS", label: "Dialysis, with transport" },
+  { value: "COUPLES", label: "Couples sharing a room" },
+  { value: "SHORT_STAY", label: "Short stays" },
+] as const;
+
+export type AdmissionValue = (typeof ADMISSION)[number]["value"];
+
+export const ADMISSION_LABEL: Record<string, string> = Object.fromEntries(
+  ADMISSION.map((a) => [a.value, a.label])
+);
+
+export function isAdmission(value: string): value is AdmissionValue {
+  return ADMISSION.some((a) => a.value === value);
+}
+
 export const FEE_MAX = 500000;
 
 export const CARE_LABEL: Record<string, string> = Object.fromEntries(

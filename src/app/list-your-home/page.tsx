@@ -65,6 +65,43 @@ export default function ListYourHomePage() {
           </p>
         </section>
 
+        <section id="pricing" className="mt-12 scroll-mt-20">
+          <h2 className="text-xl font-semibold mb-4">Pricing</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="border border-line rounded-2xl bg-surface p-5">
+              <h3 className="font-semibold">Listed</h3>
+              <p className="text-2xl font-bold mt-1">Free</p>
+              <ul className="mt-3 space-y-1.5 text-[14.5px] text-ink-2">
+                <li>Your own page and web address</li>
+                <li>Your WhatsApp and telephone on the listing</li>
+                <li>Keep fees, beds and details current</li>
+                <li>No card, no commitment, no expiry</li>
+              </ul>
+            </div>
+            <div className="border-2 border-teal rounded-2xl bg-surface p-5 relative">
+              <span className="absolute -top-3 left-5 bg-teal text-white text-[11.5px] font-bold rounded-full px-2.5 py-1">
+                Recommended
+              </span>
+              <h3 className="font-semibold">Visited and Verified</h3>
+              <p className="text-2xl font-bold mt-1 tabular-nums">
+                LKR 50,000
+                <span className="text-sm font-normal text-ink-2"> one-time</span>
+              </p>
+              <ul className="mt-3 space-y-1.5 text-[14.5px] text-ink-2">
+                <li>Everything in a free listing</li>
+                <li>A field visit, inspection and photographs</li>
+                <li>The Visited and Verified badge</li>
+                <li>Listed ahead of homes we have not visited</li>
+                <li>Your first twelve months included, then LKR 1,000 a month</li>
+              </ul>
+            </div>
+          </div>
+          <p className="text-[14px] text-muted mt-4 max-w-[62ch]">
+            We never charge a family, and we never charge you per enquiry or per
+            placement. Beyond having been visited, no home can buy a higher position.
+          </p>
+        </section>
+
         <section className="mt-12">
           <h2 className="text-xl font-semibold mb-4">Why families find you here</h2>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -149,43 +186,6 @@ export default function ListYourHomePage() {
           <Link href="/verification" className="inline-block mt-5 text-[15px] font-semibold text-teal">
             See everything we check →
           </Link>
-        </section>
-
-        <section id="pricing" className="mt-12 scroll-mt-20">
-          <h2 className="text-xl font-semibold mb-4">Pricing</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="border border-line rounded-2xl bg-surface p-5">
-              <h3 className="font-semibold">Listed</h3>
-              <p className="text-2xl font-bold mt-1">Free</p>
-              <ul className="mt-3 space-y-1.5 text-[14.5px] text-ink-2">
-                <li>Your own page and web address</li>
-                <li>Your WhatsApp and telephone on the listing</li>
-                <li>Keep fees, beds and details current</li>
-                <li>No card, no commitment, no expiry</li>
-              </ul>
-            </div>
-            <div className="border-2 border-teal rounded-2xl bg-surface p-5 relative">
-              <span className="absolute -top-3 left-5 bg-teal text-white text-[11.5px] font-bold rounded-full px-2.5 py-1">
-                Recommended
-              </span>
-              <h3 className="font-semibold">Visited and Verified</h3>
-              <p className="text-2xl font-bold mt-1 tabular-nums">
-                LKR 50,000
-                <span className="text-sm font-normal text-ink-2"> one-time</span>
-              </p>
-              <ul className="mt-3 space-y-1.5 text-[14.5px] text-ink-2">
-                <li>Everything in a free listing</li>
-                <li>A field visit, inspection and photographs</li>
-                <li>The Visited and Verified badge</li>
-                <li>Listed ahead of homes we have not visited</li>
-                <li>Your first twelve months included, then LKR 1,000 a month</li>
-              </ul>
-            </div>
-          </div>
-          <p className="text-[14px] text-muted mt-4 max-w-[62ch]">
-            We never charge a family, and we never charge you per enquiry or per
-            placement. Beyond having been visited, no home can buy a higher position.
-          </p>
         </section>
 
         <section className="mt-12 border border-line rounded-2xl bg-surface p-6">

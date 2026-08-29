@@ -67,7 +67,7 @@ export function SiteFooter() {
             <Column title="For care homes">
               <Item href="/list-your-home">List your care home</Item>
               <Item href="/verification">What verification means</Item>
-              <Item href="/list-your-home#pricing">Pricing</Item>
+              <Item href="/list-your-home">Pricing</Item>
             </Column>
 
             <Column title="Policies">

@@ -65,6 +65,14 @@ model Home {
   bedsAvailable Int?
   roomTypes     String[] @default([])
 
+  /// What the home will take, and what it will not. Families filter on these so
+  /// they stop ringing homes that were never going to accept the person, and
+  /// homes stop fielding calls they always have to refuse.
+  accepts     String[] @default([])
+  notAccepted String[] @default([])
+  minAge      Int?
+  maxAge      Int?
+
   careTypes CareType[] @default([])
   features  String[]   @default([])
   languages Language[] @default([])
