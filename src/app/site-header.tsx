@@ -44,9 +44,10 @@ function CategoryTab({
   );
 }
 
-/// Desktop follows the Airbnb arrangement: wordmark, search and the owner link
-/// on one line, categories underneath. Everything on the first line shares a
-/// baseline, so nothing has to be nudged into place.
+/// Desktop: categories on the first line, search beneath, and the wordmark
+/// spanning both rows so it sits on the centre line between them. Using a real
+/// row span rather than absolute positioning means the header can change height
+/// without anything drifting out of place.
 ///
 /// The phone layout is deliberately different and unchanged — wordmark beside
 /// the scrolling categories, search on its own line beneath — because a search
@@ -57,26 +58,26 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 grid grid-cols-[auto_1fr] sm:grid-cols-[1fr_auto_1fr] items-center gap-x-4 sm:gap-x-6">
         <Link
           href="/"
-          className="row-start-1 col-start-1 shrink-0 h-14 sm:h-[76px] flex items-center"
+          className="row-start-1 col-start-1 sm:row-span-2 sm:self-center shrink-0 h-14 sm:h-auto flex items-center"
         >
           <span className="block font-display font-bold text-[17px] sm:text-[26px] leading-none">
             carehomes<span className="text-teal">.lk</span>
           </span>
         </Link>
 
-        <div className="row-start-2 col-start-1 col-span-2 pb-4 sm:pb-0 sm:row-start-1 sm:col-start-2 sm:col-span-1 flex justify-center">
+        <div className="row-start-2 col-start-1 col-span-2 pb-4 sm:pb-6 sm:row-start-2 sm:col-start-2 sm:col-span-1 flex justify-center">
           <SearchTrigger query={query} />
         </div>
 
         <Link
           href="/list-your-home"
-          className="hidden sm:flex row-start-1 col-start-3 justify-self-end items-center text-[14px] font-medium text-ink-2 whitespace-nowrap hover:text-teal hover:underline underline-offset-4 transition-colors"
+          className="hidden sm:flex row-start-1 col-start-3 sm:self-center justify-self-end items-center text-[14px] font-medium text-ink-2 whitespace-nowrap hover:text-teal hover:underline underline-offset-4 transition-colors"
         >
           List your care home
         </Link>
 
         <nav
-          className="row-start-1 col-start-2 sm:row-start-2 sm:col-start-1 sm:col-span-3 sm:justify-self-center min-w-0 flex items-stretch gap-1 sm:gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="row-start-1 col-start-2 sm:col-start-2 sm:col-span-1 sm:justify-self-center sm:pt-3 min-w-0 flex items-stretch gap-1 sm:gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           aria-label="Type of care"
         >
           <CategoryTab href="/" label="All homes" icon={ALL_HOMES_ICON} color={ALL_HOMES_COLOR} active={!activeCare} />
