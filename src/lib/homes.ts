@@ -13,12 +13,30 @@ const LISTING_ORDER = [
 
 export type ListedHome = Awaited<ReturnType<typeof listHomes>>[number];
 
-export async function listHomes(options: { suburbSlug?: string; query?: string } = {}) {
-  const { suburbSlug, query } = options;
+export const CARE_TYPES = [
+  { value: "ASSISTED_LIVING", label: "Assisted living" },
+  { value: "NURSING", label: "Nursing care" },
+  { value: "DEMENTIA", label: "Dementia care" },
+  { value: "RESPITE", label: "Respite" },
+  { value: "PALLIATIVE", label: "Palliative care" },
+  { value: "REHAB", label: "Rehab" },
+] as const;
+
+export type CareTypeValue = (typeof CARE_TYPES)[number]["value"];
+
+export function isCareType(value: string | undefined): value is CareTypeValue {
+  return !!value && CARE_TYPES.some((c) => c.value === value);
+}
+
+export async function listHomes(
+  options: { suburbSlug?: string; query?: string; careType?: CareTypeValue } = {}
+) {
+  const { suburbSlug, query, careType } = options;
 
   return db.home.findMany({
     where: {
       status: "LIVE",
+      ...(careType ? { careTypes: { has: careType } } : {}),
       ...(suburbSlug ? { suburb: { slug: suburbSlug } } : {}),
       ...(query
         ? {
