@@ -75,3 +75,52 @@ export function FeatureList({ features }: { features: string[] }) {
     </ul>
   );
 }
+
+/// Compact icon row for cards. Each icon names itself on hover, and the +N
+/// expands to show what it is hiding rather than leaving people to guess.
+/// Pure CSS hover — no state, so this still renders inside a server component.
+export function FeatureRow({ features, max = 4 }: { features: string[]; max?: number }) {
+  if (!features.length) return null;
+
+  const shown = features.slice(0, max);
+  const rest = features.slice(max);
+
+  return (
+    <ul className="flex items-center gap-1.5 text-muted shrink-0">
+      {shown.map((f) => (
+        <li key={f} className="relative group/f leading-none">
+          <FeatureIcon feature={f} className="w-4 h-4" />
+          <span className="sr-only">{f}</span>
+          <span
+            role="tooltip"
+            className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/f:block whitespace-nowrap rounded-md bg-ink text-white text-[11.5px] font-medium px-2 py-1 shadow-lg z-30"
+          >
+            {f}
+          </span>
+        </li>
+      ))}
+
+      {rest.length ? (
+        <li className="relative group/more leading-none">
+          <button
+            type="button"
+            aria-label={`${rest.length} more: ${rest.join(", ")}`}
+            className="text-[12px] tabular-nums font-medium hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-teal rounded"
+          >
+            +{rest.length}
+          </button>
+          <div className="pointer-events-none absolute bottom-full right-0 mb-2 hidden group-hover/more:block group-focus-within/more:block z-30 rounded-xl bg-ink text-white px-3 py-2.5 shadow-xl">
+            <ul className="space-y-1.5">
+              {rest.map((f) => (
+                <li key={f} className="flex items-center gap-2 whitespace-nowrap text-[12.5px]">
+                  <FeatureIcon feature={f} className="w-3.5 h-3.5 opacity-75 shrink-0" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </li>
+      ) : null}
+    </ul>
+  );
+}
