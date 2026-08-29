@@ -78,7 +78,7 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
               nav stays on the container centre. */}
           <Link
             href="/list-your-home"
-            className="hidden sm:inline-flex items-center sm:absolute sm:right-6 lg:right-10 sm:top-1/2 sm:-translate-y-1/2 sm:z-10 rounded-full border border-line-2 px-5 py-2.5 text-[15px] font-semibold whitespace-nowrap hover:border-teal hover:text-teal transition-colors"
+            className="hidden sm:inline-flex items-center sm:absolute sm:right-6 lg:right-10 sm:top-1/2 sm:-translate-y-1/2 sm:z-10 text-[14px] font-medium text-ink-2 whitespace-nowrap hover:text-teal hover:underline underline-offset-4 transition-colors"
           >
             List your care home
           </Link>
