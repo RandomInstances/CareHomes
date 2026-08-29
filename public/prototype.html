@@ -209,6 +209,12 @@
     border-left: 2px solid var(--turmeric); padding-left: 10px;
   }
   .enq-short { font-size: 13.5px; color: var(--ink-2); }
+  .verify-note {
+    margin: 18px 0 0; padding: 12px 15px; border: 1px solid var(--line);
+    border-left: 3px solid var(--turmeric); border-radius: 12px; background: #fff;
+    font-size: 13.5px; line-height: 1.5; color: var(--ink-2); max-width: 78ch;
+  }
+  .verify-note b { color: var(--ink); }
   .sample-note { font-size: 12px; color: var(--muted); background: var(--turmeric-tint); border-radius: 8px; padding: 7px 11px; }
   table.cmp { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   table.cmp th, table.cmp td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -287,6 +293,8 @@
 </header>
 
 <main class="wrap">
+  <p class="verify-note"><b>Verified homes appear first.</b> Verified means our team has visited and inspected the home — registration sighted, night roster seen, photographed by us. Homes pay for that visit. Unverified homes are listed free, can still be recommended to you, and we visit them before any placement goes ahead.</p>
+
   <div class="results-meta">
     <div>
       <h1 id="resultsTitle">Care homes in Colombo</h1>
@@ -318,7 +326,7 @@
 <section class="band">
   <div class="wrap guide" id="how">
     <h2>Choosing a care home shouldn't start with a search.</h2>
-    <p class="sub">It should start with an assessment. A clinician sees your relative in person — then we shortlist only the homes that can meet the need we found. Always free for families.</p>
+    <p class="sub">It should start with an assessment. A clinician sees your relative in person — then we shortlist the homes that can meet the need we found, arrange the visits, and stay with you to the move. One fee of LKR 50,000 covers all of it.</p>
     <div class="qs">
       <div class="q"><span class="why">Step 1</span><h3>Medical evaluation</h3><p>A registered clinician visits and assesses your relative in person — physical and mental. Nothing is decided from a phone call or a web form.</p></div>
       <div class="q"><span class="why">Step 2</span><h3>Shortlisting properties</h3><p>We match that assessment against homes our own team has visited, and shortlist only the ones that can genuinely provide the care required.</p></div>
@@ -326,7 +334,7 @@
     </div>
     <div class="steps-cta">
       <button class="btn-solid" type="button" id="assessBtn">Start with an assessment</button>
-      <span class="note">Free for families · We reply on WhatsApp</span>
+      <span class="note">LKR 25,000 to begin · 25,000 on placement · We reply on WhatsApp</span>
     </div>
   </div>
 </section>
@@ -349,12 +357,12 @@
 <div class="wrap">
   <section class="list-cta" id="list">
     <div>
-      <h2>Run a care home in Colombo? Get listed free — and receive assessed referrals.</h2>
-      <p>Complete the onboarding form and we will arrange a field visit. Once visited, your home can receive families we have clinically assessed — matched on care need, not on who pays.</p>
+      <h2>Run a care home in Colombo? List it free, or get verified.</h2>
+      <p>Create an account and list your home at no cost. Complete onboarding and we will visit, inspect and verify it — verified homes appear ahead of unverified ones and carry the badge families look for.</p>
       <ul class="pricing">
-        <li><b>Free.</b> Listing, claiming and updating your home costs nothing, and visits are free for every home, always.</li>
-        <li><b>No paid placement.</b> Results are never sponsored. No home can buy visibility or move up a shortlist.</li>
-        <li><b>You pay only when a family we assessed attends a visit</b> — invoiced beforehand, credited in full if they do not turn up.</li>
+        <li><b>Listing is free.</b> Create an account, publish your home, keep the details current. No card, no commitment.</li>
+        <li><b>LKR 50,000 to get verified</b> — covers our field visit and inspection, the Verified badge, and your first twelve months listed. LKR 1,000 a month from year two.</li>
+        <li><b>You never pay per referral.</b> Families pay us for the placement service, so no home is charged for receiving one.</li>
       </ul>
     </div>
     <button class="btn" type="button" id="ownerBtn">Update your listing</button>
@@ -412,7 +420,7 @@
 </dialog>
 
 <dialog id="enquiry" aria-labelledby="eTitle">
-  <div class="dlg-head"><div><h2 id="eTitle">Start with an assessment</h2><div class="where" id="eSub">Free for families. A clinician sees your relative before any home is suggested.</div></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
+  <div class="dlg-head"><div><h2 id="eTitle">Start with an assessment</h2><div class="where" id="eSub">LKR 25,000 to begin, 25,000 on placement. Covers the clinical assessment, the shortlist and the visits.</div></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
   <div class="sheet-body">
     <div class="f"><span class="lbl">Suburbs you would consider</span><div class="chips" id="eSuburbs"></div></div>
     <div class="f enq-field"><label for="eAge">Age of the person needing care</label><input id="eAge" type="number" min="40" max="120" inputmode="numeric" placeholder="e.g. 78" /></div>
@@ -652,7 +660,10 @@ function filtered(){
     (!state.vacant || h.vacancies > 0)
   );
   const s = state.sort;
-  list.sort((a,b) => s==="updated" ? (b.lastUpdated||"").localeCompare(a.lastUpdated||"") : s==="fee-asc" ? a.fee[0]-b.fee[0] : s==="fee-desc" ? b.fee[0]-a.fee[0] : b.vacancies-a.vacancies);
+  const within = (a,b) => s==="updated" ? (b.lastUpdated||"").localeCompare(a.lastUpdated||"") : s==="fee-asc" ? a.fee[0]-b.fee[0] : s==="fee-desc" ? b.fee[0]-a.fee[0] : b.vacancies-a.vacancies;
+  // Verified (visited) homes rank first everywhere. Disclosed above the results:
+  // verification means we inspected the home, and homes pay for that visit.
+  list.sort((a,b) => (Number(b.visited) - Number(a.visited)) || within(a,b));
   return list;
 }
 
@@ -662,7 +673,7 @@ function render(){
   const badge = activeFilterCount();
   $("#fBadge").hidden = !badge; $("#fBadge").textContent = badge;
   $("#resultsTitle").textContent = state.suburb ? `Care homes in ${state.suburb}` : state.q ? `Results for “${state.q}”` : state.cat ? `${state.cat} in Colombo` : "Care homes in Colombo";
-  $("#resultsSub").textContent = `${list.length} home${list.length!==1?"s":""} · visited homes are checked by our team`;
+  $("#resultsSub").textContent = `${list.length} home${list.length!==1?"s":""} · verified homes first`;
 
   const grid = $("#grid"); grid.innerHTML = "";
   if (!list.length){
@@ -897,7 +908,7 @@ function openEnquiry(home){
   enquiryState.home = home || null;
   $("#eSub").textContent = home
     ? `About ${home.name} — a clinician assesses your relative before any home is confirmed.`
-    : "Free for families. A clinician assesses your relative before any home is suggested.";
+    : "LKR 25,000 to begin, 25,000 on placement. Covers the clinical assessment, the shortlist and the visits.";
   const names = shortlistedNames(home);
   $("#eShortWrap").hidden = names.length === 0;
   $("#eShortList").textContent = names.join(" · ");
