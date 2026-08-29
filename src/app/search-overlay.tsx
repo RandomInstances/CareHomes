@@ -78,7 +78,7 @@ export function SearchPanel({
   };
 
   const Heading = ({ k, children }: { k: keyof typeof SECTION_ICONS; children: React.ReactNode }) => (
-    <h2 className="flex items-center gap-2 font-semibold mb-2.5">
+    <h2 className="flex items-center gap-2 font-semibold mb-2">
       <svg
         width="18"
         height="18"
@@ -97,7 +97,7 @@ export function SearchPanel({
   );
 
   const pill = (active: boolean) =>
-    `rounded-full border px-3.5 py-2 text-sm transition-colors ${
+    `rounded-full border px-3 py-1.5 text-[13.5px] transition-colors ${
       active
         ? "border-teal bg-teal-soft text-teal font-semibold"
         : "border-line-2 bg-surface hover:border-teal"
@@ -122,7 +122,7 @@ export function SearchPanel({
         </button>
       </div>
 
-      <div className="px-4 sm:px-7 py-6 sm:py-7 pb-28 sm:pb-7 space-y-7">
+      <div className="px-4 sm:px-7 py-6 sm:py-5 pb-28 sm:pb-5 space-y-6 sm:space-y-5">
         <section>
           <Heading k="where">Where would suit?</Heading>
           {suburbs.length ? (
@@ -143,7 +143,7 @@ export function SearchPanel({
           ) : (
             <p className="text-sm text-muted">Loading suburbs…</p>
           )}
-          <p className="text-[13px] text-muted mt-2.5">
+          <p className="text-[12.5px] text-muted mt-2">
             Pick a few — widening beyond one suburb is usually what finds a bed.
           </p>
         </section>
@@ -162,7 +162,7 @@ export function SearchPanel({
                 </button>
               ) : null}
             </div>
-            <output className="block text-[26px] font-bold tabular-nums leading-none mb-3" style={{ color: SECTION_ICONS.age.color }}>
+            <output className="block text-[24px] font-bold tabular-nums leading-none mb-2" style={{ color: SECTION_ICONS.age.color }}>
               {draft.age || "Any"}
             </output>
             <input
@@ -205,8 +205,8 @@ export function SearchPanel({
         </div>
 
         <section>
-          <h2 className="font-semibold mb-2.5">What kind of help do they need?</h2>
-          <div className="grid sm:grid-cols-3 gap-3">
+          <h2 className="font-semibold mb-2">What kind of help do they need?</h2>
+          <div className="grid sm:grid-cols-3 gap-2.5">
             {NEEDS.map((n) => {
               const on = draft.needs.includes(n.care);
               return (
@@ -215,13 +215,13 @@ export function SearchPanel({
                   type="button"
                   onClick={() => toggle("needs", n.care)}
                   aria-pressed={on}
-                  className={`rounded-2xl border-2 p-4 text-left transition-colors ${
+                  className={`rounded-2xl border-2 p-3.5 text-left transition-colors ${
                     on ? "bg-surface" : "border-line-2 bg-surface hover:border-line"
                   }`}
                   style={on ? { borderColor: n.color } : undefined}
                 >
                   <span
-                    className="grid place-items-center w-11 h-11 rounded-full mb-2.5"
+                    className="grid place-items-center w-10 h-10 rounded-full mb-2"
                     style={{ backgroundColor: `${n.color}1A`, color: n.color }}
                   >
                     <svg
@@ -249,7 +249,7 @@ export function SearchPanel({
       </div>
 
       <div className="fixed bottom-0 inset-x-0 sm:static bg-surface border-t border-line">
-        <div className="px-4 sm:px-7 py-3.5 flex items-center justify-between gap-4">
+        <div className="px-4 sm:px-7 py-3 flex items-center justify-between gap-4">
           <button type="button" onClick={reset} className="text-sm text-muted hover:text-ink">
             Clear all
           </button>
