@@ -59,6 +59,18 @@ function money(n: number) {
   return `LKR ${n.toLocaleString("en-LK")}`;
 }
 
+function short(n: number) {
+  return n >= 1000 ? `${Math.round(n / 1000)}K` : String(n);
+}
+
+/// Half-width cards on a phone cannot hold "LKR 180,000 – 350,000" on one line;
+/// spelling it out pushed "from" and "/ month" onto lines of their own.
+function feeCompact(from: number | null, to: number | null) {
+  if (!from && !to) return null;
+  if (from && to && to > from) return `LKR ${short(from)} – ${short(to)}`;
+  return `LKR ${short((from ?? to) as number)}`;
+}
+
 function feeText(from: number | null, to: number | null) {
   if (!from && !to) return null;
   if (from && to && to > from) return `${money(from)} – ${to.toLocaleString("en-LK")}`;
@@ -113,6 +125,7 @@ function Card({
   onToggle: (id: string) => void;
 }) {
   const fee = feeText(home.feeFrom, home.feeTo);
+  const feeSmall = feeCompact(home.feeFrom, home.feeTo);
 
   return (
     <div className="group">
@@ -128,7 +141,8 @@ function Card({
                 <path d="m4 12 5 5L20 6" />
               </svg>
             </span>
-            Visited and Verified
+            <span className="sm:hidden">Verified</span>
+            <span className="hidden sm:inline">Visited and Verified</span>
           </span>
         ) : null}
 
@@ -180,7 +194,8 @@ function Card({
       {fee ? (
         <p className="mt-1.5 text-[13.5px] sm:text-[14.5px]">
           <span className="text-ink-2">from </span>
-          <span className="font-bold tabular-nums whitespace-nowrap">{fee}</span>
+          <span className="font-bold tabular-nums whitespace-nowrap sm:hidden">{feeSmall}</span>
+          <span className="font-bold tabular-nums whitespace-nowrap hidden sm:inline">{fee}</span>
           <span className="text-ink-2"> / month</span>
         </p>
       ) : null}
