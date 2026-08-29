@@ -2,16 +2,61 @@
 
 import { useEffect, useState } from "react";
 
-import { SearchOverlay } from "@/app/search-overlay";
+import { SearchPanel } from "@/app/search-overlay";
+import { FEE_MAX } from "@/lib/catalog";
 
 type Suburb = { name: string; slug: string; count: number };
 
-/// The header's search control. Rather than a text box that only matches names,
-/// it opens the full screening flow — which is the thing families actually need
-/// and the thing a plain directory search cannot do.
+export type SearchDraft = {
+  places: string[];
+  age: string;
+  budget: number;
+  needs: string[];
+  requires: string[];
+  language: string;
+};
+
+const EMPTY: SearchDraft = {
+  places: [],
+  age: "",
+  budget: FEE_MAX,
+  needs: [],
+  requires: [],
+  language: "",
+};
+
+function money(n: number) {
+  return `LKR ${n.toLocaleString("en-LK")}`;
+}
+
+/// The collapsed control shows the three things a family already knows — where,
+/// how old, what they can spend — so opening it is never a surprise. Anything
+/// requiring more thought sits inside the panel.
+function Segment({
+  label,
+  value,
+  muted,
+  className = "",
+}: {
+  label: string;
+  value: string;
+  muted: boolean;
+  className?: string;
+}) {
+  return (
+    <span className={`flex flex-col justify-center px-4 py-1.5 min-w-0 ${className}`}>
+      <span className="text-[11px] font-bold text-ink leading-none">{label}</span>
+      <span className={`text-[13.5px] truncate leading-tight mt-0.5 ${muted ? "text-muted" : "text-ink"}`}>
+        {value}
+      </span>
+    </span>
+  );
+}
+
 export function SearchTrigger({ query }: { query?: string }) {
   const [open, setOpen] = useState(false);
   const [suburbs, setSuburbs] = useState<Suburb[]>([]);
+  const [draft, setDraft] = useState<SearchDraft>(EMPTY);
 
   // Fetched on first open rather than rendered into every page, so the static
   // pages stay static and no page pays for a query it does not use.
@@ -24,42 +69,77 @@ export function SearchTrigger({ query }: { query?: string }) {
         if (!cancelled) setSuburbs(data);
       })
       .catch(() => {
-        // The overlay still works without suburb chips.
+        // The panel still works without suburb chips.
       });
     return () => {
       cancelled = true;
     };
   }, [open, suburbs.length]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const placeLabel =
+    draft.places.length === 0
+      ? "Anywhere in Colombo"
+      : draft.places.length === 1
+        ? (suburbs.find((s) => s.slug === draft.places[0])?.name ?? "1 suburb")
+        : `${draft.places.length} suburbs`;
+
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex-1 min-w-0 max-w-md flex items-center gap-2 border border-line-2 rounded-full px-3 sm:px-4 py-2 bg-bg text-left hover:border-teal transition-colors"
+        aria-expanded={open}
+        className="flex-1 min-w-0 max-w-xl flex items-center border border-line-2 rounded-full bg-surface text-left hover:shadow-[0_2px_10px_rgba(23,48,45,0.12)] transition-shadow"
       >
-        <span className="hidden sm:block text-sm text-muted shrink-0">Colombo</span>
-        <span className="hidden sm:block w-px h-4 bg-line-2" aria-hidden />
-        <span className={`flex-1 truncate text-sm ${query ? "text-ink" : "text-muted"}`}>
-          {query ?? "Who are you looking for?"}
+        <Segment label="Where" value={query ?? placeLabel} muted={!query && !draft.places.length} className="flex-1" />
+        <span className="w-px h-7 bg-line-2 shrink-0" aria-hidden />
+        <Segment label="Age" value={draft.age || "Any"} muted={!draft.age} className="w-[74px] shrink-0" />
+        <span className="hidden sm:block w-px h-7 bg-line-2 shrink-0" aria-hidden />
+        <Segment
+          label="Budget"
+          value={draft.budget < FEE_MAX ? money(draft.budget) : "Any"}
+          muted={draft.budget >= FEE_MAX}
+          className="hidden sm:flex w-[130px] shrink-0"
+        />
+        <span className="grid place-items-center w-9 h-9 rounded-full bg-teal text-white shrink-0 mr-1.5 ml-1">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" aria-hidden>
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
         </span>
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.6"
-          strokeLinecap="round"
-          className="text-teal shrink-0"
-          aria-hidden
-        >
-          <circle cx="11" cy="11" r="7" />
-          <path d="m20 20-3.5-3.5" />
-        </svg>
       </button>
 
-      <SearchOverlay open={open} onClose={() => setOpen(false)} suburbs={suburbs} />
+      {open ? (
+        <>
+          <div
+            className="fixed inset-0 z-[60] bg-black/25"
+            onClick={() => setOpen(false)}
+            aria-hidden
+          />
+          {/* Full screen on a phone; a wide panel under the header on desktop. */}
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Find a care home"
+            className="fixed z-[61] bg-surface overflow-y-auto inset-0 sm:inset-auto sm:top-[76px] sm:left-1/2 sm:-translate-x-1/2 sm:w-[880px] sm:max-w-[94vw] sm:max-h-[calc(100vh-104px)] sm:rounded-3xl sm:shadow-[0_16px_48px_rgba(23,48,45,0.24)] sm:border sm:border-line"
+          >
+            <SearchPanel
+              suburbs={suburbs}
+              draft={draft}
+              setDraft={setDraft}
+              onClose={() => setOpen(false)}
+              reset={() => setDraft(EMPTY)}
+            />
+          </div>
+        </>
+      ) : null}
     </>
   );
 }

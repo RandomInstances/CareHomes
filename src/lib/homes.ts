@@ -24,6 +24,8 @@ export type HomeFilters = {
   /// The home must accept every one of these, and must not list any of them as
   /// something it cannot take.
   accepts?: string[];
+  /// Matched against each home's accepted age range.
+  age?: number;
   maxFee?: number;
   languages?: string[];
   features?: string[];
@@ -50,7 +52,7 @@ function orderFor(sort: SortValue | undefined) {
 export async function listHomes(options: HomeFilters = {}) {
   const {
     suburbSlug, suburbSlugs, query, careType, careTypes, accepts,
-    maxFee, languages, features, vacantOnly, sort,
+    age, maxFee, languages, features, vacantOnly, sort,
   } = options;
 
   // Built imperatively rather than with conditional spreads: the spreads
@@ -67,6 +69,14 @@ export async function listHomes(options: HomeFilters = {}) {
   if (accepts?.length) {
     where.accepts = { hasEvery: accepts };
     where.NOT = { notAccepted: { hasSome: accepts } };
+  }
+
+  // A home with no stated limit is not excluded — most have not filled it in.
+  if (age && Number.isFinite(age)) {
+    where.AND = [
+      { OR: [{ minAge: null }, { minAge: { lte: age } }] },
+      { OR: [{ maxAge: null }, { maxAge: { gte: age } }] },
+    ];
   }
 
   if (suburbSlugs?.length) where.suburb = { slug: { in: suburbSlugs } };
