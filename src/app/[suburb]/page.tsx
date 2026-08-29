@@ -2,9 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { HomeCard } from "@/app/home-card";
-import { SiteFooter, SiteHeader } from "@/app/site-header";
+import { Suspense } from "react";
+
+import { Directory } from "@/app/directory";
+import { FilterBar } from "@/app/filters";
+import { SiteFooter } from "@/app/site-footer";
+import { SiteHeader } from "@/app/site-header";
 import { db } from "@/lib/db";
+import { isSort } from "@/lib/catalog";
 import { listHomes } from "@/lib/homes";
 
 export const dynamic = "force-dynamic";
@@ -27,12 +32,22 @@ export async function generateMetadata({
   };
 }
 
-export default async function SuburbPage({ params }: PageProps<"/[suburb]">) {
+export default async function SuburbPage({ params, searchParams }: PageProps<"/[suburb]">) {
   const { suburb: slug } = await params;
+  const sp = await searchParams;
   const suburb = await findSuburb(slug);
   if (!suburb) notFound();
 
-  const homes = await listHomes({ suburbSlug: slug });
+  const many = (v: string | string[] | undefined) => (Array.isArray(v) ? v : v ? [v] : []);
+
+  const homes = await listHomes({
+    suburbSlug: slug,
+    maxFee: Number(sp.fee) || undefined,
+    languages: many(sp.lang),
+    features: many(sp.feature),
+    vacantOnly: sp.vacant === "1",
+    sort: isSort(sp.sort) ? sp.sort : undefined,
+  });
 
   return (
     <>
@@ -47,11 +62,15 @@ export default async function SuburbPage({ params }: PageProps<"/[suburb]">) {
           <span className="text-ink">{suburb.name}</span>
         </nav>
 
-        <div className="mb-6">
+        <Suspense fallback={null}>
+          <FilterBar basePath={`/${suburb.slug}`} />
+        </Suspense>
+
+        <div className="mt-5 mb-6">
           <h1 className="text-2xl font-semibold">Care homes in {suburb.name}</h1>
           <p className="text-sm text-ink-2 mt-1">
             {homes.length} home{homes.length === 1 ? "" : "s"}
-            {homes.length ? " · homes our team has visited appear first" : ""}
+            {homes.length ? " · visited and verified homes appear first" : ""}
           </p>
         </div>
 
@@ -63,11 +82,7 @@ export default async function SuburbPage({ params }: PageProps<"/[suburb]">) {
             </Link>
           </div>
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {homes.map((home) => (
-              <HomeCard key={home.id} home={home} />
-            ))}
-          </div>
+          <Directory homes={homes} />
         )}
       </main>
 

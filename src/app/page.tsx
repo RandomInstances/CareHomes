@@ -1,8 +1,13 @@
 import Link from "next/link";
 
-import { HomeCard } from "@/app/home-card";
-import { SiteFooter, SiteHeader } from "@/app/site-header";
-import { ALL_HOMES_ICON, CARE_TYPES, isCareType, listHomes, listSuburbsWithCounts } from "@/lib/homes";
+import { Suspense } from "react";
+
+import { Directory } from "@/app/directory";
+import { FilterBar } from "@/app/filters";
+import { SiteFooter } from "@/app/site-footer";
+import { SiteHeader } from "@/app/site-header";
+import { ALL_HOMES_ICON, CARE_TYPES, isCareType, isSort } from "@/lib/catalog";
+import { listHomes, listSuburbsWithCounts } from "@/lib/homes";
 
 export const dynamic = "force-dynamic";
 
@@ -47,8 +52,19 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
   const careParam = typeof params.care === "string" ? params.care : undefined;
   const careType = isCareType(careParam) ? careParam : undefined;
 
+  const many = (v: string | string[] | undefined) =>
+    Array.isArray(v) ? v : v ? [v] : [];
+
   const [homes, suburbs] = await Promise.all([
-    listHomes({ query, careType }),
+    listHomes({
+      query,
+      careType,
+      maxFee: Number(params.fee) || undefined,
+      languages: many(params.lang),
+      features: many(params.feature),
+      vacantOnly: params.vacant === "1",
+      sort: isSort(params.sort) ? params.sort : undefined,
+    }),
     listSuburbsWithCounts(),
   ]);
 
@@ -104,11 +120,15 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
           </nav>
         ) : null}
 
-        <div className="mb-5">
+        <Suspense fallback={null}>
+          <FilterBar basePath="/" />
+        </Suspense>
+
+        <div className="mt-5 mb-5">
           <h1 className="text-[22px] font-semibold">{heading}</h1>
           <p className="text-sm text-ink-2 mt-1">
             {homes.length} home{homes.length === 1 ? "" : "s"}
-            {homes.length ? " · visited homes are checked by our team" : ""}
+            {homes.length ? " · visited and verified homes appear first" : ""}
           </p>
         </div>
 
@@ -129,11 +149,7 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
             ) : null}
           </div>
         ) : (
-          <div className="grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
-            {homes.map((home) => (
-              <HomeCard key={home.id} home={home} />
-            ))}
-          </div>
+          <Directory homes={homes} />
         )}
       </main>
 

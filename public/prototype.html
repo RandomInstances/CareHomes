@@ -702,7 +702,7 @@ function card(h, i){
   const el = document.createElement("article"); el.className = "card"; el.style.animationDelay = (i*25)+"ms";
   el.innerHTML = `
     <div class="ph">${scene(h)}
-      ${h.visited ? `<span class="visited"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>Visited by our team</span>` : ""}
+      ${h.visited ? `<span class="visited"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>Visited and verified</span>` : ""}
       <button class="heart" type="button" aria-pressed="${saved}" aria-label="${saved?"Remove from":"Add to"} shortlist">
         <svg viewBox="0 0 24 24" fill="${saved?"currentColor":"rgba(0,0,0,.35)"}" stroke="#fff" stroke-width="1.6"><path d="M12 21s-7.5-4.7-7.5-10A4.4 4.4 0 0 1 12 7.6 4.4 4.4 0 0 1 19.5 11c0 5.3-7.5 10-7.5 10z"/></svg>
       </button>
@@ -804,7 +804,7 @@ function openCompare(){
     ${row("Doctor", h=>h.doctor)}
     ${row("Hospital", h=>h.hospital)}
     ${row("Languages", h=>h.languages.join(", "))}
-    ${row("Visited by our team", h=>h.visited ? "Yes" : "Not yet")}
+    ${row("Visited and verified", h=>h.visited ? "Yes" : "Not yet")}
   </table>
   <div class="steps-cta">
     <button class="btn-solid" type="button" id="cAsk">Ask us about these homes</button>

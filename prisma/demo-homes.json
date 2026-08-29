@@ -90,7 +90,7 @@
     "phone": "+94 11 000 0002",
     "whatsapp": "+94 11 000 0002",
     "isBlanketHome": false,
-    "verified": true,
+    "verified": false,
     "ownerUpdatedAt": "2026-08-21"
   },
   {
@@ -139,7 +139,7 @@
     "phone": "+94 11 000 0003",
     "whatsapp": "+94 11 000 0003",
     "isBlanketHome": false,
-    "verified": true,
+    "verified": false,
     "ownerUpdatedAt": "2026-08-02"
   },
   {
@@ -183,7 +183,7 @@
     "phone": "+94 11 000 0004",
     "whatsapp": "+94 11 000 0004",
     "isBlanketHome": false,
-    "verified": true,
+    "verified": false,
     "ownerUpdatedAt": "2026-07-30"
   },
   {
@@ -228,7 +228,7 @@
     "phone": "+94 11 000 0005",
     "whatsapp": "+94 11 000 0005",
     "isBlanketHome": false,
-    "verified": true,
+    "verified": false,
     "ownerUpdatedAt": "2026-07-24"
   },
   {
@@ -269,7 +269,7 @@
     "phone": "+94 11 000 0006",
     "whatsapp": "+94 11 000 0006",
     "isBlanketHome": false,
-    "verified": true,
+    "verified": false,
     "ownerUpdatedAt": "2026-06-18"
   },
   {
@@ -315,7 +315,7 @@
     "phone": "+94 11 000 0007",
     "whatsapp": "+94 11 000 0007",
     "isBlanketHome": false,
-    "verified": true,
+    "verified": false,
     "ownerUpdatedAt": "2026-08-25"
   },
   {
@@ -360,7 +360,7 @@
     "phone": "+94 11 000 0008",
     "whatsapp": "+94 11 000 0008",
     "isBlanketHome": false,
-    "verified": true,
+    "verified": false,
     "ownerUpdatedAt": "2026-08-12"
   },
   {
@@ -404,7 +404,7 @@
     "phone": "+94 11 000 0009",
     "whatsapp": "+94 11 000 0009",
     "isBlanketHome": false,
-    "verified": true,
+    "verified": false,
     "ownerUpdatedAt": "2026-08-05"
   },
   {
@@ -447,7 +447,7 @@
     "phone": "+94 11 000 0010",
     "whatsapp": "+94 11 000 0010",
     "isBlanketHome": false,
-    "verified": true,
+    "verified": false,
     "ownerUpdatedAt": "2026-07-08"
   },
   {
@@ -574,7 +574,7 @@
     "phone": "+94 11 000 0013",
     "whatsapp": "+94 11 000 0013",
     "isBlanketHome": false,
-    "verified": true,
+    "verified": false,
     "ownerUpdatedAt": "2026-08-16"
   },
   {
@@ -619,7 +619,7 @@
     "phone": "+94 11 000 0014",
     "whatsapp": "+94 11 000 0014",
     "isBlanketHome": false,
-    "verified": true,
+    "verified": false,
     "ownerUpdatedAt": "2026-08-09"
   }
 ]

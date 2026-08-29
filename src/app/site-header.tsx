@@ -37,15 +37,3 @@ export function SiteHeader({ query }: { query?: string }) {
   );
 }
 
-export function SiteFooter() {
-  return (
-    <footer className="mx-auto max-w-6xl px-5 py-10 mt-10 border-t border-line text-sm text-muted space-y-1.5">
-      <p>© 2026 carehomes.lk · Starting in Colombo, more districts soon.</p>
-      <p>
-        We list care homes and show what our team saw when we visited. We do not
-        inspect or endorse homes we have not visited, and families should satisfy
-        themselves before making any placement.
-      </p>
-    </footer>
-  );
-}

@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { SiteFooter, SiteHeader } from "@/app/site-header";
-import { formatFee, getHome, whatsappLink } from "@/lib/homes";
+import { SiteFooter } from "@/app/site-footer";
+import { SiteHeader } from "@/app/site-header";
+import { formatFee } from "@/lib/catalog";
+import { getHome, whatsappLink } from "@/lib/homes";
 
 export const dynamic = "force-dynamic";
 
@@ -102,12 +104,12 @@ export default async function HomePage({ params }: PageProps<"/[suburb]/[home]">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round">
                 <path d="m4 12 5 5L20 6" />
               </svg>
-              Visited by our team
+              Visited and verified
               {visit ? ` · ${visit.visitedOn.toLocaleDateString("en-GB")}` : ""}
             </span>
           ) : (
             <span className="inline-block bg-turmeric-soft text-turmeric rounded-full px-3 py-1 text-xs font-bold">
-              Not yet visited by our team
+              Not yet visited
             </span>
           )}
 
