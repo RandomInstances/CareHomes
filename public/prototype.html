@@ -204,6 +204,10 @@
     width: 140px; box-sizing: border-box; border: 1px solid var(--line-2); border-radius: 999px;
     padding: 10px 14px; font: 400 15px var(--body); color: var(--ink); background: #fff;
   }
+  .enq-field input[type="text"] {
+    width: 100%; max-width: 320px; box-sizing: border-box; border: 1px solid var(--line-2);
+    border-radius: 999px; padding: 10px 16px; font: 400 15px var(--body); color: var(--ink); background: #fff;
+  }
   .privacy-note {
     margin: 8px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--ink-2);
     border-left: 2px solid var(--turmeric); padding-left: 10px;
@@ -318,7 +322,7 @@
 <section class="band">
   <div class="wrap guide" id="how">
     <h2>Choosing a care home shouldn't start with a search.</h2>
-    <p class="sub">It should start with an assessment. A clinician sees your relative in person — then we shortlist the homes that can meet the need we found, arrange the visits, and stay with you to the move. One fee of LKR 50,000 covers all of it.</p>
+    <p class="sub">It should start with an assessment. A clinician sees your relative in person — then we shortlist the homes that can meet the need we found, arrange the visits, and stay with you to the move. One fee of LKR 10,000 covers all of it.</p>
     <div class="qs">
       <div class="q"><span class="why">Step 1</span><h3>Medical evaluation</h3><p>A registered clinician visits and assesses your relative in person — physical and mental. Nothing is decided from a phone call or a web form.</p></div>
       <div class="q"><span class="why">Step 2</span><h3>Shortlisting properties</h3><p>We match that assessment against homes our own team has visited, and shortlist only the ones that can genuinely provide the care required.</p></div>
@@ -326,7 +330,7 @@
     </div>
     <div class="steps-cta">
       <button class="btn-solid" type="button" id="assessBtn">Start with an assessment</button>
-      <span class="note">LKR 25,000 to begin · 25,000 on placement · We reply on WhatsApp</span>
+      <span class="note">LKR 10,000 · We reply on WhatsApp</span>
     </div>
   </div>
 </section>
@@ -412,8 +416,9 @@
 </dialog>
 
 <dialog id="enquiry" aria-labelledby="eTitle">
-  <div class="dlg-head"><div><h2 id="eTitle">Start with an assessment</h2><div class="where" id="eSub">LKR 25,000 to begin, 25,000 on placement. Covers the clinical assessment, the shortlist and the visits.</div></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
+  <div class="dlg-head"><div><h2 id="eTitle">Start with an assessment</h2><div class="where" id="eSub">LKR 10,000. Covers the clinical assessment, the shortlist and the visits.</div></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
   <div class="sheet-body">
+    <div class="f enq-field"><label for="eName">Your first name</label><input id="eName" type="text" autocomplete="given-name" placeholder="e.g. Bhanuka" /></div>
     <div class="f"><span class="lbl">Suburbs you would consider</span><div class="chips" id="eSuburbs"></div></div>
     <div class="f enq-field"><label for="eAge">Age of the person needing care</label><input id="eAge" type="number" min="40" max="120" inputmode="numeric" placeholder="e.g. 78" /></div>
     <div class="f"><label for="eBudget">Monthly budget, up to</label><div class="range-row"><input id="eBudget" type="range" min="50000" max="500000" step="10000" value="150000" /><output id="eBudgetOut">LKR 150,000</output></div></div>
@@ -900,7 +905,7 @@ function openEnquiry(home){
   enquiryState.home = home || null;
   $("#eSub").textContent = home
     ? `About ${home.name} — a clinician assesses your relative before any home is confirmed.`
-    : "LKR 25,000 to begin, 25,000 on placement. Covers the clinical assessment, the shortlist and the visits.";
+    : "LKR 10,000. Covers the clinical assessment, the shortlist and the visits.";
   const names = shortlistedNames(home);
   $("#eShortWrap").hidden = names.length === 0;
   $("#eShortList").textContent = names.join(" · ");
@@ -908,18 +913,24 @@ function openEnquiry(home){
 }
 
 function sendEnquiry(){
-  const age = $("#eAge").value.trim();
+  const name = $("#eName").value.trim();
+  const age  = $("#eAge").value.trim();
   const cond = $("#eCond").value.trim();
   const subs = [...enquiryState.suburbs];
   const names = shortlistedNames(enquiryState.home);
 
-  const lines = ["Hello, I would like to arrange a care assessment."];
-  if (age) lines.push(`Age: ${age}`);
-  lines.push(`Budget: up to ${fmt(+$("#eBudget").value)} per month`);
-  if (subs.length) lines.push(`Suburbs: ${subs.join(", ")}`);
+  // Opens as a sentence a person can read at a glance, rather than a form dump.
+  const where  = subs.length ? subs.join(", ") : "Colombo";
+  const budget = fmt(+$("#eBudget").value);
+  const opening = name
+    ? `Hi, I'm ${name} — looking for a care home in ${where} at a budget of up to ${budget} per month.`
+    : `Hi, I'm looking for a care home in ${where} at a budget of up to ${budget} per month.`;
+
+  const lines = [opening, ""];
+  if (age)  lines.push(`Age: ${age}`);
   if (cond) lines.push(`Known conditions: ${cond}`);
-  if (names.length) lines.push(`Homes I am interested in: ${names.join(", ")}`);
-  lines.push("— sent from carehomes.lk");
+  if (names.length) lines.push(`Homes I'm interested in: ${names.join(", ")}`);
+  lines.push("", "— sent from carehomes.lk");
 
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`, "_blank", "noopener");
   $("#enquiry").close();

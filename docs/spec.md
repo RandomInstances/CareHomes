@@ -31,14 +31,20 @@ own. That is disclosed on the site, not buried.
 
 ## 2. Commercial model
 
-### Families — LKR 50,000 per placement
+### Families — LKR 10,000 per placement
 
-| | |
-|---|---|
-| LKR 25,000 | On starting — covers the clinical assessment |
-| LKR 25,000 | On placement |
+A single fee of **LKR 10,000**, covering the clinical assessment, the shortlist,
+arranging visits and support to move-in.
 
-Covers the assessment, the shortlist, arranging visits and support to move-in.
+> Revised down from 50,000 on 29 August 2026. The earlier 25,000 + 25,000 split
+> is gone: at this price a two-stage payment costs more in administration than
+> it protects.
+>
+> **Consequence to watch.** At 10,000 the fee no longer covers a nurse's time
+> for an assessment that does not convert. This service is now effectively
+> subsidised by Blanket occupancy rather than self-funding, which is a
+> defensible choice — but it should be a deliberate one, and the
+> assessment-to-placement conversion rate is now the number that matters most.
 
 > The earlier "Always free for families" promise is **withdrawn**. It must not
 > appear anywhere on the site or in marketing.
@@ -137,8 +143,23 @@ pre-filled. WhatsApp: **+94 76 856 4198** (Dr. Minoli Ekanayake).
 
 ### The enquiry form
 
-Collects: suburbs under consideration, the person's age, a monthly budget cap,
-known conditions (optional), and any homes already shortlisted.
+Collects: the enquirer's first name, suburbs under consideration, the person's
+age, a monthly budget cap, known conditions (optional), and any homes already
+shortlisted.
+
+The WhatsApp message opens as a sentence a person can read at a glance, not a
+form dump:
+
+> Hi, I'm Bhanuka — looking for a care home in Nugegoda, Rajagiriya at a budget
+> of up to LKR 150,000 per month.
+>
+> Age: 78
+> Known conditions: early dementia, uses a walker
+> Homes I'm interested in: Sirimal Home, Lotus Memory Care
+>
+> — sent from carehomes.lk
+
+Verified working end to end on a real device, 29 August 2026.
 
 ---
 
@@ -158,10 +179,12 @@ appears in no log.
 **What is recorded:** suburbs, age, budget band, timeframe, the listing the
 enquiry came from, which homes were recommended, and what happened next.
 
-`familyName` and `phone` are **optional** on the enquiry record. Under the
-WhatsApp handoff we never learn them — identity arrives in the clinician's
-inbox, not our database. An enquiry is *"someone in Nugegoda, 78, budget 150k,
-interested in these two homes"* with no name attached.
+`familyName` and `phone` are **optional** on the enquiry record. The form now
+collects a first name for the WhatsApp greeting, so a first name *could* be
+stored; the phone number still never reaches us, since identity arrives in the
+clinician's inbox rather than our database. Storing a bare first name alongside
+a suburb and budget is low-risk, but it is a choice to make deliberately when
+enquiry recording is built — the default should remain not storing it.
 
 This produces a privacy statement that is literally true rather than merely
 reassuring: **we hold no medical records.**
@@ -201,12 +224,12 @@ views, enquiry submissions, and the funnel through to move-in. An anonymous
 
 No gateway is integrated yet.
 
-- **Family deposit (LKR 25,000)** — the one that genuinely needs a card. Asking
-  for 25,000 by bank transfer at the top of the funnel will cost conversions at
-  the worst possible moment. **PAYable** is the chosen provider; Sri Lanka is not
-  supported by Stripe.
-- **Family balance, home verification and renewals** — invoice and bank
-  transfer, tracked in the ops console. No gateway required.
+- **Family fee (LKR 10,000)** — a card payment is still worth having, but at
+  10,000 the friction of a bank transfer is far less damaging than it was at
+  25,000. **PAYable** remains the chosen provider; Sri Lanka is not supported by
+  Stripe.
+- **Home verification and renewals** — invoice and bank transfer, tracked in the
+  ops console. No gateway required.
 - **Card tokenisation** for the LKR 1,000/month renewal is not urgent, since
   year one is bundled. Confirm PAYable supports recurring charges before year
   two.
@@ -257,10 +280,9 @@ Android over mobile data.
 
 ## 12. Open questions
 
-- Is the family deposit refundable if no suitable home is found? Not yet
+- Is the LKR 10,000 fee refundable if no suitable home is found? Not yet
   decided, and it must be settled before money is taken.
-- What are the terms of the LKR 50,000 placement fee if a family withdraws
-  mid-process?
+- What are the terms if a family withdraws mid-process?
 - Company WhatsApp Business number to replace the personal one.
 - Legal review of the placement agreement and the listing agreement, by a
   Sri Lankan lawyer, before either is used.

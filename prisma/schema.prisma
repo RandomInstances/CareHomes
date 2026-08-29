@@ -280,8 +280,8 @@ model Appointment {
   @@index([status, scheduledFor])
 }
 
-/// A completed placement. Reaching PLACED is what makes the family's second
-/// LKR 25,000 due, so this is the record the balance invoice hangs off.
+/// A completed placement. Records where a family was actually placed — the outcome
+/// measure for the funnel, and the basis of conversion reporting.
 model Placement {
   id        String          @id @default(cuid())
   enquiry   Enquiry         @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
