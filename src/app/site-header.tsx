@@ -46,7 +46,7 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
   return (
     <header className="relative bg-surface border-b border-line sticky top-0 z-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-5">
-        <div className="h-14 flex items-center gap-4 sm:gap-8">
+        <div className="h-14 flex sm:grid sm:grid-cols-[1fr_auto_1fr] items-center gap-4">
           <Link href="/" className="shrink-0">
             <span className="block font-display font-bold text-[17px] sm:text-xl leading-none">
               carehomes<span className="text-teal">.lk</span>
@@ -54,7 +54,7 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
           </Link>
 
           <nav
-            className="flex-1 min-w-0 h-full flex items-stretch gap-1 sm:gap-2 sm:justify-center overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex-1 sm:flex-none min-w-0 h-full flex items-stretch gap-1 sm:gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             aria-label="Type of care"
           >
             <CategoryTab href="/" label="All homes" icon={ALL_HOMES_ICON} active={!activeCare} />
@@ -68,6 +68,8 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
               />
             ))}
           </nav>
+          {/* Balances the wordmark so the nav sits on the container centre. */}
+          <div className="hidden sm:block" aria-hidden />
         </div>
 
         <div className="pb-5 pt-2.5 flex justify-center">
