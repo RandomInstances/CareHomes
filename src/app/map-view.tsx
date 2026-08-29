@@ -4,7 +4,6 @@ import "leaflet/dist/leaflet.css";
 
 import L from "leaflet";
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 
 import type { DirectoryHome } from "@/app/directory";
 
@@ -20,16 +19,12 @@ function priceLabel(home: DirectoryHome) {
   return fee >= 1000 ? `${Math.round(fee / 1000)}K` : String(fee);
 }
 
-export function MapView({
-  homes,
-  onClose,
-}: {
-  homes: DirectoryHome[];
-  onClose: () => void;
-}) {
-  const container = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-
+/// Draws the pins into whatever container it is given. Shared by the
+/// full-screen overlay and the split view beside a suburb's listings.
+function useHomesMap(
+  container: React.RefObject<HTMLDivElement | null>,
+  homes: DirectoryHome[]
+) {
   useEffect(() => {
     if (!container.current) return;
 
@@ -38,7 +33,7 @@ export function MapView({
         typeof h.lat === "number" && typeof h.lng === "number"
     );
 
-    const map = L.map(container.current, { zoomControl: true }).setView(COLOMBO, 12);
+    const map = L.map(container.current, { zoomControl: true, scrollWheelZoom: false }).setView(COLOMBO, 12);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
@@ -77,15 +72,32 @@ export function MapView({
       map.fitBounds(L.featureGroup(markers).getBounds().pad(0.2));
     }
 
-    // Leaflet measures the container on creation; the overlay has only just been
-    // painted, so nudge it once the browser has laid out.
+    // Leaflet measures on creation; nudge it once the browser has laid out.
     const timer = window.setTimeout(() => map.invalidateSize(), 60);
 
     return () => {
       window.clearTimeout(timer);
       map.remove();
     };
-  }, [homes, router]);
+  }, [container, homes]);
+}
+
+/// The split view beside a suburb's listings, as on Airbnb.
+export function InlineMap({ homes }: { homes: DirectoryHome[] }) {
+  const container = useRef<HTMLDivElement>(null);
+  useHomesMap(container, homes);
+  return <div ref={container} className="w-full h-full" />;
+}
+
+export function MapView({
+  homes,
+  onClose,
+}: {
+  homes: DirectoryHome[];
+  onClose: () => void;
+}) {
+  const container = useRef<HTMLDivElement>(null);
+  useHomesMap(container, homes);
 
   const missing = homes.filter((h) => typeof h.lat !== "number" || typeof h.lng !== "number").length;
 

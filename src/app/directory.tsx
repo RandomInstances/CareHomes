@@ -258,9 +258,11 @@ function CompareTable({ homes, onClose }: { homes: DirectoryHome[]; onClose: () 
 export function Directory({
   homes,
   basePath,
+  compact = false,
 }: {
   homes: DirectoryHome[];
   basePath: string;
+  compact?: boolean;
 }) {
   const { ids, toggle, clear, ready } = useShortlist();
   const [comparing, setComparing] = useState(false);
@@ -271,7 +273,7 @@ export function Directory({
   const mappable = homes.some((h) => typeof h.lat === "number" && typeof h.lng === "number");
 
   const grid = (list: DirectoryHome[]) => (
-    <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-3 sm:gap-x-5 gap-y-6 sm:gap-y-7">
+    <div className={`grid grid-cols-2 gap-x-3 sm:gap-x-5 gap-y-6 sm:gap-y-7 ${compact ? "" : "lg:grid-cols-3"}`}>
       {list.map((home) => (
         <Card key={home.id} home={home} saved={ids.includes(home.id)} onToggle={toggle} />
       ))}
