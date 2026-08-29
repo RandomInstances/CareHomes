@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { Directory } from "@/app/directory";
-import { FilterBar } from "@/app/filters";
 import { SiteFooter } from "@/app/site-footer";
 import { SiteHeader } from "@/app/site-header";
 import { db } from "@/lib/db";
@@ -62,10 +61,6 @@ export default async function SuburbPage({ params, searchParams }: PageProps<"/[
           <span className="text-ink">{suburb.name}</span>
         </nav>
 
-        <Suspense fallback={null}>
-          <FilterBar basePath={`/${suburb.slug}`} />
-        </Suspense>
-
         <div className="mt-5 mb-6">
           <h1 className="text-2xl font-semibold">Care homes in {suburb.name}</h1>
           <p className="text-sm text-ink-2 mt-1">
@@ -82,7 +77,9 @@ export default async function SuburbPage({ params, searchParams }: PageProps<"/[
             </Link>
           </div>
         ) : (
-          <Directory homes={homes} />
+          <Suspense fallback={null}>
+            <Directory homes={homes} basePath={`/${suburb.slug}`} />
+          </Suspense>
         )}
       </main>
 

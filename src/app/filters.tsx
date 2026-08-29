@@ -12,7 +12,7 @@ function money(n: number) {
   return `LKR ${n.toLocaleString("en-LK")}`;
 }
 
-export function FilterBar({ basePath }: { basePath: string }) {
+export function FilterBar({ basePath, extra }: { basePath: string; extra?: React.ReactNode }) {
   const router = useRouter();
   const params = useSearchParams();
   const [open, setOpen] = useState(false);
@@ -65,7 +65,7 @@ export function FilterBar({ basePath }: { basePath: string }) {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-3 flex-wrap">
+      <div className="flex items-center gap-3 flex-wrap">
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -82,7 +82,9 @@ export function FilterBar({ basePath }: { basePath: string }) {
           ) : null}
         </button>
 
-        <label className="flex items-center gap-2 text-sm">
+        {extra}
+
+        <label className="flex items-center gap-2 text-sm ml-auto">
           <span className="text-muted">Sort</span>
           <select
             value={sort}

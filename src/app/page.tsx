@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { Directory } from "@/app/directory";
-import { FilterBar } from "@/app/filters";
 import { SiteFooter } from "@/app/site-footer";
 import { SiteHeader } from "@/app/site-header";
 import { ALL_HOMES_ICON, CARE_TYPES, isCareType, isSort } from "@/lib/catalog";
@@ -120,10 +119,6 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
           </nav>
         ) : null}
 
-        <Suspense fallback={null}>
-          <FilterBar basePath="/" />
-        </Suspense>
-
         <div className="mt-5 mb-5">
           <h1 className="text-[22px] font-semibold">{heading}</h1>
           <p className="text-sm text-ink-2 mt-1">
@@ -149,7 +144,9 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
             ) : null}
           </div>
         ) : (
-          <Directory homes={homes} />
+          <Suspense fallback={null}>
+            <Directory homes={homes} basePath="/" />
+          </Suspense>
         )}
       </main>
 

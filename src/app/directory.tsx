@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
+import dynamic from "next/dynamic";
+
+import { FilterBar } from "@/app/filters";
 import { HomeScene } from "@/app/home-scene";
+
+// Leaflet touches window on import, so it must not run during SSR.
+const MapView = dynamic(() => import("@/app/map-view").then((m) => m.MapView), {
+  ssr: false,
+});
 
 // Shortlist lives in the browser only: no account, nothing stored server-side,
 // and it survives a reload. Same behaviour as the prototype.
@@ -18,6 +26,8 @@ export type DirectoryHome = {
   feeTo: number | null;
   bedsTotal: number | null;
   bedsAvailable: number | null;
+  lat: number | null;
+  lng: number | null;
   careTypes: string[];
   features: string[];
   languages: string[];
@@ -119,6 +129,13 @@ function Card({
           </span>
         ) : null}
 
+        {fee ? (
+          <span className="pointer-events-none absolute bottom-2.5 right-2.5 rounded-full bg-white/95 px-3 py-1.5 text-[13.5px] font-bold tabular-nums shadow-[0_2px_8px_rgba(23,48,45,0.18)]">
+            {fee}
+            <span className="font-medium text-ink-2"> /mo</span>
+          </span>
+        ) : null}
+
         <button
           type="button"
           onClick={() => onToggle(home.id)}
@@ -136,21 +153,19 @@ function Card({
         <h3 className="font-semibold text-[16px] leading-snug">{home.name}</h3>
       </Link>
       <p className="text-[14.5px] text-ink-2">{home.suburb.name}</p>
-      <p className="text-[14.5px]">
+      <p className="mt-1 inline-flex items-center gap-1.5 text-[14px] font-medium">
+        <span
+          aria-hidden
+          className={`w-1.5 h-1.5 rounded-full ${home.bedsAvailable ? "bg-[#2b6a4e]" : "bg-turmeric"}`}
+        />
         {home.bedsAvailable ? (
           <span className="text-[#2b6a4e]">
-            {home.bedsAvailable} bed{home.bedsAvailable > 1 ? "s" : ""} available
+            {home.bedsAvailable} bed{home.bedsAvailable > 1 ? "s" : ""} free now
           </span>
         ) : (
           <span className="text-turmeric">Waiting list</span>
         )}
       </p>
-      {fee ? (
-        <p className="mt-0.5 text-[15px]">
-          <span className="font-bold tabular-nums">from {fee}</span>
-          <span className="text-ink-2"> / month</span>
-        </p>
-      ) : null}
     </div>
   );
 }
@@ -218,12 +233,20 @@ function CompareTable({ homes, onClose }: { homes: DirectoryHome[]; onClose: () 
   );
 }
 
-export function Directory({ homes }: { homes: DirectoryHome[] }) {
+export function Directory({
+  homes,
+  basePath,
+}: {
+  homes: DirectoryHome[];
+  basePath: string;
+}) {
   const { ids, toggle, clear, ready } = useShortlist();
   const [comparing, setComparing] = useState(false);
+  const [mapOpen, setMapOpen] = useState(false);
 
   const saved = homes.filter((h) => ids.includes(h.id));
   const rest = homes.filter((h) => !ids.includes(h.id));
+  const mappable = homes.some((h) => typeof h.lat === "number" && typeof h.lng === "number");
 
   const grid = (list: DirectoryHome[]) => (
     <div className="grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
@@ -233,12 +256,42 @@ export function Directory({ homes }: { homes: DirectoryHome[] }) {
     </div>
   );
 
+  const toolbar = (
+    <FilterBar
+      basePath={basePath}
+      extra={
+        mappable ? (
+          <button
+            type="button"
+            onClick={() => setMapOpen(true)}
+            className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-surface px-4 py-2 text-sm font-semibold hover:border-teal"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2z" />
+              <path d="M9 4v14M15 6v14" />
+            </svg>
+            Map
+          </button>
+        ) : null
+      }
+    />
+  );
+
   // Render everything ungrouped until localStorage has been read, so the server
   // markup and the first client render agree.
-  if (!ready) return grid(homes);
+  if (!ready) {
+    return (
+      <>
+        {toolbar}
+        <div className="mt-5">{grid(homes)}</div>
+      </>
+    );
+  }
 
   return (
     <>
+      {toolbar}
+      <div className="mt-5" />
       {saved.length > 0 ? (
         <section className="mb-9">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
@@ -271,6 +324,7 @@ export function Directory({ homes }: { homes: DirectoryHome[] }) {
       ) : null}
 
       {comparing ? <CompareTable homes={saved} onClose={() => setComparing(false)} /> : null}
+      {mapOpen ? <MapView homes={homes} onClose={() => setMapOpen(false)} /> : null}
     </>
   );
 }
