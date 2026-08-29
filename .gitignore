@@ -42,3 +42,6 @@ next-env.d.ts
 
 # prisma generated client
 /src/generated
+
+# scratch files from verification scripts
+/*.html
