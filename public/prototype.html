@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>carehomes.lk — Find a care home in Colombo</title>
+<meta name="description" content="Compare care homes across Colombo's suburbs by care type, monthly fee and availability. By Blanket Care." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<style>
+  :root {
+    --ink: #17302D; --ink-2: #3E5652; --muted: #6E837E; --line: #E3E9E6; --line-2: #CFD9D6;
+    --bg: #FFFFFF; --bg-soft: #F5F8F6;
+    --teal: #1F5F5B; --teal-deep: #133F3C; --teal-tint: #DCEAE6;
+    --turmeric: #D99A2B; --turmeric-tint: #F8EBCD;
+    --ok: #2E7D4F; --wait: #A6661C;
+    --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+    --body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    --max: 1120px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  a { color: var(--teal); }
+  button { font-family: inherit; cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--turmeric); outline-offset: 2px; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- sticky header: wordmark + search pill ---------- */
+  .top {
+    position: sticky; top: 0; z-index: 30; background: rgba(255,255,255,.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .top-inner { display: flex; align-items: center; gap: 18px; padding: 14px 0; }
+  .wordmark { font-family: var(--display); font-weight: 700; font-size: 21px; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; line-height: 1; }
+  .wordmark span { color: var(--teal); }
+  .wordmark small { display: block; font-family: var(--body); font-weight: 500; font-size: 10.5px; letter-spacing: .02em; color: var(--muted); margin-top: 3px; }
+  .searchpill {
+    flex: 1; max-width: 520px; margin: 0 auto;
+    display: flex; align-items: center; gap: 6px;
+    background: #fff; border: 1px solid var(--line-2); border-radius: 999px; padding: 7px 7px 7px 10px;
+    box-shadow: 0 3px 12px rgba(23,48,45,.08); cursor: text;
+  }
+  .searchpill:hover { box-shadow: 0 4px 16px rgba(23,48,45,.14); }
+  .searchpill input { flex: 1; border: 0; background: none; font: inherit; font-size: 14.5px; min-width: 0; padding: 4px 6px; }
+  .searchpill input:focus { outline: none; }
+  .searchpill .divider { width: 1px; height: 22px; background: var(--line); }
+  .searchpill .where-btn { border: 0; background: none; font-size: 14.5px; font-weight: 600; color: var(--ink); padding: 4px 8px; white-space: nowrap; }
+  .searchpill .go { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--teal); color: #fff; display: grid; place-items: center; }
+  .filters-btn {
+    flex: none; display: inline-flex; align-items: center; gap: 7px;
+    border: 1px solid var(--line-2); background: #fff; border-radius: 999px; padding: 10px 15px;
+    font-size: 14px; font-weight: 600; color: var(--ink); position: relative;
+  }
+  .filters-btn:hover { border-color: var(--ink); }
+  .filters-btn .badge[hidden] { display: none; }
+  .filters-btn .badge { position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--teal); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; padding: 0 4px; }
+
+  /* ---------- category bar (care types) ---------- */
+  .cats { display: flex; gap: 6px; overflow-x: auto; padding: 12px 0 0; scrollbar-width: none; }
+  .cats::-webkit-scrollbar { display: none; }
+  .cat {
+    flex: none; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    border: 0; background: none; padding: 4px 14px 10px; color: var(--muted); font-size: 12px; font-weight: 600;
+    border-bottom: 2.5px solid transparent; white-space: nowrap;
+  }
+  .cat svg { width: 24px; height: 24px; }
+  .cat:hover { color: var(--ink); }
+  .cat[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* ---------- results ---------- */
+  .results-meta { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 20px 0 4px; flex-wrap: wrap; }
+  .results-meta h1 { font-family: var(--display); font-weight: 600; font-size: 22px; letter-spacing: -0.02em; margin: 0; }
+  .results-meta .sub { font-size: 13.5px; color: var(--muted); }
+  .results-meta select { font: inherit; font-size: 13.5px; padding: 6px 10px; border: 1px solid var(--line-2); border-radius: 999px; background: #fff; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 26px 22px; padding: 16px 0 40px; }
+  .group-head { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 10px; margin: 4px 0 -12px; }
+  .group-head h2 { font-family: var(--display); font-weight: 600; font-size: 18px; letter-spacing: -0.015em; margin: 0; }
+  .group-head .note { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+
+  .card { border: 0; background: none; padding: 0; text-align: left; font: inherit; color: inherit; display: block; animation: rise .3s ease both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .card .ph {
+    position: relative; aspect-ratio: 4 / 3; border-radius: 16px; overflow: hidden; margin-bottom: 10px;
+    display: grid; place-items: center;
+  }
+  .card .ph svg.scene { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .card:hover .ph { box-shadow: 0 10px 26px rgba(23,48,45,.16); }
+  .card .ph .visited {
+    position: absolute; left: 10px; top: 10px; background: rgba(255,255,255,.94); color: var(--ink);
+    font-size: 11px; font-weight: 700; border-radius: 999px; padding: 5px 10px; display: inline-flex; gap: 5px; align-items: center;
+  }
+  .card .ph .visited svg { width: 12px; height: 12px; color: var(--teal); }
+  .heart {
+    position: absolute; right: 10px; top: 10px; width: 32px; height: 32px; border: 0; border-radius: 50%;
+    background: rgba(255,255,255,.92); display: grid; place-items: center; color: var(--ink-2);
+  }
+  .heart svg { width: 17px; height: 17px; }
+  .heart[aria-pressed="true"] { color: #E0503A; }
+  .heart:hover { transform: scale(1.06); }
+  .card h3 { font-size: 15.5px; font-weight: 700; margin: 0; letter-spacing: -0.01em; display: flex; justify-content: space-between; gap: 8px; }
+  .card .sub { font-size: 13.5px; color: var(--muted); margin: 2px 0; }
+  .card .avail { font-size: 13px; font-weight: 600; }
+  .card .avail.ok { color: var(--ok); } .card .avail.wait { color: var(--wait); }
+  .card .price { margin-top: 5px; font-size: 14.5px; }
+  .card .price b { font-weight: 700; }
+  .card .price span { color: var(--muted); }
+  .empty { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--ink-2); }
+  .empty h3 { font-family: var(--display); margin: 0 0 6px; }
+  .linkbtn { background: none; border: 0; color: var(--teal); font-weight: 600; font-size: 14px; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ---------- floating map toggle ---------- */
+  .map-fab {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 40;
+    background: var(--ink); color: #fff; border: 0; border-radius: 999px; padding: 13px 20px;
+    font-size: 14.5px; font-weight: 700; display: inline-flex; gap: 8px; align-items: center;
+    box-shadow: 0 12px 30px rgba(0,0,0,.28);
+  }
+  .map-fab:hover { transform: translateX(-50%) scale(1.03); }
+  .map-fab svg { width: 16px; height: 16px; }
+
+  /* ---------- full-screen map ---------- */
+  .mapview { position: fixed; inset: 0; z-index: 50; background: var(--bg-soft); display: none; }
+  .mapview.on { display: block; }
+  #leafmap { position: absolute; inset: 0; }
+  .map-top { position: absolute; top: 14px; left: 14px; right: 14px; z-index: 1000; display: flex; justify-content: space-between; gap: 10px; pointer-events: none; }
+  .map-top > * { pointer-events: auto; }
+  .map-close { background: #fff; border: 1px solid var(--line-2); border-radius: 999px; padding: 10px 16px; font-size: 14px; font-weight: 700; box-shadow: 0 4px 14px rgba(0,0,0,.12); }
+  .map-count { background: #fff; border-radius: 999px; padding: 10px 16px; font-size: 13.5px; font-weight: 600; color: var(--ink-2); box-shadow: 0 4px 14px rgba(0,0,0,.12); }
+  .ppin {
+    background: #fff; border-radius: 999px; padding: 6px 11px; font: 700 12.5px var(--body); color: var(--ink);
+    box-shadow: 0 3px 10px rgba(0,0,0,.22); border: 1px solid rgba(0,0,0,.06); white-space: nowrap; width: max-content;
+    transition: transform .12s ease;
+  }
+  .ppin:hover { transform: scale(1.08); z-index: 1000; }
+  .ppin.sel { background: var(--ink); color: #fff; transform: scale(1.08); }
+  .map-note { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255,255,255,.92); border-radius: 999px; padding: 7px 14px; font-size: 12px; color: var(--muted); }
+
+  /* ---------- sections below results ---------- */
+  .band { background: var(--bg-soft); border-top: 1px solid var(--line); }
+  .guide { padding: 44px 0; }
+  .guide h2 { font-family: var(--display); font-weight: 600; font-size: 26px; letter-spacing: -0.02em; margin: 0 0 6px; }
+  .guide p.sub { color: var(--ink-2); margin: 0 0 22px; max-width: 60ch; }
+  .qs { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .q { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .q h3 { font-family: var(--display); font-weight: 600; font-size: 16px; margin: 0 0 5px; }
+  .q p { margin: 0; font-size: 14px; color: var(--ink-2); }
+  .q .why { display: inline-block; font-family: var(--mono); font-size: 10.5px; color: var(--turmeric); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 7px; }
+
+  .list-cta { background: var(--teal); color: #fff; border-radius: 20px; padding: 32px 36px; display: grid; grid-template-columns: 1.3fr .7fr; gap: 22px; align-items: center; margin: 40px 0; }
+  .list-cta h2 { font-family: var(--display); font-weight: 600; font-size: 25px; letter-spacing: -0.02em; margin: 0 0 6px; }
+  .list-cta p { margin: 0; color: #D6E6E2; font-size: 14.5px; max-width: 52ch; }
+  .list-cta ul.pricing { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 5px; font-size: 13.5px; color: #D6E6E2; }
+  .list-cta ul.pricing b { color: #fff; }
+  .list-cta .btn { justify-self: end; background: var(--turmeric); color: var(--ink); border: 0; border-radius: 999px; padding: 12px 20px; font-weight: 700; font-size: 14.5px; }
+  footer.site { padding: 26px 0 40px; font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+  /* ---------- shortlist bar ---------- */
+  .shortbar {
+    position: fixed; left: 50%; bottom: 76px; transform: translate(-50%, 200%); z-index: 40;
+    background: var(--ink); color: #fff; border-radius: 999px; padding: 9px 9px 9px 16px;
+    display: flex; align-items: center; gap: 12px; box-shadow: 0 14px 34px rgba(0,0,0,.25);
+    transition: transform .25s ease, visibility .25s; font-size: 13.5px; visibility: hidden;
+  }
+  .shortbar.on { transform: translate(-50%, 0); visibility: visible; }
+  .shortbar b { font-family: var(--mono); font-weight: 500; }
+  .shortbar button { border: 0; border-radius: 999px; padding: 8px 14px; font-weight: 600; font-size: 13.5px; }
+  .shortbar .cmp { background: var(--turmeric); color: var(--ink); }
+  .shortbar .clr { background: transparent; color: #B9C9C5; }
+
+  /* ---------- dialogs & sheets ---------- */
+  dialog { border: 0; border-radius: 20px; padding: 0; width: min(720px, calc(100vw - 28px)); max-height: calc(100vh - 40px); background: #fff; color: var(--ink); box-shadow: 0 30px 80px rgba(0,0,0,.3); }
+  dialog::backdrop { background: rgba(23,48,45,.45); backdrop-filter: blur(2px); }
+  .dlg-head { padding: 22px 26px 14px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; }
+  .dlg-head h2 { font-family: var(--display); font-weight: 600; font-size: 25px; letter-spacing: -0.02em; margin: 0 0 3px; line-height: 1.12; }
+  .dlg-head .where { color: var(--muted); font-size: 13.5px; }
+  .x { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-2); background: #fff; font-size: 17px; line-height: 1; color: var(--ink-2); }
+  .dlg-body { padding: 18px 26px 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px 26px; }
+  .dlg-body .full { grid-column: 1 / -1; }
+  .kv h4 { margin: 0 0 5px; font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .kv p, .kv li { margin: 0; font-size: 14.5px; color: var(--ink-2); }
+  .kv ul { margin: 0; padding-left: 18px; }
+  .kv .big { font-family: var(--mono); font-size: 20px; color: var(--ink); font-weight: 500; }
+  .kv .big small { font-family: var(--body); font-size: 12.5px; color: var(--muted); display: block; font-weight: 400; margin-top: 2px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag { font-size: 12px; background: var(--teal-tint); color: var(--teal-deep); padding: 3px 8px; border-radius: 6px; font-weight: 500; }
+  .contact { display: flex; flex-wrap: wrap; gap: 9px; }
+  .contact a, .contact button { display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 10px 16px; text-decoration: none; font-weight: 600; font-size: 13.5px; border: 1px solid var(--line-2); color: var(--ink); background: #fff; }
+  .contact a.primary { background: var(--teal); border-color: var(--teal); color: #fff; }
+  .contact button[aria-pressed="true"] { background: var(--turmeric-tint); border-color: var(--turmeric); }
+  .sample-note { font-size: 12px; color: var(--muted); background: var(--turmeric-tint); border-radius: 8px; padding: 7px 11px; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.cmp th, table.cmp td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.cmp th { font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 700; width: 140px; }
+  table.cmp td.name { font-family: var(--display); font-weight: 600; font-size: 15px; }
+  table.cmp td.mono { font-family: var(--mono); }
+
+  /* filter sheet */
+  .sheet-body { padding: 18px 26px 24px; }
+  .f { margin-bottom: 18px; }
+  .f > label, .f > .lbl { display: block; font-size: 11.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .f select { font: inherit; font-size: 15px; padding: 10px 12px; border: 1px solid var(--line-2); border-radius: 10px; background: #fff; width: 100%; }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip { border: 1px solid var(--line-2); background: #fff; color: var(--ink-2); border-radius: 999px; padding: 7px 13px; font-size: 13.5px; font-weight: 500; }
+  .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .range-row { display: flex; align-items: center; gap: 12px; }
+  .range-row input { flex: 1; accent-color: var(--teal); }
+  .range-row output { font-family: var(--mono); font-size: 13px; min-width: 10ch; text-align: right; }
+  .toggle { display: flex; align-items: center; gap: 9px; font-size: 14.5px; color: var(--ink-2); font-weight: 500; }
+  .toggle input { accent-color: var(--teal); width: 17px; height: 17px; }
+  .sheet-foot { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding: 14px 26px; }
+  .btn-solid { background: var(--teal); color: #fff; border: 0; border-radius: 999px; padding: 12px 22px; font-weight: 700; font-size: 14.5px; }
+  .btn-quiet { background: none; border: 0; color: var(--ink); font-weight: 600; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* owner wizard */
+  .steps { display: flex; gap: 6px; margin: 0 0 16px; }
+  .steps span { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+  .steps span.done { background: var(--teal); }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 13px; }
+  .field label { font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .field input, .field select, .field textarea { font: inherit; font-size: 15px; padding: 10px 12px; border: 1px solid var(--line-2); border-radius: 10px; background: #fff; width: 100%; }
+  .field textarea { resize: vertical; min-height: 76px; }
+  .field .err { color: #B3421E; font-size: 12.5px; display: none; }
+  .field.bad input { border-color: #B3421E; }
+  .field.bad .err { display: block; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .dlg-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+  .ok-big { text-align: center; padding: 18px 0 4px; }
+  .ok-big .tick { width: 52px; height: 52px; border-radius: 50%; background: #DDF0E4; color: var(--ok); display: grid; place-items: center; margin: 0 auto 12px; font-size: 25px; }
+
+  .toast { position: fixed; left: 50%; top: 16px; transform: translate(-50%, -220%); z-index: 60; background: var(--ink); color: #fff; font-size: 13.5px; padding: 10px 17px; border-radius: 999px; box-shadow: 0 14px 34px rgba(0,0,0,.25); transition: transform .3s ease; }
+  .toast.on { transform: translate(-50%, 0); }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 0 16px; }
+    .top-inner { gap: 10px; }
+    .wordmark small { display: none; }
+    .searchpill .where-btn, .searchpill .divider { display: none; }
+    .filters-btn span.txt { display: none; }
+    .list-cta { grid-template-columns: 1fr; padding: 26px 22px; }
+    .list-cta .btn { justify-self: start; }
+    .dlg-body, .row2 { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-inner">
+      <a class="wordmark" href="#">carehomes<span>.lk</span><small>by Blanket Care</small></a>
+      <form class="searchpill" id="searchForm" role="search">
+        <button type="button" class="where-btn" id="whereBtn">Colombo</button>
+        <span class="divider"></span>
+        <input id="q" type="search" placeholder="Search a suburb or home — Nugegoda, Malabe…" aria-label="Search suburb or home name" autocomplete="off" />
+        <button class="go" type="submit" aria-label="Search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+      </form>
+      <button class="filters-btn" id="filtersBtn" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+        <span class="txt">Filters</span><span class="badge" id="fBadge" hidden>0</span>
+      </button>
+    </div>
+    <div class="cats" id="cats" role="tablist" aria-label="Type of care"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="results-meta">
+    <div>
+      <h1 id="resultsTitle">Care homes in Colombo</h1>
+      <div class="sub" id="resultsSub"></div>
+    </div>
+    <select id="sort" aria-label="Sort by">
+      <option value="updated">Recently updated</option>
+      <option value="fee-asc">Lowest fee first</option>
+      <option value="fee-desc">Highest fee first</option>
+      <option value="vac">Beds available</option>
+    </select>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<button class="map-fab" id="mapFab" type="button">Map
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>
+</button>
+
+<div class="mapview" id="mapview" aria-label="Map of care homes in Colombo">
+  <div id="leafmap"></div>
+  <div class="map-top">
+    <span class="map-count" id="mapCount"></span>
+    <button class="map-close" id="mapClose" type="button">✕ &nbsp;Show list</button>
+  </div>
+  <div class="map-note">Tap a price to open the home</div>
+</div>
+
+<section class="band">
+  <div class="wrap guide" id="guide">
+    <h2>Six things to ask before you decide</h2>
+    <p class="sub">Every home on this site should be able to answer these on the phone. If they can't, that tells you something too.</p>
+    <div class="qs">
+      <div class="q"><span class="why">Staffing</span><h3>How many nurses are on the night shift?</h3><p>Day staffing looks good everywhere. Night is where falls, breathing trouble and confusion happen. Ask for a number, not "enough".</p></div>
+      <div class="q"><span class="why">Medical cover</span><h3>Who is the doctor, and how quickly can they come?</h3><p>"Doctor on call" can mean a GP who visits weekly or a physician on the phone. Ask which hospital they transfer to and who rides along.</p></div>
+      <div class="q"><span class="why">Money</span><h3>What is not included in the monthly fee?</h3><p>Medicines, diapers, physiotherapy sessions, a private room and hospital escorts are the usual extras. Ask for last month's actual bill for a similar resident.</p></div>
+      <div class="q"><span class="why">Fit</span><h3>Can we do a two-week trial stay?</h3><p>Most good homes will agree. It tells you whether your parent settles, eats and sleeps there — things a tour can't show you.</p></div>
+      <div class="q"><span class="why">Registration</span><h3>Are you registered with the National Secretariat for Elders?</h3><p>Elders' homes are meant to be registered and inspected. Ask to see the certificate and the date of the last visit — a registered home has nothing to hide.</p></div>
+      <div class="q"><span class="why">Everyday life</span><h3>What did residents do yesterday afternoon?</h3><p>A specific answer (pirith at 4, a physio group, a walk in the garden) means there is a programme. A vague one usually means television.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <section class="list-cta" id="list">
+    <div>
+      <h2>Run a care home in Colombo? Get listed free — and keep it current.</h2>
+      <p>An owner account lets you update fees, beds and details yourself after we validate you by phone — and freshly updated homes sort to the top.</p>
+      <ul class="pricing">
+        <li><b>Free.</b> Listing, claiming and updating your home costs nothing — we just validate that you're the owner.</li>
+        <li><b>No paid placement.</b> Results are never sponsored — order is earned by keeping your listing current.</li>
+      </ul>
+    </div>
+    <button class="btn" type="button" id="ownerBtn">Update your listing</button>
+  </section>
+
+  <footer class="site">
+    <div>© 2026 carehomes.lk, by Blanket Care · Starting in Colombo — more districts soon · Listings are sample data for this prototype.</div>
+    <div><a href="#guide">How to choose</a> · <a href="#list">List a home</a> · <a href="mailto:hello@carehomes.lk">hello@carehomes.lk</a></div>
+  </footer>
+</div>
+
+<div class="shortbar" id="shortbar" role="region" aria-label="Shortlist">
+  <span><b id="shortCount">0</b> shortlisted</span>
+  <button class="cmp" id="compareBtn" type="button">Compare</button>
+  <button class="clr" id="clearShort" type="button">Clear</button>
+</div>
+
+<dialog id="filters" aria-labelledby="fTitle">
+  <div class="dlg-head"><div><h2 id="fTitle">Filters</h2></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
+  <div class="sheet-body">
+    <div class="f">
+      <label for="suburb">Suburb</label>
+      <select id="suburb"><option value="">All of Colombo</option></select>
+    </div>
+    <div class="f">
+      <label for="fee">Monthly fee up to</label>
+      <div class="range-row"><input id="fee" type="range" min="50000" max="500000" step="10000" value="500000" /><output id="feeOut">LKR 500,000</output></div>
+    </div>
+    <div class="f"><span class="lbl">Language of care</span><div class="chips" id="langChips"></div></div>
+    <div class="f"><span class="lbl">Must have</span><div class="chips" id="featChips"></div></div>
+    <div class="f"><label class="toggle"><input type="checkbox" id="vacant" /> Only homes with a bed available now</label></div>
+  </div>
+  <div class="sheet-foot">
+    <button class="btn-quiet" type="button" id="reset">Clear all</button>
+    <button class="btn-solid" type="button" id="applyFilters">Show <span id="fCount"></span> homes</button>
+  </div>
+</dialog>
+
+<dialog id="detail" aria-labelledby="dName">
+  <div class="dlg-head"><div><h2 id="dName"></h2><div class="where" id="dWhere"></div></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
+  <div class="dlg-body" id="dBody"></div>
+</dialog>
+
+<dialog id="compare" aria-labelledby="cTitle">
+  <div class="dlg-head"><div><h2 id="cTitle">Compare shortlist</h2><div class="where">Side by side, so you can ring them with the same questions.</div></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
+  <div class="dlg-body"><div class="full" id="cBody" style="overflow-x:auto"></div></div>
+</dialog>
+
+<dialog id="owner" aria-labelledby="oTitle">
+  <div class="dlg-head"><div><h2 id="oTitle">Update your listing</h2><div class="where" id="oSub">Owners only — we validate before anything goes live.</div></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
+  <div class="dlg-body"><div class="full">
+    <div class="steps" id="oSteps"><span></span><span></span><span></span></div>
+    <div id="oStepBody"></div>
+  </div></div>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* ============================================================
+   DATA — Colombo district only for launch. Replace with real,
+   field-visited listings. fee = LKR/month [shared from, private to]
+   ============================================================ */
+const HOMES = [
+  { id:1, lastUpdated:"2026-08-28", name:"Blanket Care Malabe", suburb:"Malabe", lat:6.906, lon:79.958, visited:true,
+    types:["Assisted living","Nursing care","Post-surgery rehab"], fee:[350000,350000], beds:8, vacancies:2,
+    languages:["Sinhala","English"], features:["24h nursing","Doctor on call","Physiotherapy","Private rooms","Air-conditioned","Garden","Wheelchair accessible","Family video calls","Diabetic diets"],
+    nightNurses:2, doctor:"Doctor-led home; physician does daily rounds and is on call 24h", hospital:"Neville Fernando Teaching (10 min)",
+    rooms:"All private, en-suite", extras:"Medicines and specialist consultations", visiting:"Any time; family stays by arrangement",
+    phone:"+94 11 000 0001", palette:["#DCEAE6","#1F5F5B"],
+    desc:"An eight-bed, doctor-led home where every resident has a private en-suite room and a named care plan. Small on purpose: one carer to two residents by day, daily physician rounds, and a weekly video update for family overseas." },
+  { id:2, lastUpdated:"2026-08-21", name:"Sirimal Home for the Elderly", suburb:"Nugegoda", lat:6.870, lon:79.890, visited:true,
+    types:["Assisted living","Nursing care"], fee:[140000,220000], beds:24, vacancies:2,
+    languages:["Sinhala","English"], features:["24h nursing","Doctor on call","Physiotherapy","Garden","Vegetarian meals","Family video calls"],
+    nightNurses:2, doctor:"Visiting GP three times a week; on call otherwise", hospital:"Nawaloka (15 min)",
+    rooms:"Shared (2–3) and private", extras:"Medicines, diapers, physio beyond twice a week", visiting:"8am – 8pm daily",
+    phone:"+94 11 000 0002", palette:["#F8EBCD","#A6661C"],
+    desc:"A 24-bed home in a converted family house with a large back garden. Long-serving matron, strong on routine and Buddhist observances; less suited to residents with advanced dementia." },
+  { id:3, lastUpdated:"2026-08-02", name:"Cinnamon Gardens Care Residence", suburb:"Colombo 7", lat:6.910, lon:79.862, visited:true,
+    types:["Nursing care","Post-surgery rehab","Palliative care"], fee:[320000,450000], beds:18, vacancies:1,
+    languages:["English","Sinhala","Tamil"], features:["24h nursing","Doctor on call","Physiotherapy","Private rooms","Air-conditioned","Family video calls","Diabetic diets"],
+    nightNurses:3, doctor:"Resident medical officer 24h; consultant physician visits weekly", hospital:"Asiri Central (5 min)",
+    rooms:"All private, en-suite", extras:"Consultant fees, specialist physio, hospital escorts", visiting:"Any time; overnight stays for family by arrangement",
+    phone:"+94 11 000 0003", palette:["#E3E9F5","#31456E"],
+    desc:"Hospital-grade nursing in a residential setting. Popular with families abroad because of the RMO on site and a daily WhatsApp update. Priciest home in the city." },
+  { id:4, lastUpdated:"2026-07-30", name:"Mount Lavinia Seaside Home", suburb:"Mount Lavinia", lat:6.838, lon:79.865, visited:true,
+    types:["Assisted living","Respite (short stay)"], fee:[110000,175000], beds:30, vacancies:4,
+    languages:["Sinhala","English"], features:["Doctor on call","Garden","Wheelchair accessible","Vegetarian meals"],
+    nightNurses:1, doctor:"On call; visits twice a week", hospital:"Colombo South Teaching (10 min)",
+    rooms:"Shared (2–4) and a few private", extras:"Medicines, diapers, transport", visiting:"9am – 6pm",
+    phone:"+94 11 000 0004", palette:["#DCEDF2","#1D5D6B"],
+    desc:"Best suited to mobile, independent residents who want company and sea air. Two-week respite stays are a speciality for families travelling." },
+  { id:5, lastUpdated:"2026-07-24", name:"Lotus Memory Care", suburb:"Battaramulla", lat:6.900, lon:79.918, visited:true,
+    types:["Dementia care","Nursing care"], fee:[260000,340000], beds:14, vacancies:0,
+    languages:["Sinhala","English"], features:["24h nursing","Doctor on call","Secure garden","Physiotherapy","Family video calls","Air-conditioned"],
+    nightNurses:2, doctor:"Geriatrician visits weekly; GP on call", hospital:"Sri Jayewardenepura (10 min)",
+    rooms:"Private and shared (2)", extras:"Medicines, diapers", visiting:"10am – 7pm; quieter hours encouraged",
+    phone:"+94 11 000 0005", palette:["#EDE6F2","#5A3E6E"],
+    desc:"Purpose-built for dementia: single level, circular corridor, secure garden, staff trained in non-pharmacological approaches. Waiting list of about three months." },
+  { id:6, lastUpdated:"2026-06-18", name:"Moratuwa Elders' Rest", suburb:"Moratuwa", lat:6.780, lon:79.882, visited:true,
+    types:["Assisted living"], fee:[75000,110000], beds:40, vacancies:6,
+    languages:["Sinhala"], features:["Doctor on call","Garden","Prayer room","Vegetarian meals"],
+    nightNurses:1, doctor:"Visits weekly; on call", hospital:"Lunawa (5 min)", rooms:"Dormitory (4–6) and shared (2)", extras:"Medicines, diapers",
+    visiting:"9am – 5pm", phone:"+94 11 000 0006", palette:["#EAF2DC","#4A6B1F"],
+    desc:"A charitable trust home with modest fees and a large, active resident community. Not the place for heavy nursing needs, but very good value for someone who is still fairly independent." },
+  { id:7, lastUpdated:"2026-08-25", name:"Palm Grove Home", suburb:"Dehiwela", lat:6.851, lon:79.867, visited:true,
+    types:["Assisted living","Nursing care"], fee:[130000,190000], beds:20, vacancies:3,
+    languages:["Sinhala","English","Tamil"], features:["24h nursing","Doctor on call","Garden","Wheelchair accessible","Diabetic diets"],
+    nightNurses:1, doctor:"On call; visits three times a week", hospital:"Kalubowila Teaching (5 min)",
+    rooms:"Shared (2) and private", extras:"Medicines, diapers, physio", visiting:"8am – 7pm",
+    phone:"+94 11 000 0007", palette:["#E4F0E7","#2E7D4F"],
+    desc:"Trilingual staff and five minutes from Kalubowila Teaching Hospital. A safe middle option: proper nursing without the premium-home price." },
+  { id:8, lastUpdated:"2026-08-12", name:"Lakeside Care Residence", suburb:"Rajagiriya", lat:6.909, lon:79.895, visited:true,
+    types:["Nursing care","Post-surgery rehab"], fee:[200000,280000], beds:16, vacancies:2,
+    languages:["Sinhala","English"], features:["24h nursing","Doctor on call","Physiotherapy","Private rooms","Air-conditioned","Family video calls"],
+    nightNurses:2, doctor:"Physician visits daily on weekdays; on call weekends", hospital:"Durdans (10 min)",
+    rooms:"Private and shared (2)", extras:"Consultant fees, specialist physio", visiting:"9am – 8pm",
+    phone:"+94 11 000 0008", palette:["#DDEDF7","#1F4E6B"],
+    desc:"Strong physiotherapy team overlooking the Diyawanna wetland; used as much for 6–12 week post-surgery recoveries as for long stays." },
+  { id:9, lastUpdated:"2026-08-05", name:"Serene Villa", suburb:"Nawala", lat:6.888, lon:79.889, visited:true,
+    types:["Assisted living","Respite (short stay)"], fee:[160000,230000], beds:12, vacancies:1,
+    languages:["English","Sinhala"], features:["Doctor on call","Garden","Private rooms","Air-conditioned","Family video calls"],
+    nightNurses:1, doctor:"On call; visits twice a week", hospital:"Asiri Surgical (10 min)",
+    rooms:"All private", extras:"Medicines, diapers", visiting:"Any time by arrangement",
+    phone:"+94 11 000 0009", palette:["#F5EBDD","#8A5A1C"],
+    desc:"A twelve-room villa with a quiet garden, popular with English-speaking families. Books out fast; respite slots go first." },
+  { id:10, lastUpdated:"2026-07-08", name:"Suwa Arana Elders' Home", suburb:"Maharagama", lat:6.848, lon:79.928, visited:true,
+    types:["Assisted living","Nursing care"], fee:[95000,140000], beds:26, vacancies:5,
+    languages:["Sinhala"], features:["Doctor on call","Garden","Prayer room","Vegetarian meals","Diabetic diets"],
+    nightNurses:1, doctor:"Visits twice a week; on call", hospital:"Maharagama (Apeksha adjacent, 10 min)",
+    rooms:"Shared (2–3)", extras:"Medicines, diapers", visiting:"8am – 6pm",
+    phone:"+94 11 000 0010", palette:["#F2E9DC","#7A5A2E"],
+    desc:"Good value and well-run, with beds usually available. Sinhala-only staff and a strong temple connection; English-speaking families may find communication harder." },
+  { id:11, lastUpdated:"2026-06-27", name:"Heritage Home Kotte", suburb:"Kotte", lat:6.885, lon:79.908, visited:false,
+    types:["Assisted living","Palliative care"], fee:[120000,180000], beds:15, vacancies:2,
+    languages:["Sinhala","English"], features:["Doctor on call","Garden","Prayer room","Vegetarian meals"],
+    nightNurses:1, doctor:"On call; visits weekly", hospital:"Sri Jayewardenepura (5 min)",
+    rooms:"Shared (2) and private", extras:"Medicines, diapers", visiting:"8am – 8pm",
+    phone:"+94 11 000 0011", palette:["#EFE7E0","#6E4A3E"],
+    desc:"A small home with a hospice-trained matron near the parliament wetlands. Our team has not yet visited this home." },
+  { id:12, lastUpdated:"2026-05-30", name:"Airfield View Home", suburb:"Ratmalana", lat:6.820, lon:79.883, visited:false,
+    types:["Assisted living"], fee:[100000,150000], beds:22, vacancies:4,
+    languages:["Sinhala","English"], features:["Doctor on call","Garden","Wheelchair accessible"],
+    nightNurses:1, doctor:"On call; visits weekly", hospital:"Lunawa (10 min)",
+    rooms:"Shared (2–3)", extras:"Medicines, diapers, transport", visiting:"9am – 6pm",
+    phone:"+94 11 000 0012", palette:["#E2EEF0","#2B6470"],
+    desc:"A steady, unfussy home near the airport road with beds usually available. Our team has not yet visited this home." },
+  { id:13, lastUpdated:"2026-08-16", name:"Green Care Pannipitiya", suburb:"Pannipitiya", lat:6.847, lon:79.950, visited:true,
+    types:["Assisted living","Dementia care"], fee:[110000,165000], beds:18, vacancies:0,
+    languages:["Sinhala"], features:["Doctor on call","Secure garden","Prayer room","Vegetarian meals"],
+    nightNurses:1, doctor:"On call; visits twice a week", hospital:"Homagama Base (15 min)",
+    rooms:"Shared (2) and private", extras:"Medicines, diapers", visiting:"9am – 6pm",
+    phone:"+94 11 000 0013", palette:["#E2F0DE","#3E6B2E"],
+    desc:"A leafy compound with a fenced garden and early-stage dementia experience at a fair price. Currently full; waiting list of 4–6 weeks." },
+  { id:14, lastUpdated:"2026-08-09", name:"Ocean Breeze Home", suburb:"Wellawatte", lat:6.875, lon:79.861, visited:true,
+    types:["Assisted living","Nursing care"], fee:[170000,240000], beds:14, vacancies:1,
+    languages:["Tamil","English","Sinhala"], features:["24h nursing","Doctor on call","Vegetarian meals","Air-conditioned","Family video calls"],
+    nightNurses:1, doctor:"On call; visits three times a week", hospital:"Durdans (10 min)",
+    rooms:"Private and shared (2)", extras:"Medicines, diapers", visiting:"8am – 8pm",
+    phone:"+94 11 000 0014", palette:["#DFEDEA","#1F5F5B"],
+    desc:"Tamil-speaking staff, a vegetarian kitchen and a daily video-call slot for children overseas. Much of the resident community has family in Canada and the UK." }
+];
+
+const TYPES = ["Assisted living","Nursing care","Dementia care","Respite (short stay)","Palliative care","Post-surgery rehab"];
+const FEATS = ["24h nursing","Doctor on call","Physiotherapy","Private rooms","Air-conditioned","Garden","Wheelchair accessible","Prayer room","Vegetarian meals","Diabetic diets","Family video calls"];
+const LANGS = ["Sinhala","Tamil","English"];
+const CAT_ICONS = {
+  "All homes": '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>',
+  "Assisted living": '<path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18h18"/><path d="M7 10V7h6v3"/>',
+  "Nursing care": '<path d="M12 4v6m-3-3h6"/><path d="M5 21v-8a7 7 0 0 1 14 0v8"/>',
+  "Dementia care": '<path d="M12 4a6 6 0 0 0-6 6c0 2 .8 3 .8 4.6L6 20h9v-3h2a1 1 0 0 0 1-1v-2.4l1.4-.9-1.7-2.5A6 6 0 0 0 12 4z"/>',
+  "Respite (short stay)": '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>',
+  "Palliative care": '<path d="M12 20s-7-4.4-7-9.5A4.1 4.1 0 0 1 12 8a4.1 4.1 0 0 1 7 2.5C19 15.6 12 20 12 20z"/>',
+  "Post-surgery rehab": '<path d="M4 20h16"/><path d="M6 20V9l6-4 6 4v11"/><path d="M9 20v-6h6v6"/>'
+};
+
+/* ---------- state ---------- */
+const state = { q:"", suburb:"", cat:"", langs:new Set(), feats:new Set(), fee:500000, vacant:false, sort:"updated", short:new Set() };
+const fmt = n => "LKR " + n.toLocaleString("en-LK");
+const kfmt = n => n >= 10000 ? Math.round(n/1000) + "K" : n.toLocaleString();
+const fmtDate = iso => new Date(iso+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+const $ = s => document.querySelector(s);
+
+/* ---------- placeholder "photo" ---------- */
+function scene(h){
+  const [bg, fg] = h.palette;
+  return `<svg class="scene" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <rect width="400" height="300" fill="${bg}"/>
+    <circle cx="330" cy="60" r="34" fill="${fg}" opacity=".14"/>
+    <path d="M0 232 Q100 208 200 226 T400 220 V300 H0 Z" fill="${fg}" opacity=".16"/>
+    <path d="M118 210 V138 L200 92 L282 138 V210 Z" fill="#fff" opacity=".92"/>
+    <path d="M110 142 L200 88 L290 142" stroke="${fg}" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <rect x="184" y="164" width="32" height="46" rx="3" fill="${fg}" opacity=".85"/>
+    <rect x="138" y="156" width="26" height="24" rx="3" fill="${fg}" opacity=".45"/>
+    <rect x="236" y="156" width="26" height="24" rx="3" fill="${fg}" opacity=".45"/>
+    <circle cx="84" cy="196" r="17" fill="${fg}" opacity=".35"/><rect x="81" y="196" width="6" height="26" fill="${fg}" opacity=".35"/>
+    <circle cx="322" cy="192" r="21" fill="${fg}" opacity=".3"/><rect x="319" y="192" width="6" height="30" fill="${fg}" opacity=".3"/>
+    <text x="20" y="282" font-family="IBM Plex Mono, monospace" font-size="15" fill="${fg}" opacity=".75">${h.suburb}</text>
+  </svg>`;
+}
+
+/* ---------- build UI ---------- */
+function init(){
+  // category bar
+  const catsEl = $("#cats");
+  ["All homes", ...TYPES].forEach(t => {
+    const b = document.createElement("button");
+    b.className = "cat"; b.type = "button"; b.setAttribute("role","tab");
+    b.setAttribute("aria-pressed", t === "All homes");
+    b.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${CAT_ICONS[t]}</svg>${t === "Respite (short stay)" ? "Respite" : t === "Post-surgery rehab" ? "Rehab" : t}`;
+    b.onclick = () => { state.cat = t === "All homes" ? "" : t; document.querySelectorAll(".cat").forEach(x=>x.setAttribute("aria-pressed", x===b)); render(); };
+    catsEl.appendChild(b);
+  });
+
+  // suburb select + chips
+  [...new Set(HOMES.map(h=>h.suburb))].sort().forEach(su => { const o=document.createElement("option"); o.value=o.textContent=su; $("#suburb").appendChild(o); });
+  const chip = (txt, set) => { const b=document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=txt; b.setAttribute("aria-pressed","false");
+    b.onclick=()=>{ set.has(txt)?set.delete(txt):set.add(txt); b.setAttribute("aria-pressed", set.has(txt)); updateSheetCount(); }; return b; };
+  LANGS.forEach(l => $("#langChips").appendChild(chip(l, state.langs)));
+  FEATS.forEach(f => $("#featChips").appendChild(chip(f, state.feats)));
+
+  // events
+  $("#searchForm").addEventListener("submit", e => { e.preventDefault(); state.q = $("#q").value.trim(); render(); });
+  $("#q").addEventListener("input", e => { state.q = e.target.value.trim(); render(); });
+  $("#whereBtn").addEventListener("click", () => toast("Colombo for now — more districts as we expand."));
+  $("#filtersBtn").addEventListener("click", () => { updateSheetCount(); $("#filters").showModal(); });
+  $("#suburb").addEventListener("change", e => { state.suburb = e.target.value; updateSheetCount(); });
+  $("#fee").addEventListener("input", e => { state.fee = +e.target.value; $("#feeOut").textContent = fmt(state.fee); updateSheetCount(); });
+  $("#vacant").addEventListener("change", e => { state.vacant = e.target.checked; updateSheetCount(); });
+  $("#applyFilters").addEventListener("click", () => { $("#filters").close(); render(); });
+  $("#reset").addEventListener("click", resetAll);
+  $("#sort").addEventListener("change", e => { state.sort = e.target.value; render(); });
+  $("#compareBtn").addEventListener("click", openCompare);
+  $("#clearShort").addEventListener("click", () => { state.short.clear(); render(); });
+  $("#ownerBtn").addEventListener("click", openOwner);
+  $("#mapFab").addEventListener("click", openMap);
+  $("#mapClose").addEventListener("click", () => $("#mapview").classList.remove("on"));
+  document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => b.closest("dialog").close());
+  document.querySelectorAll("dialog").forEach(dl => dl.addEventListener("click", e => { if (e.target === dl) dl.close(); }));
+
+  render();
+}
+
+function activeFilterCount(){
+  return (state.suburb?1:0) + (state.fee<500000?1:0) + state.langs.size + state.feats.size + (state.vacant?1:0);
+}
+function updateSheetCount(){ $("#fCount").textContent = filtered().length; }
+function resetAll(){
+  Object.assign(state, { q:"", suburb:"", fee:500000, vacant:false }); state.langs.clear(); state.feats.clear();
+  $("#q").value=""; $("#suburb").value=""; $("#fee").value=500000; $("#feeOut").textContent=fmt(500000); $("#vacant").checked=false;
+  document.querySelectorAll("#langChips .chip, #featChips .chip").forEach(b=>b.setAttribute("aria-pressed","false"));
+  updateSheetCount();
+}
+
+/* ---------- filtering ---------- */
+function filtered(){
+  const q = state.q.toLowerCase();
+  let list = HOMES.filter(h =>
+    (!q || [h.name,h.suburb].some(s => s.toLowerCase().includes(q))) &&
+    (!state.suburb || h.suburb === state.suburb) &&
+    (!state.cat || h.types.includes(state.cat)) &&
+    [...state.langs].every(l => h.languages.includes(l)) &&
+    h.fee[0] <= state.fee &&
+    [...state.feats].every(f => h.features.includes(f)) &&
+    (!state.vacant || h.vacancies > 0)
+  );
+  const s = state.sort;
+  list.sort((a,b) => s==="updated" ? (b.lastUpdated||"").localeCompare(a.lastUpdated||"") : s==="fee-asc" ? a.fee[0]-b.fee[0] : s==="fee-desc" ? b.fee[0]-a.fee[0] : b.vacancies-a.vacancies);
+  return list;
+}
+
+/* ---------- render ---------- */
+function render(){
+  const list = filtered();
+  const badge = activeFilterCount();
+  $("#fBadge").hidden = !badge; $("#fBadge").textContent = badge;
+  $("#resultsTitle").textContent = state.suburb ? `Care homes in ${state.suburb}` : state.q ? `Results for “${state.q}”` : state.cat ? `${state.cat} in Colombo` : "Care homes in Colombo";
+  $("#resultsSub").textContent = `${list.length} home${list.length!==1?"s":""} · visited homes are checked by our team`;
+
+  const grid = $("#grid"); grid.innerHTML = "";
+  if (!list.length){
+    grid.innerHTML = `<div class="empty"><h3>No homes match every filter</h3><p>Try raising the fee limit or removing a "must have".</p><button class="linkbtn" type="button" onclick="resetAll();render()">Clear all filters</button></div>`;
+  } else {
+    const picked = list.filter(h => state.short.has(h.id));
+    const rest   = list.filter(h => !state.short.has(h.id));
+    let i = 0;
+    if (picked.length){
+      const d = document.createElement("div"); d.className="group-head";
+      d.innerHTML = `<h2>Your shortlist</h2><span class="note">${picked.length} home${picked.length>1?"s":""} to compare</span>`;
+      grid.appendChild(d); picked.forEach(h => grid.appendChild(card(h, i++)));
+      const d2 = document.createElement("div"); d2.className="group-head";
+      d2.innerHTML = `<h2>All homes</h2><span class="note">${state.sort==="updated" ? "freshest owner updates first" : ""}</span>`;
+      grid.appendChild(d2);
+    }
+    rest.forEach(h => grid.appendChild(card(h, i++)));
+  }
+
+  $("#shortCount").textContent = state.short.size;
+  $("#shortbar").classList.toggle("on", state.short.size > 0);
+  $("#compareBtn").disabled = state.short.size < 2;
+  $("#compareBtn").textContent = state.short.size < 2 ? "Pick one more to compare" : "Compare";
+  if (map && $("#mapview").classList.contains("on")) drawPins();
+}
+
+function card(h, i){
+  const saved = state.short.has(h.id);
+  const el = document.createElement("article"); el.className = "card"; el.style.animationDelay = (i*25)+"ms";
+  el.innerHTML = `
+    <div class="ph">${scene(h)}
+      ${h.visited ? `<span class="visited"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>Visited by our team</span>` : ""}
+      <button class="heart" type="button" aria-pressed="${saved}" aria-label="${saved?"Remove from":"Add to"} shortlist">
+        <svg viewBox="0 0 24 24" fill="${saved?"currentColor":"rgba(0,0,0,.35)"}" stroke="#fff" stroke-width="1.6"><path d="M12 21s-7.5-4.7-7.5-10A4.4 4.4 0 0 1 12 7.6 4.4 4.4 0 0 1 19.5 11c0 5.3-7.5 10-7.5 10z"/></svg>
+      </button>
+    </div>
+    <h3><span>${h.name}</span></h3>
+    <div class="sub">${h.suburb} · ${h.types[0]}${h.types.length>1 ? " +" + (h.types.length-1) : ""} · updated ${fmtDate(h.lastUpdated)}</div>
+    <div class="avail ${h.vacancies?"ok":"wait"}">${h.vacancies ? `${h.vacancies} of ${h.beds} beds available` : "Waiting list"}</div>
+    <div class="price"><b>${fmt(h.fee[0])}</b> <span>/ month${h.fee[1]>h.fee[0] ? " · private to " + kfmt(h.fee[1]) : ""}</span></div>`;
+  el.querySelector(".heart").onclick = e => { e.stopPropagation(); toggleShort(h.id); };
+  el.addEventListener("click", () => openDetail(h));
+  el.tabIndex = 0; el.setAttribute("role","button");
+  el.addEventListener("keydown", e => { if (e.key==="Enter"||e.key===" ") { e.preventDefault(); openDetail(h); } });
+  return el;
+}
+function toggleShort(id){ state.short.has(id) ? state.short.delete(id) : state.short.add(id); render(); }
+
+/* ---------- map (Leaflet, Airbnb-style price pins) ---------- */
+let map = null, pinLayer = null;
+function openMap(){
+  $("#mapview").classList.add("on");
+  if (typeof L === "undefined"){ drawFallbackPins(); return; }
+  if (!map){
+    map = L.map("leafmap", { zoomControl: true }).setView([6.87, 79.90], 12);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18, attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+    pinLayer = L.layerGroup().addTo(map);
+  }
+  setTimeout(()=>map.invalidateSize(), 60);
+  drawPins();
+}
+function drawPins(){
+  pinLayer.clearLayers();
+  const list = filtered();
+  $("#mapCount").textContent = `${list.length} home${list.length!==1?"s":""}`;
+  list.forEach(h => {
+    const icon = L.divIcon({ className: "", html: `<div class="ppin" id="pin-${h.id}">${kfmt(h.fee[0])}</div>`, iconSize: null });
+    const m = L.marker([h.lat, h.lon], { icon }).addTo(pinLayer);
+    m.on("click", () => {
+      document.querySelectorAll(".ppin").forEach(p=>p.classList.remove("sel"));
+      const p = document.getElementById("pin-"+h.id); if (p) p.classList.add("sel");
+      openDetail(h);
+    });
+  });
+  if (list.length) map.fitBounds(list.map(h=>[h.lat,h.lon]), { padding: [60,60], maxZoom: 14 });
+}
+
+function drawFallbackPins(){
+  // No map library available (offline): plot pins by coordinate on a plain canvas.
+  const el = $("#leafmap");
+  el.style.background = "linear-gradient(160deg,#E9F1EC,#DDEAE4)";
+  const list = filtered();
+  $("#mapCount").textContent = `${list.length} home${list.length!==1?"s":""}`;
+  const lats = list.map(h=>h.lat), lons = list.map(h=>h.lon);
+  const la0 = Math.min(...lats)-.012, la1 = Math.max(...lats)+.012, lo0 = Math.min(...lons)-.012, lo1 = Math.max(...lons)+.012;
+  el.innerHTML = list.map(h => {
+    const x = ((h.lon-lo0)/(lo1-lo0)*84+8).toFixed(1), y = ((la1-h.lat)/(la1-la0)*80+10).toFixed(1);
+    return `<div class="ppin" style="position:absolute;left:${x}%;top:${y}%;transform:translate(-50%,-50%);cursor:pointer" data-id="${h.id}">${kfmt(h.fee[0])}<div style="font:500 9.5px var(--mono);color:var(--muted)">${h.suburb}</div></div>`;
+  }).join("") + `<div style="position:absolute;bottom:52px;left:50%;transform:translateX(-50%);font:500 11px var(--mono);color:var(--muted)">street map loads when online</div>`;
+  el.querySelectorAll(".ppin").forEach(p => p.onclick = () => openDetail(HOMES.find(h=>h.id===+p.dataset.id)));
+}
+
+/* ---------- detail dialog ---------- */
+function openDetail(h){
+  $("#dName").textContent = h.name;
+  $("#dWhere").textContent = `${h.suburb} · ${h.beds} beds · owner-updated ${fmtDate(h.lastUpdated)}${h.visited ? " · visited by our team" : " · not yet visited"}`;
+  const wa = h.phone.replace(/\D/g,"");
+  $("#dBody").innerHTML = `
+    <div class="full sample-note">Prototype listing — details are illustrative and should be verified with the home.</div>
+    <div class="kv full"><p style="color:var(--ink);font-size:15.5px">${h.desc}</p></div>
+    <div class="kv"><h4>Monthly fee</h4><div class="big">${fmt(h.fee[0])}${h.fee[1]>h.fee[0] ? " – " + h.fee[1].toLocaleString() : ""}<small>shared → private</small></div><p style="margin-top:6px"><b>Not included:</b> ${h.extras}.</p></div>
+    <div class="kv"><h4>Availability</h4><div class="big" style="color:${h.vacancies?"var(--ok)":"var(--wait)"}">${h.vacancies ? `${h.vacancies} bed${h.vacancies>1?"s":""} now` : "Waiting list"}</div><p style="margin-top:6px">Rooms: ${h.rooms}.</p></div>
+    <div class="kv"><h4>Type of care</h4><ul>${h.types.map(t=>`<li>${t}</li>`).join("")}</ul></div>
+    <div class="kv"><h4>Medical cover</h4><p><b>${h.nightNurses}</b> nurse${h.nightNurses>1?"s":""} on the night shift</p><p>${h.doctor}</p><p>Transfers to ${h.hospital}</p></div>
+    <div class="kv"><h4>Languages spoken by staff</h4><p>${h.languages.join(", ")}</p></div>
+    <div class="kv"><h4>Visiting</h4><p>${h.visiting}</p></div>
+    <div class="kv full"><h4>Facilities</h4><div class="tags">${h.features.map(f=>`<span class="tag">${f}</span>`).join("")}</div></div>
+    <div class="kv full"><h4>Contact the home directly</h4><div class="contact">
+      <a class="primary" href="tel:${h.phone}">Call ${h.phone}</a>
+      <a href="https://wa.me/${wa}?text=${encodeURIComponent("Hello, I found "+h.name+" on carehomes.lk and would like to ask about a place for my parent.")}" target="_blank" rel="noopener">WhatsApp</a>
+      <button type="button" id="dShort" aria-pressed="${state.short.has(h.id)}">${state.short.has(h.id)?"On your shortlist":"Add to shortlist"}</button>
+    </div></div>`;
+  $("#dShort").onclick = () => { toggleShort(h.id); const on = state.short.has(h.id); $("#dShort").setAttribute("aria-pressed", on); $("#dShort").textContent = on ? "On your shortlist" : "Add to shortlist"; };
+  $("#detail").showModal();
+}
+
+/* ---------- compare ---------- */
+function openCompare(){
+  const hs = HOMES.filter(h => state.short.has(h.id));
+  const row = (label, fn, cls="") => `<tr><th>${label}</th>${hs.map(h=>`<td class="${cls}">${fn(h)}</td>`).join("")}</tr>`;
+  $("#cBody").innerHTML = `<table class="cmp">
+    <tr><th></th>${hs.map(h=>`<td class="name">${h.name}<div style="font:400 12px var(--body);color:var(--muted)">${h.suburb}</div></td>`).join("")}</tr>
+    ${row("Fee / month", h=>`${fmt(h.fee[0])}${h.fee[1]>h.fee[0] ? " – " + h.fee[1].toLocaleString() : ""}`, "mono")}
+    ${row("Not included", h=>h.extras)}
+    ${row("Beds available", h=>h.vacancies ? `${h.vacancies} now` : "Waiting list", "mono")}
+    ${row("Type of care", h=>h.types.join(", "))}
+    ${row("Night nurses", h=>h.nightNurses, "mono")}
+    ${row("Doctor", h=>h.doctor)}
+    ${row("Hospital", h=>h.hospital)}
+    ${row("Languages", h=>h.languages.join(", "))}
+    ${row("Visited by our team", h=>h.visited ? "Yes" : "Not yet")}
+    ${row("Phone", h=>`<a href="tel:${h.phone}">${h.phone}</a>`, "mono")}
+  </table>`;
+  $("#compare").showModal();
+}
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove("on"), 4200); }
+
+/* ---------- owner flow (free, 3 steps) ---------- */
+const owner = { step: 1, home: null, edits: {} };
+function openOwner(){ owner.step = 1; owner.home = null; owner.edits = {}; drawOwner(); $("#owner").showModal(); }
+function stepsBar(){ document.querySelectorAll("#oSteps span").forEach((el,i)=>el.classList.toggle("done", i < owner.step)); }
+function drawOwner(){
+  stepsBar();
+  const b = $("#oStepBody"); const h = owner.home;
+  if (owner.step === 1){
+    $("#oSub").textContent = "Owners only — we validate before anything goes live.";
+    b.innerHTML = `
+      <div class="field"><label for="oHome">Your home</label><select id="oHome">${HOMES.map(x=>`<option value="${x.id}">${x.name} — ${x.suburb}</option>`).join("")}</select></div>
+      <div class="field" id="fPhone"><label for="oPhone">Phone number we have on file</label><input id="oPhone" type="tel" inputmode="tel" placeholder="+94 …" autocomplete="off" />
+        <span class="err">That doesn't match the number on this listing. In this prototype, copy the number shown below.</span>
+        <p style="margin:4px 0 0;font-size:12.5px;color:var(--muted)">We text a code to the number on the listing, so only the real owner can edit it. <span style="font-family:var(--mono)">Prototype: the number on file is <b id="oPhoneHint"></b> and any 4-digit code works.</span></p></div>
+      <div class="field" id="fOtp" style="display:none"><label for="oOtp">Code we sent you</label><input id="oOtp" inputmode="numeric" maxlength="4" placeholder="0000" style="max-width:120px;font-family:var(--mono);letter-spacing:.3em" /><span class="err">Enter the 4-digit code.</span></div>
+      <div class="dlg-foot"><span></span><button class="btn-solid" id="oNext1" type="button">Send code</button></div>`;
+    const sync = () => { $("#oPhoneHint").textContent = HOMES.find(x=>x.id===+$("#oHome").value).phone; };
+    $("#oHome").onchange = sync; sync();
+    $("#oNext1").onclick = () => {
+      const sel = HOMES.find(x=>x.id===+$("#oHome").value);
+      const phoneOk = $("#oPhone").value.replace(/\D/g,"") === sel.phone.replace(/\D/g,"");
+      $("#fPhone").classList.toggle("bad", !phoneOk);
+      if (!phoneOk) return;
+      if ($("#fOtp").style.display === "none"){ $("#fOtp").style.display = ""; $("#oNext1").textContent = "Verify"; $("#oOtp").focus(); return; }
+      const otpOk = /^\d{4}$/.test($("#oOtp").value);
+      $("#fOtp").classList.toggle("bad", !otpOk);
+      if (!otpOk) return;
+      owner.home = sel; owner.step = 2; drawOwner();
+    };
+  } else if (owner.step === 2){
+    $("#oSub").textContent = h.name + " — edit what families see (free)";
+    b.innerHTML = `
+      <div class="row2">
+        <div class="field"><label for="eFeeFrom">Monthly fee from (LKR)</label><input id="eFeeFrom" inputmode="numeric" value="${h.fee[0]}" /></div>
+        <div class="field"><label for="eFeeTo">Monthly fee to (LKR)</label><input id="eFeeTo" inputmode="numeric" value="${h.fee[1]}" /></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="eBeds">Total beds</label><input id="eBeds" inputmode="numeric" value="${h.beds}" /></div>
+        <div class="field"><label for="eVac">Beds available now</label><input id="eVac" inputmode="numeric" value="${h.vacancies}" /></div>
+      </div>
+      <div class="field"><label for="eDesc">Description</label><textarea id="eDesc">${h.desc}</textarea></div>
+      <div class="dlg-foot"><button class="btn-quiet" type="button" id="oBack2">Back</button><button class="btn-solid" id="oNext2" type="button">Save changes</button></div>`;
+    $("#oBack2").onclick = () => { owner.step = 1; drawOwner(); };
+    $("#oNext2").onclick = () => {
+      const n = id => Math.max(0, parseInt($(id).value.replace(/\D/g,"")) || 0);
+      const feeFrom = n("#eFeeFrom"), feeTo = Math.max(n("#eFeeTo"), feeFrom), beds = Math.max(1, n("#eBeds"));
+      owner.edits = { fee:[feeFrom, feeTo], beds, vacancies: Math.min(n("#eVac"), beds), desc: $("#eDesc").value.trim() || h.desc };
+      applyOwnerUpdate();
+    };
+  } else {
+    $("#oSub").textContent = "";
+    b.innerHTML = `
+      <div class="ok-big"><div class="tick">✓</div>
+        <h3 style="font-family:var(--display);margin:0 0 6px">Listing updated</h3>
+        <p style="margin:0 0 16px;color:var(--ink-2)">${h.name} now shows today's date. Families will see the new details immediately.</p>
+        <button class="btn-solid" type="button" id="oDone">See the listing</button></div>`;
+    $("#oDone").onclick = () => { $("#owner").close(); window.scrollTo({top:0, behavior:"smooth"}); };
+  }
+}
+function applyOwnerUpdate(){
+  const h = owner.home;
+  Object.assign(h, owner.edits);
+  h.lastUpdated = new Date().toISOString().slice(0,10);
+  owner.step = 3; drawOwner(); render();
+  toast(`${h.name} updated — owner-verified, free`);
+}
+
+init();
+</script>
+</body>
+</html>
