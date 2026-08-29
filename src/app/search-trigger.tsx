@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { SearchOverlay } from "@/app/search-overlay";
 
@@ -9,8 +9,27 @@ type Suburb = { name: string; slug: string; count: number };
 /// The header's search control. Rather than a text box that only matches names,
 /// it opens the full screening flow — which is the thing families actually need
 /// and the thing a plain directory search cannot do.
-export function SearchTrigger({ suburbs, query }: { suburbs: Suburb[]; query?: string }) {
+export function SearchTrigger({ query }: { query?: string }) {
   const [open, setOpen] = useState(false);
+  const [suburbs, setSuburbs] = useState<Suburb[]>([]);
+
+  // Fetched on first open rather than rendered into every page, so the static
+  // pages stay static and no page pays for a query it does not use.
+  useEffect(() => {
+    if (!open || suburbs.length) return;
+    let cancelled = false;
+    fetch("/api/suburbs")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => {
+        if (!cancelled) setSuburbs(data);
+      })
+      .catch(() => {
+        // The overlay still works without suburb chips.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, suburbs.length]);
 
   return (
     <>

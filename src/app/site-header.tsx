@@ -1,11 +1,8 @@
 import Link from "next/link";
 
 import { SearchTrigger } from "@/app/search-trigger";
-import { listSuburbsWithCounts } from "@/lib/homes";
 
-export async function SiteHeader({ query }: { query?: string }) {
-  const suburbs = await listSuburbsWithCounts();
-
+export function SiteHeader({ query }: { query?: string }) {
   return (
     <header className="bg-surface border-b border-line sticky top-0 z-10">
       <div className="mx-auto max-w-6xl px-4 sm:px-5 h-14 sm:h-16 flex items-center gap-3 sm:gap-5">
@@ -15,10 +12,7 @@ export async function SiteHeader({ query }: { query?: string }) {
           </span>
         </Link>
 
-        <SearchTrigger
-          query={query}
-          suburbs={suburbs.map((s) => ({ name: s.name, slug: s.slug, count: s._count.homes }))}
-        />
+        <SearchTrigger query={query} />
       </div>
     </header>
   );
