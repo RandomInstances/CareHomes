@@ -154,33 +154,37 @@ function Card({
         <h3 className="font-semibold text-[16px] leading-snug">{home.name}</h3>
       </Link>
       <p className="text-[14.5px] text-ink-2">{home.suburb.name}</p>
-      <p className="mt-1 inline-flex items-center gap-1.5 text-[14px] font-medium">
-        <span
-          aria-hidden
-          className={`w-1.5 h-1.5 rounded-full ${home.bedsAvailable ? "bg-[#2b6a4e]" : "bg-turmeric"}`}
-        />
-        {home.bedsAvailable ? (
-          <span className="text-[#2b6a4e]">
-            {home.bedsAvailable} bed{home.bedsAvailable > 1 ? "s" : ""} free now
-          </span>
-        ) : (
-          <span className="text-turmeric">Waiting list</span>
-        )}
-      </p>
+      {/* Availability and facilities share one row: stacked, they left a dead
+          strip down the right of every card. */}
+      <div className="mt-1.5 flex items-center justify-between gap-3">
+        <p className="inline-flex items-center gap-1.5 text-[14px] font-medium whitespace-nowrap">
+          <span
+            aria-hidden
+            className={`w-1.5 h-1.5 rounded-full ${home.bedsAvailable ? "bg-[#2b6a4e]" : "bg-turmeric"}`}
+          />
+          {home.bedsAvailable ? (
+            <span className="text-[#2b6a4e]">
+              {home.bedsAvailable} bed{home.bedsAvailable > 1 ? "s" : ""} free
+            </span>
+          ) : (
+            <span className="text-turmeric">Waiting list</span>
+          )}
+        </p>
 
-      {home.features.length ? (
-        <ul className="flex items-center gap-2 mt-2 text-muted">
-          {home.features.slice(0, 4).map((f) => (
-            <li key={f} title={f} className="shrink-0">
-              <FeatureIcon feature={f} />
-              <span className="sr-only">{f}</span>
-            </li>
-          ))}
-          {home.features.length > 4 ? (
-            <li className="text-[12.5px] tabular-nums">+{home.features.length - 4}</li>
-          ) : null}
-        </ul>
-      ) : null}
+        {home.features.length ? (
+          <ul className="flex items-center gap-2 text-muted shrink-0">
+            {home.features.slice(0, 4).map((f) => (
+              <li key={f} title={f} className="shrink-0">
+                <FeatureIcon feature={f} />
+                <span className="sr-only">{f}</span>
+              </li>
+            ))}
+            {home.features.length > 4 ? (
+              <li className="text-[12.5px] tabular-nums">+{home.features.length - 4}</li>
+            ) : null}
+          </ul>
+        ) : null}
+      </div>
     </div>
   );
 }
