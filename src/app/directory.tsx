@@ -165,9 +165,13 @@ function Card({
             className={`w-1.5 h-1.5 rounded-full ${home.bedsAvailable ? "bg-[#2b6a4e]" : "bg-turmeric"}`}
           />
           {home.bedsAvailable ? (
-            <span className="text-[#2b6a4e]">{home.bedsAvailable} free</span>
+            <span className="text-[#2b6a4e]">
+              {home.bedsTotal ? `${home.bedsAvailable}/${home.bedsTotal}` : home.bedsAvailable} beds free
+            </span>
           ) : (
-            <span className="text-turmeric">Waiting list</span>
+            <span className="text-turmeric">
+              Waiting list{home.bedsTotal ? ` · ${home.bedsTotal} beds` : ""}
+            </span>
           )}
         </p>
       </div>
@@ -229,7 +233,7 @@ function CompareTable({ homes, onClose }: { homes: DirectoryHome[]; onClose: () 
               </tr>
               {row("Fee / month", (h) => <span className="tabular-nums">{feeText(h.feeFrom, h.feeTo) ?? "—"}</span>)}
               {row("Not included", (h) => (h.feeExcludes.length ? h.feeExcludes.join(", ") : "—"))}
-              {row("Beds available", (h) => (h.bedsAvailable ? `${h.bedsAvailable} now` : "Waiting list"))}
+              {row("Beds available", (h) => (h.bedsAvailable ? `${h.bedsAvailable} of ${h.bedsTotal ?? "?"} free` : "Waiting list"))}
               {row("Rooms", (h) => (h.roomTypes.length ? h.roomTypes.join(", ") : "—"))}
               {row("Type of care", (h) => h.careTypes.map((c) => CARE_LABEL[c] ?? c).join(", ") || "—")}
               {row("Night nurses", (h) => h.nightNurses ?? "—")}

@@ -166,9 +166,14 @@ export default async function HomePage({ params }: PageProps<"/[suburb]/[home]">
           <Detail label="Availability">
             <p className="text-xl font-semibold">
               {home.bedsAvailable
-                ? `${home.bedsAvailable} bed${home.bedsAvailable > 1 ? "s" : ""} now`
+                ? home.bedsTotal
+                  ? `${home.bedsAvailable} of ${home.bedsTotal} beds free`
+                  : `${home.bedsAvailable} bed${home.bedsAvailable > 1 ? "s" : ""} free`
                 : "Waiting list"}
             </p>
+            {!home.bedsAvailable && home.bedsTotal ? (
+              <p className="text-sm text-ink-2 mt-1">{home.bedsTotal} beds in total.</p>
+            ) : null}
             {home.roomTypes.length ? (
               <p className="text-sm text-ink-2 mt-1.5">Rooms: {home.roomTypes.join(", ")}.</p>
             ) : null}
