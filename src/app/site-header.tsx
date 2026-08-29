@@ -7,9 +7,7 @@ export function SiteHeader({ query }: { query?: string }) {
         <Link href="/" className="shrink-0">
           <span className="block font-display font-bold text-xl leading-none">
             carehomes<span className="text-teal">.lk</span>
-          </span>
-          <span className="block text-[10.5px] text-muted mt-0.5">by Blanket Care</span>
-        </Link>
+          </span>        </Link>
 
         <form action="/" className="flex-1 max-w-md">
           <label htmlFor="q" className="sr-only">
@@ -42,7 +40,7 @@ export function SiteHeader({ query }: { query?: string }) {
 export function SiteFooter() {
   return (
     <footer className="mx-auto max-w-6xl px-5 py-10 mt-10 border-t border-line text-sm text-muted space-y-1.5">
-      <p>© 2026 carehomes.lk, by Blanket Care · Starting in Colombo, more districts soon.</p>
+      <p>© 2026 carehomes.lk · Starting in Colombo, more districts soon.</p>
       <p>
         We list care homes and show what our team saw when we visited. We do not
         inspect or endorse homes we have not visited, and families should satisfy

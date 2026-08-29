@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: "%s · carehomes.lk",
   },
   description:
-    "Compare care homes across Colombo's suburbs by care type, monthly fee and availability. By Blanket Care.",
+    "Compare care homes across Colombo's suburbs by care type, monthly fee and availability.",
   openGraph: {
     siteName: "carehomes.lk",
     locale: "en_LK",

@@ -118,7 +118,7 @@ export default async function HomePage({ params }: PageProps<"/[suburb]/[home]">
           </p>
           {home.isBlanketHome ? (
             <p className="text-sm text-ink-2">
-              Operated by Blanket Care, who also run this website.
+              Operated by Blanket Care.
             </p>
           ) : null}
         </header>
