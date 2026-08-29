@@ -192,6 +192,21 @@ and `searchParams` are async; `middleware` is now `proxy`; forms use
 
 The original prototype remains at `/prototype.html` for design reference.
 
+### Demo listings
+
+Fourteen fictional homes from the prototype load at container start whenever
+the Railway variable **`SEED_DEMO`** is set. They upsert by slug, so restarts do
+not duplicate them.
+
+> **Remove `SEED_DEMO` from Railway before real listings replace these.** While
+> it is set, deleting the demo homes in the admin panel is undone by the next
+> deploy. They carry invented phone numbers, and a family ringing one looking for
+> care for a parent is the failure this guards against. The admin dashboard turns
+> red while any are loaded.
+
+Card illustrations are generated SVG scenes with a palette derived from the
+home slug, so every listing looks finished before photography exists.
+
 ---
 
 ## 12. Build order
