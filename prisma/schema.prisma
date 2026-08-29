@@ -160,12 +160,20 @@ model Visit {
 // Owners — claim by SMS OTP, edits go through review ("post validation")
 // ---------------------------------------------------------------------------
 
+/// Accounts are created by an admin during onboarding — every home is met in
+/// person for a field visit, so there is no self-signup, no SMS gateway and no
+/// email provider to depend on. Login is phone number + password.
 model Owner {
-  id        String      @id @default(cuid())
-  name      String
-  phone     String      @unique
-  email     String?
-  status    OwnerStatus @default(PENDING)
+  id     String      @id @default(cuid())
+  name   String
+  phone  String      @unique
+  email  String?
+  status OwnerStatus @default(PENDING)
+
+  /// scrypt hash. Null until the admin issues credentials.
+  passwordHash String?
+  lastLoginAt  DateTime?
+
   homes     HomeOwner[]
   edits     Edit[]
   createdAt DateTime    @default(now())
