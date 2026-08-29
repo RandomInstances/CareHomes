@@ -1,17 +1,19 @@
 import Link from "next/link";
 
 import { SearchTrigger } from "@/app/search-trigger";
-import { ALL_HOMES_ICON, CARE_TYPES } from "@/lib/catalog";
+import { ALL_HOMES_COLOR, ALL_HOMES_ICON, CARE_TYPES } from "@/lib/catalog";
 
 function CategoryTab({
   href,
   label,
   icon,
+  color,
   active,
 }: {
   href: string;
   label: string;
   icon: string;
+  color: string;
   active: boolean;
 }) {
   return (
@@ -31,6 +33,9 @@ function CategoryTab({
         strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
+        // Colour stays on the icon whether or not the tab is selected: it is
+        // what makes the row scannable rather than four grey shapes.
+        style={{ color }}
         className="shrink-0"
         dangerouslySetInnerHTML={{ __html: icon }}
       />
@@ -46,9 +51,9 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
   return (
     <header className="relative bg-surface border-b border-line sticky top-0 z-20">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 sm:relative">
-        <div className="h-14 flex sm:grid sm:grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <div className="h-14 sm:h-[72px] flex sm:grid sm:grid-cols-[1fr_auto_1fr] items-center gap-4">
           <Link href="/" className="shrink-0 sm:absolute sm:left-6 lg:left-10 sm:top-1/2 sm:-translate-y-1/2 sm:z-10">
-            <span className="block font-display font-bold text-[17px] sm:text-xl leading-none">
+            <span className="block font-display font-bold text-[17px] sm:text-[23px] leading-none">
               carehomes<span className="text-teal">.lk</span>
             </span>
           </Link>
@@ -57,13 +62,14 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
             className="flex-1 sm:flex-none sm:col-start-2 min-w-0 h-full flex items-stretch gap-1 sm:gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             aria-label="Type of care"
           >
-            <CategoryTab href="/" label="All homes" icon={ALL_HOMES_ICON} active={!activeCare} />
+            <CategoryTab href="/" label="All homes" icon={ALL_HOMES_ICON} color={ALL_HOMES_COLOR} active={!activeCare} />
             {CARE_TYPES.map((c) => (
               <CategoryTab
                 key={c.value}
                 href={`/?care=${c.value}`}
                 label={c.label}
                 icon={c.icon}
+                color={c.color}
                 active={activeCare === c.value}
               />
             ))}
@@ -78,7 +84,7 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
           </Link>
         </div>
 
-        <div className="pb-5 pt-2.5 flex justify-center">
+        <div className="pb-5 pt-2.5 sm:pb-7 sm:pt-0 flex justify-center">
           <SearchTrigger query={query} />
         </div>
       </div>

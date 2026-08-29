@@ -2,24 +2,32 @@
 // database import: the filter sheet is a client component, and pulling the
 // server-only module in here would drag Prisma and pg into the browser bundle.
 
-// Icon paths carried over from the prototype's category bar, unchanged.
+// One icon per category, each meaning something the others do not: a chair for
+// residential living, a medical cross for nursing, a walking frame for
+// recovery. The colour is part of the meaning — it is what lets someone pick
+// the right tab without reading all four.
 export const CARE_TYPES = [
   {
     value: "ELDER_HOME",
     label: "Elder Homes",
-    icon: '<path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18h18"/><path d="M7 10V7h6v3"/>',
+    color: "#B4780F",
+    icon: '<path d="M7 10V8a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/><path d="M5 10a2 2 0 0 1 2 2v2h10v-2a2 2 0 0 1 2-2"/><path d="M7 16v2.5M17 16v2.5"/>',
   },
   {
     value: "NURSING_HOME",
     label: "Nursing Homes",
-    icon: '<path d="M12 4v6m-3-3h6"/><path d="M5 21v-8a7 7 0 0 1 14 0v8"/>',
+    color: "#0E5C55",
+    icon: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M12 8.5v7M8.5 12h7"/>',
   },
   {
     value: "REHAB",
     label: "Rehab",
-    icon: '<path d="M4 20h16"/><path d="M6 20V9l6-4 6 4v11"/><path d="M9 20v-6h6v6"/>',
+    color: "#31456E",
+    icon: '<path d="M6 6v13M18 6v13"/><path d="M6 6h12"/><path d="M6 12.5h12"/><path d="M4 19h4M16 19h4"/>',
   },
 ] as const;
+
+export const ALL_HOMES_COLOR = "#16292C";
 
 export const ALL_HOMES_ICON =
   '<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>';
