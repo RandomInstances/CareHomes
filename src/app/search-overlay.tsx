@@ -18,12 +18,9 @@ type Suburb = { name: string; slug: string; count: number };
 
 /// Plain language on the left, the care type it implies on the right.
 const NEEDS: { label: string; hint: string; care: string }[] = [
-  { label: "Help with day-to-day things", hint: "Washing, dressing, medication reminders", care: "ASSISTED_LIVING" },
-  { label: "Nursing care", hint: "Wounds, tubes, injections, close monitoring", care: "NURSING" },
-  { label: "Memory loss or confusion", hint: "Dementia, wandering, needs a secure setting", care: "DEMENTIA" },
+  { label: "Help with day-to-day living", hint: "Washing, dressing, meals, company", care: "ELDER_HOME" },
+  { label: "Nursing care", hint: "Wounds, tubes, injections, dementia, close monitoring", care: "NURSING_HOME" },
   { label: "Recovering from surgery", hint: "Physiotherapy and a period of rehabilitation", care: "REHAB" },
-  { label: "A short stay", hint: "Respite while family travel or recover", care: "RESPITE" },
-  { label: "End-of-life care", hint: "Comfort, pain management, dignity", care: "PALLIATIVE" },
 ];
 
 const BUDGETS = [

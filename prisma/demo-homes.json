@@ -18,8 +18,8 @@
       "All private, en-suite"
     ],
     "careTypes": [
-      "ASSISTED_LIVING",
-      "NURSING",
+      "ELDER_HOME",
+      "NURSING_HOME",
       "REHAB"
     ],
     "features": [
@@ -71,8 +71,8 @@
       "Shared (2–3) and private"
     ],
     "careTypes": [
-      "ASSISTED_LIVING",
-      "NURSING"
+      "ELDER_HOME",
+      "NURSING_HOME"
     ],
     "features": [
       "24h nursing",
@@ -117,9 +117,8 @@
       "All private, en-suite"
     ],
     "careTypes": [
-      "NURSING",
-      "REHAB",
-      "PALLIATIVE"
+      "NURSING_HOME",
+      "REHAB"
     ],
     "features": [
       "24h nursing",
@@ -166,8 +165,7 @@
       "Shared (2–4) and a few private"
     ],
     "careTypes": [
-      "ASSISTED_LIVING",
-      "RESPITE"
+      "ELDER_HOME"
     ],
     "features": [
       "Doctor on call",
@@ -209,8 +207,7 @@
       "Private and shared (2)"
     ],
     "careTypes": [
-      "DEMENTIA",
-      "NURSING"
+      "NURSING_HOME"
     ],
     "features": [
       "24h nursing",
@@ -254,7 +251,7 @@
       "Dormitory (4–6) and shared (2)"
     ],
     "careTypes": [
-      "ASSISTED_LIVING"
+      "ELDER_HOME"
     ],
     "features": [
       "Doctor on call",
@@ -296,8 +293,8 @@
       "Shared (2) and private"
     ],
     "careTypes": [
-      "ASSISTED_LIVING",
-      "NURSING"
+      "ELDER_HOME",
+      "NURSING_HOME"
     ],
     "features": [
       "24h nursing",
@@ -341,7 +338,7 @@
       "Private and shared (2)"
     ],
     "careTypes": [
-      "NURSING",
+      "NURSING_HOME",
       "REHAB"
     ],
     "features": [
@@ -386,8 +383,7 @@
       "All private"
     ],
     "careTypes": [
-      "ASSISTED_LIVING",
-      "RESPITE"
+      "ELDER_HOME"
     ],
     "features": [
       "Doctor on call",
@@ -430,8 +426,8 @@
       "Shared (2–3)"
     ],
     "careTypes": [
-      "ASSISTED_LIVING",
-      "NURSING"
+      "ELDER_HOME",
+      "NURSING_HOME"
     ],
     "features": [
       "Doctor on call",
@@ -473,8 +469,8 @@
       "Shared (2) and private"
     ],
     "careTypes": [
-      "ASSISTED_LIVING",
-      "PALLIATIVE"
+      "ELDER_HOME",
+      "NURSING_HOME"
     ],
     "features": [
       "Doctor on call",
@@ -517,7 +513,7 @@
       "Shared (2–3)"
     ],
     "careTypes": [
-      "ASSISTED_LIVING"
+      "ELDER_HOME"
     ],
     "features": [
       "Doctor on call",
@@ -558,8 +554,8 @@
       "Shared (2) and private"
     ],
     "careTypes": [
-      "ASSISTED_LIVING",
-      "DEMENTIA"
+      "ELDER_HOME",
+      "NURSING_HOME"
     ],
     "features": [
       "Doctor on call",
@@ -600,8 +596,8 @@
       "Private and shared (2)"
     ],
     "careTypes": [
-      "ASSISTED_LIVING",
-      "NURSING"
+      "ELDER_HOME",
+      "NURSING_HOME"
     ],
     "features": [
       "24h nursing",

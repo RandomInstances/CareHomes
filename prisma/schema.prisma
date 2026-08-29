@@ -383,12 +383,12 @@ model AuditLog {
 // Enums
 // ---------------------------------------------------------------------------
 
+/// Four categories, deliberately few. Respite, dementia and palliative folded
+/// into admission criteria, where "will you take this person" is a better
+/// question than "which of six labels applies".
 enum CareType {
-  ASSISTED_LIVING
-  NURSING
-  DEMENTIA
-  RESPITE
-  PALLIATIVE
+  ELDER_HOME
+  NURSING_HOME
   REHAB
 }
 
