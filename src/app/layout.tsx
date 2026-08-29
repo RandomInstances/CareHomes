@@ -3,13 +3,13 @@ import { Bricolage_Grotesque, Public_Sans } from "next/font/google";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
-  variable: "--font-display",
+  variable: "--font-bricolage",
   subsets: ["latin"],
   display: "swap",
 });
 
 const body = Public_Sans({
-  variable: "--font-body",
+  variable: "--font-public-sans",
   subsets: ["latin"],
   display: "swap",
 });
@@ -35,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${display.variable} ${body.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[--ch-bg] text-[--ch-ink]">
+      <body className="min-h-full flex flex-col bg-bg text-ink">
         {children}
       </body>
     </html>

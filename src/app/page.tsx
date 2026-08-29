@@ -26,10 +26,10 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
               <Link
                 key={s.id}
                 href={`/${s.slug}`}
-                className="rounded-full border border-[--ch-line-2] px-3.5 py-1.5 text-sm hover:border-[--ch-teal] hover:text-[--ch-teal]"
+                className="rounded-full border border-line-2 px-3.5 py-1.5 text-sm hover:border-teal hover:text-teal"
               >
                 {s.name}
-                <span className="text-[--ch-muted] ml-1.5 tabular-nums">{s._count.homes}</span>
+                <span className="text-muted ml-1.5 tabular-nums">{s._count.homes}</span>
               </Link>
             ))}
           </nav>
@@ -39,24 +39,24 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
           <h1 className="text-2xl font-semibold">
             {query ? `Results for “${query}”` : "Care homes in Colombo"}
           </h1>
-          <p className="text-sm text-[--ch-ink-2] mt-1">
+          <p className="text-sm text-ink-2 mt-1">
             {homes.length} home{homes.length === 1 ? "" : "s"}
             {homes.length ? " · homes our team has visited appear first" : ""}
           </p>
         </div>
 
         {homes.length === 0 ? (
-          <div className="bg-[--ch-surface] border border-[--ch-line] rounded-2xl p-10 text-center">
+          <div className="bg-surface border border-line rounded-2xl p-10 text-center">
             <p className="font-semibold">
               {query ? "No homes match that search." : "No homes listed yet."}
             </p>
-            <p className="text-sm text-[--ch-ink-2] mt-1.5 max-w-prose mx-auto">
+            <p className="text-sm text-ink-2 mt-1.5 max-w-prose mx-auto">
               {query
                 ? "Try a suburb name such as Nugegoda or Malabe."
                 : "Listings are added as our team visits homes across Colombo. Check back shortly."}
             </p>
             {query ? (
-              <Link href="/" className="inline-block mt-4 text-sm font-semibold text-[--ch-teal]">
+              <Link href="/" className="inline-block mt-4 text-sm font-semibold text-teal">
                 See all homes
               </Link>
             ) : null}
