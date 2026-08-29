@@ -191,6 +191,24 @@
   .contact a, .contact button { display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 10px 16px; text-decoration: none; font-weight: 600; font-size: 13.5px; border: 1px solid var(--line-2); color: var(--ink); background: #fff; }
   .contact a.primary { background: var(--teal); border-color: var(--teal); color: #fff; }
   .contact button[aria-pressed="true"] { background: var(--turmeric-tint); border-color: var(--turmeric); }
+  .contact button.primary { background: var(--teal); border-color: var(--teal); color: #fff; cursor: pointer; }
+
+  /* process steps + assessment enquiry */
+  .steps-cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 22px; }
+  .steps-cta .note { color: var(--ink-2); font-size: 13.5px; }
+  .enq-field textarea {
+    width: 100%; box-sizing: border-box; border: 1px solid var(--line-2); border-radius: 12px;
+    padding: 10px 12px; font: 400 15px var(--body); color: var(--ink); background: #fff; resize: vertical;
+  }
+  .enq-field input[type="number"] {
+    width: 140px; box-sizing: border-box; border: 1px solid var(--line-2); border-radius: 999px;
+    padding: 10px 14px; font: 400 15px var(--body); color: var(--ink); background: #fff;
+  }
+  .privacy-note {
+    margin: 8px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--ink-2);
+    border-left: 2px solid var(--turmeric); padding-left: 10px;
+  }
+  .enq-short { font-size: 13.5px; color: var(--ink-2); }
   .sample-note { font-size: 12px; color: var(--muted); background: var(--turmeric-tint); border-radius: 8px; padding: 7px 11px; }
   table.cmp { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   table.cmp th, table.cmp td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -298,16 +316,32 @@
 </div>
 
 <section class="band">
-  <div class="wrap guide" id="guide">
-    <h2>Six things to ask before you decide</h2>
-    <p class="sub">Every home on this site should be able to answer these on the phone. If they can't, that tells you something too.</p>
+  <div class="wrap guide" id="how">
+    <h2>Choosing a care home shouldn't start with a search.</h2>
+    <p class="sub">It should start with an assessment. A clinician sees your relative in person — then we shortlist only the homes that can meet the need we found. Always free for families.</p>
     <div class="qs">
-      <div class="q"><span class="why">Staffing</span><h3>How many nurses are on the night shift?</h3><p>Day staffing looks good everywhere. Night is where falls, breathing trouble and confusion happen. Ask for a number, not "enough".</p></div>
-      <div class="q"><span class="why">Medical cover</span><h3>Who is the doctor, and how quickly can they come?</h3><p>"Doctor on call" can mean a GP who visits weekly or a physician on the phone. Ask which hospital they transfer to and who rides along.</p></div>
-      <div class="q"><span class="why">Money</span><h3>What is not included in the monthly fee?</h3><p>Medicines, diapers, physiotherapy sessions, a private room and hospital escorts are the usual extras. Ask for last month's actual bill for a similar resident.</p></div>
-      <div class="q"><span class="why">Fit</span><h3>Can we do a two-week trial stay?</h3><p>Most good homes will agree. It tells you whether your parent settles, eats and sleeps there — things a tour can't show you.</p></div>
-      <div class="q"><span class="why">Registration</span><h3>Are you registered with the National Secretariat for Elders?</h3><p>Elders' homes are meant to be registered and inspected. Ask to see the certificate and the date of the last visit — a registered home has nothing to hide.</p></div>
-      <div class="q"><span class="why">Everyday life</span><h3>What did residents do yesterday afternoon?</h3><p>A specific answer (pirith at 4, a physio group, a walk in the garden) means there is a programme. A vague one usually means television.</p></div>
+      <div class="q"><span class="why">Step 1</span><h3>Medical evaluation</h3><p>A registered clinician visits and assesses your relative in person — physical and mental. Nothing is decided from a phone call or a web form.</p></div>
+      <div class="q"><span class="why">Step 2</span><h3>Shortlisting properties</h3><p>We match that assessment against homes our own team has visited, and shortlist only the ones that can genuinely provide the care required.</p></div>
+      <div class="q"><span class="why">Step 3</span><h3>Placement</h3><p>We arrange the visits, coordinate with the home, and stay with you through the move.</p></div>
+    </div>
+    <div class="steps-cta">
+      <button class="btn-solid" type="button" id="assessBtn">Start with an assessment</button>
+      <span class="note">Free for families · We reply on WhatsApp</span>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap guide" id="checks">
+    <h2>What our team checks on every visit</h2>
+    <p class="sub">We visit each home ourselves before it can receive a placement. These are observations, recorded and dated — not an endorsement, and never a score.</p>
+    <div class="qs">
+      <div class="q"><span class="why">Staffing</span><h3>Night-shift nursing</h3><p>We ask for a number, not "enough", and we see the roster. Nights are when falls, breathing trouble and confusion happen.</p></div>
+      <div class="q"><span class="why">Medical cover</span><h3>Doctor arrangement</h3><p>Who the doctor is, how quickly they can attend, which hospital the home transfers to, and who travels with the resident.</p></div>
+      <div class="q"><span class="why">Money</span><h3>What the fee excludes</h3><p>We collect the fee schedule in writing. Medicines, diapers, physiotherapy, private rooms and hospital escorts are the usual extras.</p></div>
+      <div class="q"><span class="why">Registration</span><h3>Registration sighted</h3><p>We ask to see the National Secretariat for Elders certificate and the date of the last inspection, and record exactly what we saw.</p></div>
+      <div class="q"><span class="why">Evidence</span><h3>Photographed by us</h3><p>Rooms, kitchen and bathrooms, photographed by our team on the day — not supplied by the home.</p></div>
+      <div class="q"><span class="why">Everyday life</span><h3>Daily programme</h3><p>What residents actually did the previous afternoon. A specific answer means there is a programme. A vague one usually means television.</p></div>
     </div>
   </div>
 </section>
@@ -315,11 +349,12 @@
 <div class="wrap">
   <section class="list-cta" id="list">
     <div>
-      <h2>Run a care home in Colombo? Get listed free — and keep it current.</h2>
-      <p>An owner account lets you update fees, beds and details yourself after we validate you by phone — and freshly updated homes sort to the top.</p>
+      <h2>Run a care home in Colombo? Get listed free — and receive assessed referrals.</h2>
+      <p>Complete the onboarding form and we will arrange a field visit. Once visited, your home can receive families we have clinically assessed — matched on care need, not on who pays.</p>
       <ul class="pricing">
-        <li><b>Free.</b> Listing, claiming and updating your home costs nothing — we just validate that you're the owner.</li>
-        <li><b>No paid placement.</b> Results are never sponsored — order is earned by keeping your listing current.</li>
+        <li><b>Free.</b> Listing, claiming and updating your home costs nothing, and visits are free for every home, always.</li>
+        <li><b>No paid placement.</b> Results are never sponsored. No home can buy visibility or move up a shortlist.</li>
+        <li><b>You pay only when a family we assessed attends a visit</b> — invoiced beforehand, credited in full if they do not turn up.</li>
       </ul>
     </div>
     <button class="btn" type="button" id="ownerBtn">Update your listing</button>
@@ -327,7 +362,7 @@
 
   <footer class="site">
     <div>© 2026 carehomes.lk, by Blanket Care · Starting in Colombo — more districts soon · Listings are sample data for this prototype.</div>
-    <div><a href="#guide">How to choose</a> · <a href="#list">List a home</a> · <a href="mailto:hello@carehomes.lk">hello@carehomes.lk</a></div>
+    <div><a href="#how">How it works</a> · <a href="#checks">What we check</a> · <a href="#list">List a home</a> · <a href="mailto:hello@carehomes.lk">hello@carehomes.lk</a></div>
   </footer>
 </div>
 
@@ -374,6 +409,24 @@
     <div class="steps" id="oSteps"><span></span><span></span><span></span></div>
     <div id="oStepBody"></div>
   </div></div>
+</dialog>
+
+<dialog id="enquiry" aria-labelledby="eTitle">
+  <div class="dlg-head"><div><h2 id="eTitle">Start with an assessment</h2><div class="where" id="eSub">Free for families. A clinician sees your relative before any home is suggested.</div></div><button class="x" type="button" data-close aria-label="Close">×</button></div>
+  <div class="sheet-body">
+    <div class="f"><span class="lbl">Suburbs you would consider</span><div class="chips" id="eSuburbs"></div></div>
+    <div class="f enq-field"><label for="eAge">Age of the person needing care</label><input id="eAge" type="number" min="40" max="120" inputmode="numeric" placeholder="e.g. 78" /></div>
+    <div class="f"><label for="eBudget">Monthly budget, up to</label><div class="range-row"><input id="eBudget" type="range" min="50000" max="500000" step="10000" value="150000" /><output id="eBudgetOut">LKR 150,000</output></div></div>
+    <div class="f enq-field"><label for="eCond">Known conditions (optional)</label>
+      <textarea id="eCond" rows="3" placeholder="e.g. early dementia, uses a walker, diabetic"></textarea>
+      <p class="privacy-note">This stays in your browser. It is written into your WhatsApp message and is never stored on carehomes.lk.</p>
+    </div>
+    <div class="f" id="eShortWrap" hidden><span class="lbl">Homes you have shortlisted</span><div class="enq-short" id="eShortList"></div></div>
+  </div>
+  <div class="sheet-foot">
+    <button class="btn-quiet" type="button" data-close>Cancel</button>
+    <button class="btn-solid" type="button" id="eSend">Open WhatsApp</button>
+  </div>
 </dialog>
 
 <div class="toast" id="toast" role="status"></div>
@@ -561,6 +614,17 @@ function init(){
   document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => b.closest("dialog").close());
   document.querySelectorAll("dialog").forEach(dl => dl.addEventListener("click", e => { if (e.target === dl) dl.close(); }));
 
+  // assessment enquiry
+  [...new Set(HOMES.map(h=>h.suburb))].sort().forEach(su => {
+    const b = document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=su;
+    b.setAttribute("aria-pressed","false");
+    b.onclick = () => { enquiryState.suburbs.has(su) ? enquiryState.suburbs.delete(su) : enquiryState.suburbs.add(su); b.setAttribute("aria-pressed", enquiryState.suburbs.has(su)); };
+    $("#eSuburbs").appendChild(b);
+  });
+  $("#eBudget").addEventListener("input", e => { $("#eBudgetOut").textContent = fmt(+e.target.value); });
+  $("#assessBtn").addEventListener("click", () => openEnquiry(null));
+  $("#eSend").addEventListener("click", sendEnquiry);
+
   render();
 }
 
@@ -697,7 +761,6 @@ function drawFallbackPins(){
 function openDetail(h){
   $("#dName").textContent = h.name;
   $("#dWhere").textContent = `${h.suburb} · ${h.beds} beds · owner-updated ${fmtDate(h.lastUpdated)}${h.visited ? " · visited by our team" : " · not yet visited"}`;
-  const wa = h.phone.replace(/\D/g,"");
   $("#dBody").innerHTML = `
     <div class="full sample-note">Prototype listing — details are illustrative and should be verified with the home.</div>
     <div class="kv full"><p style="color:var(--ink);font-size:15.5px">${h.desc}</p></div>
@@ -708,11 +771,13 @@ function openDetail(h){
     <div class="kv"><h4>Languages spoken by staff</h4><p>${h.languages.join(", ")}</p></div>
     <div class="kv"><h4>Visiting</h4><p>${h.visiting}</p></div>
     <div class="kv full"><h4>Facilities</h4><div class="tags">${h.features.map(f=>`<span class="tag">${f}</span>`).join("")}</div></div>
-    <div class="kv full"><h4>Contact the home directly</h4><div class="contact">
-      <a class="primary" href="tel:${h.phone}">Call ${h.phone}</a>
-      <a href="https://wa.me/${wa}?text=${encodeURIComponent("Hello, I found "+h.name+" on carehomes.lk and would like to ask about a place for my parent.")}" target="_blank" rel="noopener">WhatsApp</a>
+    <div class="kv full"><h4>Interested in this home?</h4>
+    <p style="margin:0 0 11px;color:var(--ink-2);font-size:14px">Every placement starts with a clinical assessment, so enquiries come to us rather than to the home. Tell us about your relative and we will take it from there.</p>
+    <div class="contact">
+      <button class="primary" type="button" id="dAsk">Ask us about ${h.name}</button>
       <button type="button" id="dShort" aria-pressed="${state.short.has(h.id)}">${state.short.has(h.id)?"On your shortlist":"Add to shortlist"}</button>
     </div></div>`;
+  $("#dAsk").onclick = () => { $("#detail").close(); openEnquiry(h); };
   $("#dShort").onclick = () => { toggleShort(h.id); const on = state.short.has(h.id); $("#dShort").setAttribute("aria-pressed", on); $("#dShort").textContent = on ? "On your shortlist" : "Add to shortlist"; };
   $("#detail").showModal();
 }
@@ -806,6 +871,52 @@ function applyOwnerUpdate(){
   h.lastUpdated = new Date().toISOString().slice(0,10);
   owner.step = 3; drawOwner(); render();
   toast(`${h.name} updated — owner-verified, free`);
+}
+
+/* ---------- assessment enquiry ----------
+   Every CTA routes here, then to WhatsApp. Families never contact homes
+   directly — placement follows a clinical assessment.
+
+   The conditions field is deliberately never sent anywhere: it is read from
+   the DOM, written straight into the WhatsApp text, and discarded. Nothing
+   about a person's health is posted to carehomes.lk or stored in any log. */
+const WA_NUMBER = "94768564198";
+const enquiryState = { suburbs: new Set(), home: null };
+
+function shortlistedNames(extra){
+  const names = HOMES.filter(h => state.short.has(h.id)).map(h => h.name);
+  if (extra && !names.includes(extra.name)) names.unshift(extra.name);
+  return names;
+}
+
+function openEnquiry(home){
+  enquiryState.home = home || null;
+  $("#eSub").textContent = home
+    ? `About ${home.name} — a clinician assesses your relative before any home is confirmed.`
+    : "Free for families. A clinician assesses your relative before any home is suggested.";
+  const names = shortlistedNames(home);
+  $("#eShortWrap").hidden = names.length === 0;
+  $("#eShortList").textContent = names.join(" · ");
+  $("#enquiry").showModal();
+}
+
+function sendEnquiry(){
+  const age = $("#eAge").value.trim();
+  const cond = $("#eCond").value.trim();
+  const subs = [...enquiryState.suburbs];
+  const names = shortlistedNames(enquiryState.home);
+
+  const lines = ["Hello, I would like to arrange a care assessment."];
+  if (age) lines.push(`Age: ${age}`);
+  lines.push(`Budget: up to ${fmt(+$("#eBudget").value)} per month`);
+  if (subs.length) lines.push(`Suburbs: ${subs.join(", ")}`);
+  if (cond) lines.push(`Known conditions: ${cond}`);
+  if (names.length) lines.push(`Homes I am interested in: ${names.join(", ")}`);
+  lines.push("— sent from carehomes.lk");
+
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`, "_blank", "noopener");
+  $("#enquiry").close();
+  toast("Opening WhatsApp — we reply during working hours.");
 }
 
 init();
