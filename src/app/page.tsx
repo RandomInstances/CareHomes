@@ -57,7 +57,7 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
               <Link
                 key={s.id}
                 href={`/${s.slug}`}
-                className="shrink-0 rounded-full px-2.5 py-1 text-[13.5px] text-ink-2 whitespace-nowrap hover:bg-surface hover:text-teal transition-colors"
+                className="shrink-0 rounded-full border border-line bg-surface px-3 py-1.5 text-[13.5px] text-ink-2 whitespace-nowrap hover:border-teal hover:text-teal transition-colors"
               >
                 {s.name}
                 <span className="text-muted ml-1 text-[12px] tabular-nums">{s._count.homes}</span>

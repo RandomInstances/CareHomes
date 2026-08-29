@@ -87,7 +87,9 @@ export function FilterBar({ basePath, extra }: { basePath: string; extra?: React
 
         {/* Four options behind a dropdown was a click that bought nothing.
             Each is now one tap, named on hover and to a screen reader. */}
-        <div className="ml-auto flex items-center gap-1" role="group" aria-label="Sort homes">
+        <div className="ml-auto flex items-center gap-1">
+          <span className="text-[13px] text-muted mr-1 hidden sm:inline">Sort by</span>
+          <div className="flex items-center gap-1" role="group" aria-label="Sort homes">
           {SORTS.map((s) => {
             const on = sort === s.value;
             return (
@@ -125,6 +127,7 @@ export function FilterBar({ basePath, extra }: { basePath: string; extra?: React
               </span>
             );
           })}
+          </div>
         </div>
       </div>
 
