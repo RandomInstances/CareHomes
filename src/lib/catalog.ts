@@ -39,10 +39,26 @@ export function isCareType(value: string | undefined): value is CareTypeValue {
 }
 
 export const SORTS = [
-  { value: "updated", label: "Recently updated" },
-  { value: "fee-asc", label: "Lowest fee first" },
-  { value: "fee-desc", label: "Highest fee first" },
-  { value: "beds", label: "Most beds available" },
+  {
+    value: "updated",
+    label: "Recently updated",
+    icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  },
+  {
+    value: "fee-asc",
+    label: "Lowest fee first",
+    icon: '<path d="M4 6h4M4 12h7M4 18h10"/><path d="M18 18V6"/><path d="M15 9l3-3 3 3"/>',
+  },
+  {
+    value: "fee-desc",
+    label: "Highest fee first",
+    icon: '<path d="M4 6h10M4 12h7M4 18h4"/><path d="M18 6v12"/><path d="M15 15l3 3 3-3"/>',
+  },
+  {
+    value: "beds",
+    label: "Most beds available",
+    icon: '<path d="M2.5 17.5v-5h19v5"/><path d="M2.5 17.5v3M21.5 17.5v3"/><path d="M6.5 12.5v-3h5v3"/>',
+  },
 ] as const;
 
 export type SortValue = (typeof SORTS)[number]["value"];

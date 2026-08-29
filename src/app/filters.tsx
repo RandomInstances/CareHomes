@@ -85,36 +85,47 @@ export function FilterBar({ basePath, extra }: { basePath: string; extra?: React
 
         {extra}
 
-        <label className="flex items-center gap-2 text-sm ml-auto">
-          <span className="hidden sm:inline text-muted shrink-0">Sort</span>
-          <span className="relative inline-flex items-center">
-            <select
-              value={sort}
-              onChange={(e) => setParam("sort", e.target.value === "updated" ? null : e.target.value)}
-              className="appearance-none rounded-full border border-line-2 bg-surface pl-3.5 pr-9 py-2 text-[13px] sm:text-sm leading-none text-ink cursor-pointer hover:border-teal focus:outline-none focus-visible:ring-2 focus-visible:ring-teal"
-            >
-              {SORTS.map((s) => (
-                <option key={s.value} value={s.value}>
+        {/* Four options behind a dropdown was a click that bought nothing.
+            Each is now one tap, named on hover and to a screen reader. */}
+        <div className="ml-auto flex items-center gap-1" role="group" aria-label="Sort homes">
+          {SORTS.map((s) => {
+            const on = sort === s.value;
+            return (
+              <span key={s.value} className="relative group/sort">
+                <button
+                  type="button"
+                  onClick={() => setParam("sort", s.value === "updated" ? null : s.value)}
+                  aria-pressed={on}
+                  aria-label={s.label}
+                  className={`grid place-items-center w-9 h-9 rounded-full border transition-colors ${
+                    on
+                      ? "border-teal bg-teal-soft text-teal"
+                      : "border-transparent text-muted hover:text-ink hover:bg-surface"
+                  }`}
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                    dangerouslySetInnerHTML={{ __html: s.icon }}
+                  />
+                </button>
+                <span
+                  role="tooltip"
+                  className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-1.5 hidden group-hover/sort:block whitespace-nowrap rounded-md bg-ink text-white text-[11.5px] font-medium px-2 py-1 shadow-lg z-30"
+                >
                   {s.label}
-                </option>
-              ))}
-            </select>
-            <svg
-              aria-hidden
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="pointer-events-none absolute right-3 text-muted"
-            >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </span>
-        </label>
+                </span>
+              </span>
+            );
+          })}
+        </div>
       </div>
 
       {open ? (
