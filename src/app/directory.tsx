@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 import { FilterBar } from "@/app/filters";
+import { FeatureIcon } from "@/app/feature-icon";
 import { HomeScene } from "@/app/home-scene";
 
 // Leaflet touches window on import, so it must not run during SSR.
@@ -166,6 +167,20 @@ function Card({
           <span className="text-turmeric">Waiting list</span>
         )}
       </p>
+
+      {home.features.length ? (
+        <ul className="flex items-center gap-2 mt-2 text-muted">
+          {home.features.slice(0, 4).map((f) => (
+            <li key={f} title={f} className="shrink-0">
+              <FeatureIcon feature={f} />
+              <span className="sr-only">{f}</span>
+            </li>
+          ))}
+          {home.features.length > 4 ? (
+            <li className="text-[12.5px] tabular-nums">+{home.features.length - 4}</li>
+          ) : null}
+        </ul>
+      ) : null}
     </div>
   );
 }

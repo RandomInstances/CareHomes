@@ -77,6 +77,13 @@ export const FEATURES = [
   "Family video calls",
   "Diabetic diets",
   "Vegetarian meals",
+  "All meals included",
+  "Lift",
+  "Wi-Fi",
+  "Laundry",
+  "Parking",
+  "Backup generator",
+  "Security",
 ];
 
 export const FEE_MAX = 500000;

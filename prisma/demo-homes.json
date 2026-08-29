@@ -7,7 +7,7 @@
     "description": "An eight-bed, doctor-led home where every resident has a private en-suite room and a named care plan. Small on purpose: one carer to two residents by day, daily physician rounds, and a weekly video update for family overseas.",
     "lat": 6.906,
     "lng": 79.958,
-    "feeFrom": 350000,
+    "feeFrom": 180000,
     "feeTo": 350000,
     "feeExcludes": [
       "Medicines and specialist consultations"
@@ -31,7 +31,10 @@
       "Garden",
       "Wheelchair accessible",
       "Family video calls",
-      "Diabetic diets"
+      "Diabetic diets",
+      "Lift",
+      "Wi-Fi",
+      "All meals included"
     ],
     "languages": [
       "SINHALA",

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { FeatureList } from "@/app/feature-icon";
 import { SiteFooter } from "@/app/site-footer";
 import { SiteHeader } from "@/app/site-header";
 import { formatFee } from "@/lib/catalog";
@@ -211,13 +212,9 @@ export default async function HomePage({ params }: PageProps<"/[suburb]/[home]">
         {home.features.length ? (
           <div className="mt-5">
             <Detail label="Facilities">
-              <ul className="flex flex-wrap gap-2 mt-1">
-                {home.features.map((f) => (
-                  <li key={f} className="rounded-full bg-surface border border-line px-3 py-1 text-sm">
-                    {f}
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-2">
+                <FeatureList features={home.features} />
+              </div>
             </Detail>
           </div>
         ) : null}
