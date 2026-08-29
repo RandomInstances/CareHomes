@@ -1,26 +1,48 @@
 @import "tailwindcss";
 
+/* Palette carried over from the prototype so the real site does not read as a
+   different product. Deliberately single-theme: a directory families browse in
+   daylight on a phone, not an app they live in. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ch-bg: #f7f8f6;
+  --ch-surface: #ffffff;
+  --ch-ink: #16292c;
+  --ch-ink-2: #4c6164;
+  --ch-muted: #7a8e90;
+  --ch-line: #e0e5e3;
+  --ch-line-2: #cfd7d5;
+  --ch-teal: #0e5c55;
+  --ch-teal-soft: #d8e8e5;
+  --ch-turmeric: #b4780f;
+  --ch-turmeric-soft: #f6ead2;
+  --ch-ok: #2b6a4e;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-bg: var(--ch-bg);
+  --color-surface: var(--ch-surface);
+  --color-ink: var(--ch-ink);
+  --color-ink-2: var(--ch-ink-2);
+  --color-muted: var(--ch-muted);
+  --color-line: var(--ch-line);
+  --color-teal: var(--ch-teal);
+  --color-teal-soft: var(--ch-teal-soft);
+  --color-turmeric: var(--ch-turmeric);
+  --color-turmeric-soft: var(--ch-turmeric-soft);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ch-bg);
+  color: var(--ch-ink);
+  font-family: var(--font-body), "Segoe UI", system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.02em;
 }

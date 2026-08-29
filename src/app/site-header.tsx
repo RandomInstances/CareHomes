@@ -1,0 +1,53 @@
+import Link from "next/link";
+
+export function SiteHeader({ query }: { query?: string }) {
+  return (
+    <header className="bg-[--ch-surface] border-b border-[--ch-line] sticky top-0 z-10">
+      <div className="mx-auto max-w-6xl px-5 h-16 flex items-center gap-5">
+        <Link href="/" className="shrink-0">
+          <span className="block font-[family-name:--font-display] font-bold text-xl leading-none">
+            carehomes<span className="text-[--ch-teal]">.lk</span>
+          </span>
+          <span className="block text-[10.5px] text-[--ch-muted] mt-0.5">by Blanket Care</span>
+        </Link>
+
+        <form action="/" className="flex-1 max-w-md">
+          <label htmlFor="q" className="sr-only">
+            Search a suburb or home
+          </label>
+          <div className="flex items-center gap-2 border border-[--ch-line-2] rounded-full px-4 py-2 bg-[--ch-bg] focus-within:border-[--ch-teal]">
+            <span className="text-sm text-[--ch-muted] shrink-0">Colombo</span>
+            <span className="w-px h-4 bg-[--ch-line-2]" aria-hidden />
+            <input
+              id="q"
+              name="q"
+              type="search"
+              defaultValue={query ?? ""}
+              placeholder="Search a suburb or home"
+              className="flex-1 bg-transparent text-sm outline-none min-w-0"
+            />
+            <button type="submit" aria-label="Search" className="text-[--ch-teal] shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </header>
+  );
+}
+
+export function SiteFooter() {
+  return (
+    <footer className="mx-auto max-w-6xl px-5 py-10 mt-10 border-t border-[--ch-line] text-sm text-[--ch-muted] space-y-1.5">
+      <p>© 2026 carehomes.lk, by Blanket Care · Starting in Colombo, more districts soon.</p>
+      <p>
+        We list care homes and show what our team saw when we visited. We do not
+        inspect or endorse homes we have not visited, and families should satisfy
+        themselves before making any placement.
+      </p>
+    </footer>
+  );
+}

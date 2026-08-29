@@ -1,104 +1,72 @@
 # carehomes.lk — build spec
 
-**Version 3.0 · 29 August 2026**
+**Version 4.0 · 29 August 2026**
 
-This document is the source of truth for what carehomes.lk is and how it makes
-money. It replaces `carehomes-spec.md` v2.0 in full. Where the two disagree,
-this one wins.
+Source of truth for what carehomes.lk is and how it makes money. Supersedes
+v3.0 and the original `carehomes-spec.md` in full.
 
-> **Why it was rewritten.** v2.0 had been edited across versions v1.2 → v2.0
-> without removing superseded text, so it simultaneously specified and forbade
-> sponsored placement, specified and dropped the owner subscription, and
-> described a PayHere flow after payments had been removed. The commercial model
-> then changed again on 29 August. Everything below reflects decisions actually
-> in force.
+> **What changed from v3.0.** The paid, clinician-led placement service is
+> removed. carehomes.lk is now a **directory**: homes pay to be listed, families
+> browse and contact homes directly, and nobody is charged for a placement.
+> Everything that described assessments, shortlisting, a placement fee or a
+> central enquiry funnel is gone.
 
 ---
 
 ## 1. What it is
 
-**carehomes.lk, by Blanket Care** — a care-home directory for Colombo and a
-paid, clinician-led placement service.
+**carehomes.lk, by Blanket Care** — a care-home directory for Colombo.
 
-Families browse homes freely. When they want help choosing, a registered
-clinician assesses their relative in person, and we shortlist, arrange visits
-and support the move for a fixed fee.
+Families search, compare and contact homes themselves. Each listed home has its
+own WhatsApp number on its page. Homes pay to be listed and to be verified.
 
-The platform is openly operated by Blanket Care, which owns care homes of its
-own. That is disclosed on the site, not buried.
+The site is openly operated by Blanket Care, which runs care homes of its own.
+Blanket homes appear as ordinary listings and are labelled as Blanket-operated
+on their page.
 
 ---
 
 ## 2. Commercial model
 
-### Families — LKR 10,000 per placement
+**Families pay nothing.** There is no placement fee, no assessment fee and no
+charge of any kind to a family.
 
-A single fee of **LKR 10,000**, covering the clinical assessment, the shortlist,
-arranging visits and support to move-in.
-
-> Revised down from 50,000 on 29 August 2026. The earlier 25,000 + 25,000 split
-> is gone: at this price a two-stage payment costs more in administration than
-> it protects.
->
-> **Consequence to watch.** At 10,000 the fee no longer covers a nurse's time
-> for an assessment that does not convert. This service is now effectively
-> subsidised by Blanket occupancy rather than self-funding, which is a
-> defensible choice — but it should be a deliberate one, and the
-> assessment-to-placement conversion rate is now the number that matters most.
-
-> The earlier "Always free for families" promise is **withdrawn**. It must not
-> appear anywhere on the site or in marketing.
-
-### Homes — free to list, paid to verify
+### Homes
 
 | Tier | Cost | What it is |
 |---|---|---|
-| **Unverified** | Free | Self-serve account. The home lists itself and keeps its own details current, like any listings site. |
-| **Verified** | LKR 50,000 one-time, then LKR 1,000/month from year two | Our field visit and inspection, the Verified badge, and the first twelve months listed. |
+| **Unverified** | Free | Self-serve listing. The home keeps its own details current. |
+| **Verified** | LKR 50,000 one-time, then LKR 1,000/month from year two | Our field visit and inspection, the "Visited by our team" badge, and the first twelve months listed. |
 
-Year one is bundled into the 50,000 deliberately: collecting roughly USD 3 a
-month from a small home costs more in administration than it earns.
+Year one is bundled into the 50,000: collecting roughly USD 3 a month from a
+small home costs more in administration than it earns.
 
-**Homes never pay per referral.** There is no per-lead fee, no per-attended-visit
-fee and no success fee. Family fees are the only placement revenue.
+**Listing fees are the only revenue.** No per-lead fee, no per-visit fee, no
+success fee, no sponsored placement. Verified conversions are therefore the
+number that decides whether this works commercially.
 
 ### Removed models
 
-These appeared in earlier versions and are **not** in force: sponsored
-placement, the LKR 25,000/yr owner-verified subscription, pay-per-lead wallets,
-success fees payable by homes, the LKR 25,000 per-attended-visit facilitation
-fee, and pay-to-reveal gating of family contact details.
+Not in force, and must not reappear: the LKR 10,000 (previously 50,000) family
+placement fee, the clinician-led assessment funnel, sponsored placement, the
+owner-verified subscription, pay-per-lead wallets, success fees, the
+per-attended-visit facilitation fee, and pay-to-reveal contact gating.
 
 ---
 
-## 3. Ranking and the conflict of interest
+## 3. Ranking
 
-**Verified homes rank ahead of unverified ones everywhere**, including the
-shortlist presented to a family who has paid.
+**Verified homes rank ahead of unverified ones.** Verified means our team has
+visited and inspected the home — registration sighted, night roster seen,
+doctor arrangement confirmed, photographs taken by us. Ranking inspected homes
+first is an evidence signal; that the inspection is paid for is stated in the
+"List a home" section.
 
-This is paid ranking, and it reverses the earlier "nothing paid touches
-matching" rule. It was adopted knowingly. Two things keep it defensible, and
-both are load-bearing:
+Within a tier, homes sort by how recently their owner updated the listing, then
+by name.
 
-1. **Verified means inspected.** The badge records what our team physically
-   sighted — registration certificate, night roster, doctor arrangement,
-   photographs taken by us. Ranking inspected homes first is an evidence signal,
-   not an auction. That the inspection is paid for is stated publicly in the
-   "List a home" section.
-2. **The placement pool is not restricted to payers.** Best clinical fit wins.
-   An unverified home can be recommended; we visit it first, at our cost,
-   before any placement proceeds.
-
-**Blanket Care homes enter by the same criteria as every other home.** The rule
-that survives from every earlier version, and must be published:
-
-> If Blanket cannot meet the patient's clinical need — wrong care level, no bed,
-> wrong region — the patient goes to the best-fit home, full stop.
-> **Blanket first when fit; never Blanket against fit.**
-
-Because the family now *pays*, this matters more than it did, not less. A paying
-customer steered toward the operator's own home has a real grievance. Blanket
-ownership must be disclosed before payment, not after.
+Unverified homes are listed and reachable in full. They carry a plain notice
+that we have not visited them and that their details were supplied by the home.
 
 ---
 
@@ -106,183 +74,146 @@ ownership must be disclosed before payment, not after.
 
 Launch covers Colombo district. The UI exposes **suburbs** — Nugegoda, Malabe,
 Dehiwela, Mount Lavinia, Rajagiriya, Nawala, Battaramulla, Kotte, Maharagama,
-Pannipitiya, Ratmalana, Wellawatte, Moratuwa, Colombo 1–15. The data model keeps
-a `district` column defaulting to `"Colombo"` so expansion is additive.
+Pannipitiya, Ratmalana, Wellawatte, Moratuwa, Colombo 3–8. The `district` column
+defaults to `"Colombo"` so expansion is additive.
 
-Sinhala and Tamil are a fast-follow. Copy is structured for translation from day
-one — an English-only site reaches a fraction of Sri Lankan families, and
-retrofitting translations onto single-language tables means a rebuild.
-
----
-
-## 5. The family journey
-
-Directory first, process immediately beneath it: people arrive from search
-wanting to look, and the steps catch them once they are interested.
-
-1. **Medical evaluation** — a registered clinician assesses the person in
-   person, physical and mental. Nothing is decided from a form or a phone call.
-2. **Shortlisting properties** — the assessment is matched against homes, and
-   only those that can genuinely meet the need are shortlisted.
-3. **Placement** — we arrange the visits, coordinate with the home, and stay
-   with the family through the move.
-
-### Contact routing
-
-**Families never contact homes directly.** No home telephone number, WhatsApp
-link or email is rendered anywhere — not on cards, not in the detail view, not
-in the compare table.
-
-Every call to action routes to a short form, which then opens WhatsApp
-pre-filled. WhatsApp: **+94 76 856 4198** (Dr. Minoli Ekanayake).
-
-> **Operational risk, unresolved.** That is a named clinician's personal number
-> on a public website. It will be scraped, it cannot be rotated without a code
-> change, and if she is unavailable the funnel stops. A company-owned WhatsApp
-> Business number forwarded to her removes all three.
-
-### The enquiry form
-
-Collects: the enquirer's first name, suburbs under consideration, the person's
-age, a monthly budget cap, known conditions (optional), and any homes already
-shortlisted.
-
-The WhatsApp message opens as a sentence a person can read at a glance, not a
-form dump:
-
-> Hi, I'm Kasun — looking for a care home in Nugegoda, Rajagiriya at a budget
-> of up to LKR 150,000 per month.
->
-> Age: 78
-> Known conditions: early dementia, uses a walker
-> Homes I'm interested in: Sirimal Home, Lotus Memory Care
->
-> — sent from carehomes.lk
-
-Verified working end to end on a real device, 29 August 2026.
+Sinhala and Tamil are a fast-follow; `HomeTranslation` exists now so adding them
+is a content job, not a migration.
 
 ---
 
-## 6. Clinical data boundary
+## 5. URL structure
 
-**No assessment content ever enters the database.** No ADLs, cognition scores,
-medications, diagnoses, falls risk or clinical free-text.
+Every home has its own indexable page. **No modals for primary content** — a
+popup cannot be linked to, shared, or ranked.
 
-The assessment stays with the Blanket Care clinician, is handed to the patient,
-and the patient shares it with the care home directly. There is no data
-pass-through at any point.
+| Page | URL |
+|---|---|
+| Directory | `/` |
+| Suburb | `/nugegoda` |
+| Home | `/nugegoda/sirimal-home` |
 
-**The conditions field is never transmitted.** It is read from the DOM, written
-into the WhatsApp message, and discarded. It is not posted to any endpoint and
-appears in no log.
+Suburb slugs are globally unique, so expansion adds new slugs rather than
+colliding. If a future district ever repeats a suburb name, that one slug gets
+qualified (`nugegoda-kandy`) rather than the whole scheme changing — URLs are
+the one thing that cannot be changed later without losing search rankings.
 
-**What is recorded:** suburbs, age, budget band, timeframe, the listing the
-enquiry came from, which homes were recommended, and what happened next.
+Cards **open in a new tab**, so a family can keep several homes open side by
+side while comparing, which is how people actually shop for this.
 
-`familyName` and `phone` are **optional** on the enquiry record. The form now
-collects a first name for the WhatsApp greeting, so a first name *could* be
-stored; the phone number still never reaches us, since identity arrives in the
-clinician's inbox rather than our database. Storing a bare first name alongside
-a suburb and budget is low-risk, but it is a choice to make deliberately when
-enquiry recording is built — the default should remain not storing it.
-
-This produces a privacy statement that is literally true rather than merely
-reassuring: **we hold no medical records.**
+Each home page carries `LocalBusiness` structured data and a canonical URL.
 
 ---
 
-## 7. Roles
+## 6. Contact
 
-1. **Visitor / family** — no account. Search, filter, shortlist, compare,
-   enquire. Shortlist persists in `localStorage`.
-2. **Owner** — account tied to one or more homes, validated by SMS OTP to the
-   number on file plus admin approval. Owners never write to a listing directly:
-   edits are stored as a diff and applied only on admin approval, which stamps
-   `ownerUpdatedAt`.
-3. **Admin** — approves listings and claims, reviews every edit before it goes
-   live, records field visits, manages verification and invoices.
+**Each home is contacted directly.** Its own WhatsApp number appears on its
+page, with a pre-filled message naming the home, plus a call button where a
+phone number exists.
+
+The number `+94 76 856 4198` belongs to **Blanket Care Malabe** as that home's
+listing contact. It is not a site-wide enquiry line.
+
+There is no central enquiry form and no placement funnel.
+
+---
+
+## 7. Data held
+
+No clinical or medical data is collected anywhere. The site holds listing
+information supplied by homes or recorded by our field team, plus anonymous
+usage events.
+
+`Enquiry`, `Recommendation`, `Appointment` and `Placement` tables exist in the
+schema from the placement-service era and are currently unused. They are
+harmless, and left in place rather than dropped in case a guided service
+returns — but nothing writes to them.
+
+---
+
+## 8. Roles
+
+1. **Visitor / family** — no account. Search, browse, contact homes directly.
+2. **Owner** — account created by an admin during onboarding. Signs in with
+   phone and password to keep the listing current. Edits are reviewed before
+   they go live; verified homes' edits are approved faster.
+3. **Admin** — password held in the Railway variable `ADMIN_PASSWORD`. Creates
+   and edits listings, records field visits, manages verification, issues owner
+   credentials.
 
 ### How a home gets listed
 
-Onboarding form → admin review → field visit. The form walks the home through
-the process before it takes contact details. Nothing goes live unreviewed.
+Onboarding form → admin review → field visit if they are paying for
+verification. Free listings go live after review without a visit.
 
 ---
 
-## 8. Attribution
+## 9. Attribution
 
-Event logging is live from the first visitor, not deferred to a later milestone.
-Without it, a pricing decision in month nine is a rebuild rather than a switch.
-
-Logged: listing views, searches, filters applied, shortlist additions, compare
-views, enquiry submissions, and the funnel through to move-in. An anonymous
-`sessionId` lets pre-enquiry browsing be joined to an enquiry later.
+Event logging from the first visitor: listing views, searches, and WhatsApp
+click-throughs per listing. Since families now contact homes directly, the
+WhatsApp click is the conversion event, and per-listing click counts are the
+evidence used when selling verification to a home.
 
 ---
 
-## 9. Payments
+## 10. Payments
 
-No gateway is integrated yet.
-
-- **Family fee (LKR 10,000)** — a card payment is still worth having, but at
-  10,000 the friction of a bank transfer is far less damaging than it was at
-  25,000. **PAYable** remains the chosen provider; Sri Lanka is not supported by
-  Stripe.
-- **Home verification and renewals** — invoice and bank transfer, tracked in the
-  ops console. No gateway required.
-- **Card tokenisation** for the LKR 1,000/month renewal is not urgent, since
-  year one is bundled. Confirm PAYable supports recurring charges before year
-  two.
+No gateway. Home verification and renewals are invoiced and settled by bank
+transfer, tracked in the ops console. **PAYable** remains the chosen provider if
+a gateway is ever added; Sri Lanka is not supported by Stripe.
 
 ---
 
-## 10. Technical
+## 11. Technical
 
 | | |
 |---|---|
-| Stack | Next.js (App Router) + TypeScript + Tailwind |
+| Stack | Next.js 16.3 (App Router) + TypeScript + Tailwind |
 | Database | PostgreSQL via Prisma **7.10.0** (pinned — npm `latest` resolves to an 8.0 release candidate) |
 | Hosting | Railway — app and Postgres, both in `asia-southeast1` (Singapore) |
 | Repo | `RandomInstances/CareHomes` |
 | Domain | carehomes.lk |
-| Maps | Leaflet + OpenStreetMap, price-pin markers |
-| Fonts | Bricolage Grotesque · Public Sans · IBM Plex Mono |
+| Fonts | Bricolage Grotesque · Public Sans |
 
-The public directory is **server-rendered**. A directory's growth channel is
-Google, so pages must return real HTML, with a page per home, per suburb and per
-care type, and `LocalBusiness` structured data. It must work on a low-end
-Android over mobile data.
+Pages are server-rendered. A directory's growth channel is Google, so pages
+must return real HTML and work on a low-end Android over mobile data.
 
-> **Railway does not apply `railway.json` to this service.** The `region` key was
-> ignored and `preDeployCommand` never ran, leaving a green deployment over an
-> empty database. Migrations therefore run from the npm `start` script
-> (`prisma migrate deploy && next start`), which the platform cannot skip and
-> which is idempotent. Deploy settings are set in the dashboard, and
-> `/api/health` reports migration count so this class of silent failure is
-> visible.
+Next.js 16 conventions that differ from older versions: `cookies()`, `params`
+and `searchParams` are async; `middleware` is now `proxy`; forms use
+`useActionState`, whose action must accept `string | null | undefined` first.
 
----
+> **Railway does not apply `railway.json` to this service.** The `region` key
+> was ignored and `preDeployCommand` never ran, leaving a green deployment over
+> an empty database. Migrations run from the npm `start` script
+> (`prisma migrate deploy && next start`), which the platform cannot skip.
+> Deploy settings are set in the dashboard. `/api/health` reports the applied
+> migration count so this class of silent failure is visible.
 
-## 11. Build order
-
-1. **Public directory** from the database — listings, search, filters,
-   shortlist, compare, map. Visited/verified badges. Attribution live.
-2. **Enquiry capture** — form, non-clinical record, WhatsApp handoff.
-3. **Admin** — listings CRUD, edit-review queue, field visit records,
-   verification and invoice tracking.
-4. **Owner accounts** — OTP claim, edit submission.
-5. **Home onboarding form** — process acknowledgement into the review queue.
-6. **Ops console** — enquiry pipeline, recommendations, appointments,
-   placements, family and home invoices.
-7. **Sinhala and Tamil.**
+The original prototype remains at `/prototype.html` for design reference.
 
 ---
 
-## 12. Open questions
+## 12. Build order
 
-- Is the LKR 10,000 fee refundable if no suitable home is found? Not yet
-  decided, and it must be settled before money is taken.
-- What are the terms if a family withdraws mid-process?
-- Company WhatsApp Business number to replace the personal one.
-- Legal review of the placement agreement and the listing agreement, by a
-  Sri Lankan lawyer, before either is used.
+1. ~~Admin panel~~ — done: listings CRUD, suburb seeding, owner account creation.
+2. ~~Database-backed directory~~ — done: `/`, `/[suburb]`, `/[suburb]/[home]`.
+3. **Owner login and edit submission**, with a review queue.
+4. **Filters** — care type, fee ceiling, language, beds available. Currently
+   search by name and suburb only.
+5. **Map view** — Leaflet with price pins, as in the prototype.
+6. **Photographs** — uploads from field visits; listings show a placeholder now.
+7. **Sitemap and robots.txt.**
+8. **Home onboarding form.**
+9. **Sinhala and Tamil.**
+
+---
+
+## 13. Open questions
+
+- Company WhatsApp Business number for Blanket Care Malabe, rather than a named
+  clinician's personal line on a public page.
+- Legal review of the listing agreement, by a Sri Lankan lawyer, before homes
+  are signed up.
+- Written consent from each home to publish its details, photographs and
+  contact number.
