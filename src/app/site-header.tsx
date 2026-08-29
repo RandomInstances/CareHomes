@@ -45,16 +45,16 @@ function CategoryTab({
 export function SiteHeader({ query, activeCare }: { query?: string; activeCare?: string }) {
   return (
     <header className="relative bg-surface border-b border-line sticky top-0 z-20">
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 sm:relative">
         <div className="h-14 flex sm:grid sm:grid-cols-[1fr_auto_1fr] items-center gap-4">
-          <Link href="/" className="shrink-0">
+          <Link href="/" className="shrink-0 sm:absolute sm:left-6 lg:left-10 sm:top-1/2 sm:-translate-y-1/2 sm:z-10">
             <span className="block font-display font-bold text-[17px] sm:text-xl leading-none">
               carehomes<span className="text-teal">.lk</span>
             </span>
           </Link>
 
           <nav
-            className="flex-1 sm:flex-none min-w-0 h-full flex items-stretch gap-1 sm:gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex-1 sm:flex-none sm:col-start-2 min-w-0 h-full flex items-stretch gap-1 sm:gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             aria-label="Type of care"
           >
             <CategoryTab href="/" label="All homes" icon={ALL_HOMES_ICON} active={!activeCare} />
@@ -72,7 +72,7 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
               nav stays on the container centre. */}
           <Link
             href="/list-your-home"
-            className="hidden sm:inline-flex items-center justify-self-end rounded-full border border-line-2 px-4 py-2 text-[13px] font-semibold whitespace-nowrap hover:border-teal hover:text-teal transition-colors"
+            className="hidden sm:inline-flex sm:col-start-3 items-center justify-self-end rounded-full border border-line-2 px-4 py-2 text-[13px] font-semibold whitespace-nowrap hover:border-teal hover:text-teal transition-colors"
           >
             List your care home
           </Link>
