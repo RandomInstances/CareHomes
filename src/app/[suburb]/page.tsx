@@ -52,7 +52,7 @@ export default async function SuburbPage({ params, searchParams }: PageProps<"/[
     <>
       <SiteHeader />
 
-      <main className="mx-auto max-w-6xl px-4 sm:px-5 py-6 sm:py-8 flex-1 w-full">
+      <main className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 py-6 sm:py-8 flex-1 w-full">
         <nav className="text-sm text-muted mb-4">
           <Link href="/" className="hover:text-ink">
             Colombo

@@ -45,7 +45,7 @@ function CategoryTab({
 export function SiteHeader({ query, activeCare }: { query?: string; activeCare?: string }) {
   return (
     <header className="relative bg-surface border-b border-line sticky top-0 z-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-5">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
         <div className="h-14 flex sm:grid sm:grid-cols-[1fr_auto_1fr] items-center gap-4">
           <Link href="/" className="shrink-0">
             <span className="block font-display font-bold text-[17px] sm:text-xl leading-none">
@@ -68,8 +68,14 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
               />
             ))}
           </nav>
-          {/* Balances the wordmark so the nav sits on the container centre. */}
-          <div className="hidden sm:block" aria-hidden />
+          {/* Sits in the third track, which also balances the wordmark so the
+              nav stays on the container centre. */}
+          <Link
+            href="/list-your-home"
+            className="hidden sm:inline-flex items-center justify-self-end rounded-full border border-line-2 px-4 py-2 text-[13px] font-semibold whitespace-nowrap hover:border-teal hover:text-teal transition-colors"
+          >
+            List your care home
+          </Link>
         </div>
 
         <div className="pb-5 pt-2.5 flex justify-center">

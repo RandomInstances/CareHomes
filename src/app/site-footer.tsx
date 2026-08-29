@@ -33,7 +33,7 @@ function Item({ href, children }: { href: string; children: React.ReactNode }) {
 export function SiteFooter() {
   return (
     <footer className="bg-surface border-t border-line mt-14">
-      <div className="mx-auto max-w-6xl px-4 sm:px-5 py-10 sm:py-12">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 py-10 sm:py-12">
         <div className="grid grid-cols-2 gap-8 sm:gap-10 lg:grid-cols-4">
           <div className="col-span-2 lg:col-span-1">
             <Link href="/" className="inline-block">
