@@ -44,9 +44,9 @@ function Segment({
   className?: string;
 }) {
   return (
-    <span className={`flex flex-col justify-center px-4 py-1.5 min-w-0 ${className}`}>
-      <span className="text-[11px] font-bold text-ink leading-none">{label}</span>
-      <span className={`text-[13.5px] truncate leading-tight mt-0.5 ${muted ? "text-muted" : "text-ink"}`}>
+    <span className={`flex flex-col justify-center px-5 py-2.5 min-w-0 ${className}`}>
+      <span className="text-[11.5px] font-bold text-ink leading-none">{label}</span>
+      <span className={`text-[14px] truncate leading-tight mt-1 ${muted ? "text-muted" : "text-ink"}`}>
         {value}
       </span>
     </span>
@@ -96,20 +96,20 @@ export function SearchTrigger({ query }: { query?: string }) {
         type="button"
         onClick={() => setOpen(true)}
         aria-expanded={open}
-        className="w-full max-w-2xl flex items-center border border-line-2 rounded-full bg-surface text-left shadow-[0_1px_4px_rgba(23,48,45,0.07)] hover:shadow-[0_3px_14px_rgba(23,48,45,0.14)] transition-shadow"
+        className="w-full max-w-3xl flex items-center border border-line-2 rounded-full bg-surface text-left shadow-[0_2px_10px_rgba(23,48,45,0.10)] hover:shadow-[0_4px_18px_rgba(23,48,45,0.16)] transition-shadow"
       >
         <Segment label="Where" value={query ?? placeLabel} muted={!query && !draft.places.length} className="flex-1" />
-        <span className="w-px h-7 bg-line-2 shrink-0" aria-hidden />
+        <span className="w-px h-8 bg-line-2 shrink-0" aria-hidden />
         <Segment label="Age" value={draft.age || "Any"} muted={!draft.age} className="w-[86px] shrink-0" />
-        <span className="hidden sm:block w-px h-7 bg-line-2 shrink-0" aria-hidden />
+        <span className="hidden sm:block w-px h-8 bg-line-2 shrink-0" aria-hidden />
         <Segment
           label="Budget"
           value={draft.budget < FEE_MAX ? money(draft.budget) : "Any"}
           muted={draft.budget >= FEE_MAX}
           className="hidden sm:flex w-[150px] shrink-0"
         />
-        <span className="grid place-items-center w-9 h-9 rounded-full bg-teal text-white shrink-0 mr-1.5 ml-1">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" aria-hidden>
+        <span className="grid place-items-center w-11 h-11 rounded-full bg-teal text-white shrink-0 mr-1.5 ml-1">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" aria-hidden>
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-3.5-3.5" />
           </svg>

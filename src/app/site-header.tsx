@@ -20,8 +20,8 @@ function CategoryTab({
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`flex items-center gap-2 px-3 py-2 whitespace-nowrap text-[13px] font-semibold border-b-[2.5px] transition-colors ${
-        active ? "text-ink border-ink" : "text-muted border-transparent hover:text-ink"
+      className={`flex items-center gap-2 px-3.5 py-2 rounded-full whitespace-nowrap text-[13px] font-semibold transition-colors ${
+        active ? "bg-bg text-ink" : "text-muted hover:text-ink hover:bg-bg/60"
       }`}
     >
       <svg
