@@ -150,13 +150,29 @@ function Card({
         </button>
       </div>
 
-      <Link href={`/${home.suburb.slug}/${home.slug}`} target="_blank" rel="noopener">
-        <h3 className="font-semibold text-[16px] leading-snug">{home.name}</h3>
-      </Link>
-      {/* Facilities ride on the suburb line rather than a row of their own: at
-          18px they made a taller line than the text around them, which read as
-          a gap. Right-aligned here they fill space that was empty anyway. */}
-      <div className="flex items-center justify-between gap-3">
+      {/* Two balanced rows: name against availability, suburb against
+          facilities. Everything left-aligned stacked left a dead strip down the
+          right of the card, and facilities on their own row made a line taller
+          than the ones around it, which read as a gap. */}
+      <div className="flex items-baseline justify-between gap-3">
+        <Link href={`/${home.suburb.slug}/${home.slug}`} target="_blank" rel="noopener">
+          <h3 className="font-semibold text-[16px] leading-snug">{home.name}</h3>
+        </Link>
+
+        <p className="inline-flex items-center gap-1.5 text-[13.5px] font-medium whitespace-nowrap shrink-0">
+          <span
+            aria-hidden
+            className={`w-1.5 h-1.5 rounded-full ${home.bedsAvailable ? "bg-[#2b6a4e]" : "bg-turmeric"}`}
+          />
+          {home.bedsAvailable ? (
+            <span className="text-[#2b6a4e]">{home.bedsAvailable} free</span>
+          ) : (
+            <span className="text-turmeric">Waiting list</span>
+          )}
+        </p>
+      </div>
+
+      <div className="flex items-center justify-between gap-3 mt-0.5">
         <p className="text-[14.5px] text-ink-2 truncate">{home.suburb.name}</p>
 
         {home.features.length ? (
@@ -174,19 +190,6 @@ function Card({
         ) : null}
       </div>
 
-      <p className="inline-flex items-center gap-1.5 text-[14px] font-medium">
-        <span
-          aria-hidden
-          className={`w-1.5 h-1.5 rounded-full ${home.bedsAvailable ? "bg-[#2b6a4e]" : "bg-turmeric"}`}
-        />
-        {home.bedsAvailable ? (
-          <span className="text-[#2b6a4e]">
-            {home.bedsAvailable} bed{home.bedsAvailable > 1 ? "s" : ""} free
-          </span>
-        ) : (
-          <span className="text-turmeric">Waiting list</span>
-        )}
-      </p>
     </div>
   );
 }
