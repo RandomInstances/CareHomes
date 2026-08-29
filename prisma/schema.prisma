@@ -1,0 +1,426 @@
+// carehomes.lk — data model
+//
+// Scope: Colombo district only (v2.0). `district` exists and defaults to
+// "Colombo" so expansion is additive; the UI exposes `suburb`.
+//
+// CLINICAL DATA BOUNDARY (locked 29 Aug 2026):
+// No assessment content ever enters this database. No ADLs, cognition scores,
+// medications, diagnoses, falls risk, or clinical free-text. The nursing
+// assessment stays with the Blanket Care clinician, is handed to the patient,
+// and the patient shares it with the care home directly. This system records
+// only WHICH homes were recommended and WHAT happened next.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+// Prisma 7 no longer takes the connection URL here — it lives in
+// prisma.config.ts, and the client is constructed with a driver adapter.
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Reference data
+// ---------------------------------------------------------------------------
+
+/// Colombo suburbs drive both the filter UI and the SEO landing pages.
+model Suburb {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  district  String   @default("Colombo")
+  sortOrder Int      @default(0)
+  homes     Home[]
+  createdAt DateTime @default(now())
+
+  @@index([district])
+}
+
+// ---------------------------------------------------------------------------
+// Homes
+// ---------------------------------------------------------------------------
+
+model Home {
+  id          String @id @default(cuid())
+  slug        String @unique
+  name        String
+  description String @db.Text
+
+  suburb   Suburb  @relation(fields: [suburbId], references: [id])
+  suburbId String
+  district String  @default("Colombo")
+  address  String?
+  lat      Float?
+  lng      Float?
+
+  // Fees are LKR per month. feeExcludes is what the fee does NOT cover —
+  // families consistently report this as the thing they get caught out by.
+  feeFrom     Int?
+  feeTo       Int?
+  feeExcludes String[] @default([])
+
+  bedsTotal     Int?
+  bedsAvailable Int?
+  roomTypes     String[] @default([])
+
+  careTypes CareType[] @default([])
+  features  String[]   @default([])
+  languages Language[] @default([])
+
+  nightNurses       Int?
+  doctorArrangement String?
+  transferHospital  String?
+  visitingHours     String?
+
+  phone    String?
+  whatsapp String?
+  email    String?
+
+  status HomeStatus @default(PENDING_REVIEW)
+
+  /// Registered with the National Secretariat for Elders. Null = unknown.
+  nseRegistered Boolean?
+
+  /// Operated by Blanket Care. Disclosed in the UI — never used for ranking.
+  isBlanketHome Boolean @default(false)
+
+  /// Set when an owner claims the listing and keeps it current.
+  ownerUpdatedAt DateTime?
+
+  visits          Visit[]
+  translations    HomeTranslation[]
+  owners          HomeOwner[]
+  edits           Edit[]
+  recommendations Recommendation[]
+  appointments    Appointment[]
+  invoices        Invoice[]
+  events          Event[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, suburbId])
+  @@index([status, ownerUpdatedAt])
+}
+
+/// Sinhala/Tamil localisation is a fast-follow, but the structure exists now —
+/// retrofitting translations onto a single-language table means a rebuild.
+model HomeTranslation {
+  id          String  @id @default(cuid())
+  home        Home    @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  homeId      String
+  locale      Locale
+  name        String?
+  description String? @db.Text
+
+  @@unique([homeId, locale])
+}
+
+/// First-party field visit. This structured, dated, photographed record is the
+/// asset a scraper cannot replicate — and the basis of the factual badge.
+/// Badge language is observational, never approving.
+model Visit {
+  id        String   @id @default(cuid())
+  home      Home     @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  homeId    String
+  visitedOn DateTime
+  officer   String
+
+  nseRegistrationSighted   Boolean @default(false)
+  nightRosterSeen          Boolean @default(false)
+  doctorArrangementSighted Boolean @default(false)
+  photographedByUs         Boolean @default(false)
+  feeScheduleCollected     Boolean @default(false)
+
+  /// Internal operational notes. Never rendered publicly.
+  internalNotes String? @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@index([homeId, visitedOn])
+}
+
+// ---------------------------------------------------------------------------
+// Owners — claim by SMS OTP, edits go through review ("post validation")
+// ---------------------------------------------------------------------------
+
+model Owner {
+  id        String      @id @default(cuid())
+  name      String
+  phone     String      @unique
+  email     String?
+  status    OwnerStatus @default(PENDING)
+  homes     HomeOwner[]
+  edits     Edit[]
+  createdAt DateTime    @default(now())
+}
+
+model HomeOwner {
+  home      Home     @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  homeId    String
+  owner     Owner    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   String
+  claimedAt DateTime @default(now())
+
+  @@id([homeId, ownerId])
+}
+
+/// Owners never write to Home directly. Changes land here and an admin
+/// approves them; approval applies the diff and stamps ownerUpdatedAt.
+model Edit {
+  id         String     @id @default(cuid())
+  home       Home       @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  homeId     String
+  owner      Owner?     @relation(fields: [ownerId], references: [id])
+  ownerId    String?
+  diff       Json
+  status     EditStatus @default(PENDING)
+  reviewedBy String?
+  reviewedAt DateTime?
+  createdAt  DateTime   @default(now())
+
+  @@index([status, createdAt])
+}
+
+model OtpCode {
+  id         String    @id @default(cuid())
+  phone      String
+  codeHash   String
+  expiresAt  DateTime
+  consumedAt DateTime?
+  attempts   Int       @default(0)
+  createdAt  DateTime  @default(now())
+
+  @@index([phone, expiresAt])
+}
+
+// ---------------------------------------------------------------------------
+// Demand funnel
+// ---------------------------------------------------------------------------
+
+/// A family enquiry. Deliberately NON-CLINICAL — see the boundary note above.
+/// careType and budgetBand are routing categories, not assessment output.
+/// There is no free-text condition field: that box is how clinical detail
+/// arrives whether or not you asked for it.
+model Enquiry {
+  id         String  @id @default(cuid())
+  familyName String
+  phone      String
+  whatsapp   String?
+  email      String?
+
+  preferredSuburbs String[]    @default([])
+  careType         CareType?
+  budgetBand       BudgetBand?
+  timeframe        Timeframe?
+
+  status EnquiryStatus @default(NEW)
+  source String?
+
+  recommendations Recommendation[]
+  appointments    Appointment[]
+  events          Event[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
+/// Which homes were recommended. Records the OUTCOME of the assessment,
+/// never its content. Selection is on clinical fit against published criteria;
+/// Blanket homes enter by the same criteria as every other home.
+model Recommendation {
+  id        String   @id @default(cuid())
+  enquiry   Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  enquiryId String
+  home      Home     @relation(fields: [homeId], references: [id])
+  homeId    String
+  rank      Int
+  createdAt DateTime @default(now())
+
+  @@unique([enquiryId, homeId])
+}
+
+/// Billing event is ATTENDED, never BOOKED. No-shows generate a credit.
+model Appointment {
+  id           String            @id @default(cuid())
+  enquiry      Enquiry           @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  enquiryId    String
+  home         Home              @relation(fields: [homeId], references: [id])
+  homeId       String
+  scheduledFor DateTime?
+  status       AppointmentStatus @default(PROPOSED)
+
+  /// Ops sets this when bank transfer is confirmed. Family contact details are
+  /// released to the home only once it is set — "pay to reveal", done manually.
+  detailsReleasedAt DateTime?
+
+  invoice   Invoice?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, scheduledFor])
+}
+
+/// Invoices are issued and reconciled by hand (bank transfer). This table is a
+/// tracker for the ops console, not a payment integration.
+model Invoice {
+  id            String       @id @default(cuid())
+  home          Home         @relation(fields: [homeId], references: [id])
+  homeId        String
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+  appointmentId String?      @unique
+
+  amountLkr       Int
+  reference       String        @unique
+  status          InvoiceStatus @default(ISSUED)
+  issuedAt        DateTime      @default(now())
+  paidConfirmedAt DateTime?
+
+  /// Set when this invoice is a credit note arising from a no-show.
+  creditForInvoiceId String?
+
+  @@index([status, issuedAt])
+}
+
+// ---------------------------------------------------------------------------
+// Attribution — live from day one, so month 9 is a pricing switch, not a rebuild
+// ---------------------------------------------------------------------------
+
+model Event {
+  id        String    @id @default(cuid())
+  type      EventType
+  home      Home?     @relation(fields: [homeId], references: [id])
+  homeId    String?
+  enquiry   Enquiry?  @relation(fields: [enquiryId], references: [id])
+  enquiryId String?
+
+  /// Anonymous browser session, so pre-enquiry behaviour can be joined later.
+  sessionId String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@index([homeId, type, createdAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actor     String
+  action    String
+  entity    String
+  entityId  String
+  before    Json?
+  after     Json?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum CareType {
+  ASSISTED_LIVING
+  NURSING
+  DEMENTIA
+  RESPITE
+  PALLIATIVE
+  REHAB
+}
+
+enum Language {
+  SINHALA
+  TAMIL
+  ENGLISH
+}
+
+enum Locale {
+  EN
+  SI
+  TA
+}
+
+enum HomeStatus {
+  DRAFT
+  PENDING_REVIEW
+  LIVE
+  SUSPENDED
+}
+
+enum OwnerStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+
+enum EditStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BudgetBand {
+  UNDER_75K
+  BAND_75_150K
+  BAND_150_250K
+  OVER_250K
+}
+
+enum Timeframe {
+  IMMEDIATE
+  WITHIN_1_MONTH
+  WITHIN_3_MONTHS
+  EXPLORING
+}
+
+enum EnquiryStatus {
+  NEW
+  TRIAGED
+  ASSESSED
+  PROFILE_SENT
+  HOME_ACCEPTED
+  BOOKED
+  ATTENDED
+  MOVED_IN
+  CLOSED
+}
+
+enum AppointmentStatus {
+  PROPOSED
+  INVOICED
+  CONFIRMED
+  ATTENDED
+  NO_SHOW
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  ISSUED
+  PAID
+  CREDITED
+  VOID
+}
+
+enum EventType {
+  LISTING_VIEW
+  SEARCH
+  FILTER_APPLIED
+  SHORTLIST_ADD
+  COMPARE_VIEW
+  CALL_INTENT
+  WHATSAPP_CLICK
+  ENQUIRY_SUBMITTED
+  TRIAGED
+  ASSESSED
+  PROFILE_SENT
+  HOME_ACCEPTED
+  APPOINTMENT_BOOKED
+  APPOINTMENT_ATTENDED
+  APPOINTMENT_NO_SHOW
+  MOVED_IN
+}
