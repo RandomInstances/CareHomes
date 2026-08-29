@@ -6,7 +6,6 @@ import { Suspense } from "react";
 
 import { Directory } from "@/app/directory";
 import { SiteFooter } from "@/app/site-footer";
-import { SuburbMap } from "@/app/suburb-map";
 import { SiteHeader } from "@/app/site-header";
 import { db } from "@/lib/db";
 import { isSort } from "@/lib/catalog";
@@ -78,19 +77,9 @@ export default async function SuburbPage({ params, searchParams }: PageProps<"/[
             </Link>
           </div>
         ) : (
-          // Listings beside the map on a wide screen; the map is reachable from
-          // the toolbar button on anything narrower.
-          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-6 lg:items-start">
-            <Suspense fallback={null}>
-              <Directory homes={homes} basePath={`/${suburb.slug}`} compact />
-            </Suspense>
-
-            <aside className="hidden lg:block sticky top-[150px]">
-              <div className="h-[calc(100vh-180px)] rounded-2xl overflow-hidden border border-line">
-                <SuburbMap homes={homes} />
-              </div>
-            </aside>
-          </div>
+          <Suspense fallback={null}>
+            <Directory homes={homes} basePath={`/${suburb.slug}`} />
+          </Suspense>
         )}
       </main>
 
