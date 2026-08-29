@@ -66,7 +66,7 @@ export function SiteFooter() {
           <div className="space-y-8">
             <Column title="For care homes">
               <Item href="/list-your-home">List your care home</Item>
-              <Item href="/list-your-home#verification">How verification works</Item>
+              <Item href="/verification">What verification means</Item>
               <Item href="/list-your-home#pricing">Pricing</Item>
             </Column>
 

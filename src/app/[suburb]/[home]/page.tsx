@@ -231,7 +231,11 @@ export default async function HomePage({ params }: PageProps<"/[suburb]/[home]">
             <p>
               Our team has visited this home and recorded what we saw. That is an
               observation, not an endorsement — please satisfy yourself before making
-              any placement.
+              any placement.{" "}
+              <Link href="/verification" className="text-teal font-semibold">
+                See everything we check
+              </Link>
+              .
             </p>
           ) : (
             <p>

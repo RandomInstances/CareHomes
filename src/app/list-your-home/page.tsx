@@ -132,9 +132,10 @@ export default function ListYourHomePage() {
           <ul className="mt-5 space-y-2 text-[15px]">
             {[
               "Registration with the National Secretariat for Elders, sighted",
-              "The night-shift nursing roster, seen",
-              "The doctor arrangement, confirmed",
-              "Rooms, kitchen and bathrooms, photographed by us",
+              "The night-shift nursing roster, seen — not a number we were told",
+              "The doctor arrangement and transfer hospital, confirmed",
+              "Every resident area walked, and photographed by us on the day",
+              "Fire exits and the evacuation plan, checked",
               "The fee schedule and what it excludes, collected in writing",
             ].map((item) => (
               <li key={item} className="flex gap-2.5">
@@ -145,6 +146,9 @@ export default function ListYourHomePage() {
               </li>
             ))}
           </ul>
+          <Link href="/verification" className="inline-block mt-5 text-[15px] font-semibold text-teal">
+            See everything we check →
+          </Link>
         </section>
 
         <section id="pricing" className="mt-12 scroll-mt-20">
