@@ -20,7 +20,7 @@ function CategoryTab({
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`flex items-center gap-2 px-3 py-2.5 whitespace-nowrap text-[13px] font-semibold border-b-[2.5px] transition-colors ${
+      className={`flex items-center gap-2 px-3 py-2 whitespace-nowrap text-[13px] font-semibold border-b-[2.5px] transition-colors ${
         active ? "text-ink border-ink" : "text-muted border-transparent hover:text-ink"
       }`}
     >
@@ -44,40 +44,22 @@ function CategoryTab({
   );
 }
 
-/// Desktop: categories on the first line, search beneath, and the wordmark
-/// spanning both rows so it sits on the centre line between them. Using a real
-/// row span rather than absolute positioning means the header can change height
-/// without anything drifting out of place.
-///
-/// The phone layout is deliberately different and unchanged — wordmark beside
-/// the scrolling categories, search on its own line beneath — because a search
-/// bar squeezed between a wordmark and a link has no room at that width.
+/// One arrangement at every width: wordmark, categories and the owner link
+/// share the top line; search sits beneath it. Everything on the top line is
+/// centred against that line, so nothing is positioned against a row it does
+/// not belong to — which is what kept drifting before.
 export function SiteHeader({ query, activeCare }: { query?: string; activeCare?: string }) {
   return (
     <header className="relative bg-surface border-b border-line sticky top-0 z-20">
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 grid grid-cols-[auto_1fr] sm:grid-cols-[1fr_auto_1fr] items-center gap-x-4 sm:gap-x-6">
-        <Link
-          href="/"
-          className="row-start-1 col-start-1 sm:row-span-2 sm:self-center shrink-0 h-14 sm:h-auto flex items-center"
-        >
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 grid grid-cols-[auto_1fr] sm:grid-cols-[1fr_auto_1fr] items-center gap-x-4 sm:gap-x-6 pt-3 sm:pt-4">
+        <Link href="/" className="row-start-1 col-start-1 shrink-0 flex items-center">
           <span className="block font-display font-bold text-[17px] sm:text-[26px] leading-none">
             carehomes<span className="text-teal">.lk</span>
           </span>
         </Link>
 
-        <div className="row-start-2 col-start-1 col-span-2 pb-4 sm:pb-6 sm:row-start-2 sm:col-start-2 sm:col-span-1 flex justify-center">
-          <SearchTrigger query={query} />
-        </div>
-
-        <Link
-          href="/list-your-home"
-          className="hidden sm:flex row-start-1 col-start-3 sm:self-center justify-self-end items-center text-[14px] font-medium text-ink-2 whitespace-nowrap hover:text-teal hover:underline underline-offset-4 transition-colors"
-        >
-          List your care home
-        </Link>
-
         <nav
-          className="row-start-1 col-start-2 sm:col-start-2 sm:col-span-1 sm:justify-self-center sm:pt-3 min-w-0 flex items-stretch gap-1 sm:gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="row-start-1 col-start-2 min-w-0 flex items-center gap-1 sm:gap-3 sm:justify-self-center overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           aria-label="Type of care"
         >
           <CategoryTab href="/" label="All homes" icon={ALL_HOMES_ICON} color={ALL_HOMES_COLOR} active={!activeCare} />
@@ -92,6 +74,17 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
             />
           ))}
         </nav>
+
+        <Link
+          href="/list-your-home"
+          className="hidden sm:flex row-start-1 col-start-3 justify-self-end items-center text-[14px] font-medium text-ink-2 whitespace-nowrap hover:text-teal hover:underline underline-offset-4 transition-colors"
+        >
+          List your care home
+        </Link>
+
+        <div className="row-start-2 col-start-1 col-span-2 sm:col-span-3 pt-3 sm:pt-4 pb-4 sm:pb-5 flex justify-center">
+          <SearchTrigger query={query} />
+        </div>
       </div>
     </header>
   );
