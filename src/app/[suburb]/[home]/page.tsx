@@ -85,7 +85,7 @@ export default async function HomePage({ params }: PageProps<"/[suburb]/[home]">
     <>
       <SiteHeader />
 
-      <main className="mx-auto max-w-3xl px-5 py-8 flex-1 w-full">
+      <main className="mx-auto max-w-3xl px-4 sm:px-5 py-6 sm:py-8 flex-1 w-full">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -114,7 +114,7 @@ export default async function HomePage({ params }: PageProps<"/[suburb]/[home]">
             </span>
           )}
 
-          <h1 className="text-3xl font-semibold">{home.name}</h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold">{home.name}</h1>
           <p className="text-ink-2">
             {home.suburb.name}
             {home.address ? ` · ${home.address}` : ""}

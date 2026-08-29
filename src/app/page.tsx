@@ -82,7 +82,7 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
 
       {/* Care-type category bar, icons and all, as in the prototype. */}
       <div className="bg-surface border-b border-line">
-        <div className="mx-auto max-w-6xl px-5 overflow-x-auto">
+        <div className="mx-auto max-w-6xl px-4 sm:px-5 overflow-x-auto">
           <nav className="flex gap-1 min-w-max" aria-label="Type of care">
             <CategoryTab
               href={query ? `/?q=${encodeURIComponent(query)}` : "/"}
@@ -103,14 +103,14 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
         </div>
       </div>
 
-      <main className="mx-auto max-w-6xl px-5 py-7 flex-1 w-full">
+      <main className="mx-auto max-w-6xl px-4 sm:px-5 py-6 sm:py-7 flex-1 w-full">
         {suburbs.length > 0 ? (
-          <nav className="flex flex-wrap gap-2 mb-7" aria-label="Suburbs">
+          <nav className="flex gap-2 mb-6 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap sm:overflow-visible pb-1" aria-label="Suburbs">
             {suburbs.map((s) => (
               <Link
                 key={s.id}
                 href={`/${s.slug}`}
-                className="rounded-full border border-line-2 bg-surface px-3.5 py-1.5 text-sm hover:border-teal hover:text-teal"
+                className="shrink-0 rounded-full border border-line-2 bg-surface px-3.5 py-1.5 text-sm whitespace-nowrap hover:border-teal hover:text-teal"
               >
                 {s.name}
                 <span className="text-muted ml-1.5 tabular-nums">{s._count.homes}</span>
@@ -120,7 +120,7 @@ export default async function DirectoryPage({ searchParams }: PageProps<"/">) {
         ) : null}
 
         <div className="mt-5 mb-5">
-          <h1 className="text-[22px] font-semibold">{heading}</h1>
+          <h1 className="text-[19px] sm:text-[22px] font-semibold">{heading}</h1>
           <p className="text-sm text-ink-2 mt-1">
             {homes.length} home{homes.length === 1 ? "" : "s"}
             {homes.length ? " · visited and verified homes appear first" : ""}

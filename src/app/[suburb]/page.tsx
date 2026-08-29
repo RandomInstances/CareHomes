@@ -52,7 +52,7 @@ export default async function SuburbPage({ params, searchParams }: PageProps<"/[
     <>
       <SiteHeader />
 
-      <main className="mx-auto max-w-6xl px-5 py-8 flex-1 w-full">
+      <main className="mx-auto max-w-6xl px-4 sm:px-5 py-6 sm:py-8 flex-1 w-full">
         <nav className="text-sm text-muted mb-4">
           <Link href="/" className="hover:text-ink">
             Colombo
@@ -62,7 +62,7 @@ export default async function SuburbPage({ params, searchParams }: PageProps<"/[
         </nav>
 
         <div className="mt-5 mb-6">
-          <h1 className="text-2xl font-semibold">Care homes in {suburb.name}</h1>
+          <h1 className="text-[19px] sm:text-2xl font-semibold">Care homes in {suburb.name}</h1>
           <p className="text-sm text-ink-2 mt-1">
             {homes.length} home{homes.length === 1 ? "" : "s"}
             {homes.length ? " · visited and verified homes appear first" : ""}

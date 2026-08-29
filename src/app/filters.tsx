@@ -65,7 +65,7 @@ export function FilterBar({ basePath, extra }: { basePath: string; extra?: React
 
   return (
     <>
-      <div className="flex items-center gap-3 flex-wrap">
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -85,11 +85,11 @@ export function FilterBar({ basePath, extra }: { basePath: string; extra?: React
         {extra}
 
         <label className="flex items-center gap-2 text-sm ml-auto">
-          <span className="text-muted">Sort</span>
+          <span className="hidden sm:inline text-muted">Sort</span>
           <select
             value={sort}
             onChange={(e) => setParam("sort", e.target.value === "updated" ? null : e.target.value)}
-            className="rounded-full border border-line-2 bg-surface px-3 py-1.5 text-sm"
+            className="rounded-full border border-line-2 bg-surface px-2.5 sm:px-3 py-1.5 text-[13px] sm:text-sm max-w-[9.5rem] sm:max-w-none"
           >
             {SORTS.map((s) => (
               <option key={s.value} value={s.value}>

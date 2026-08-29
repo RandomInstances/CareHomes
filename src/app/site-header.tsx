@@ -3,19 +3,19 @@ import Link from "next/link";
 export function SiteHeader({ query }: { query?: string }) {
   return (
     <header className="bg-surface border-b border-line sticky top-0 z-10">
-      <div className="mx-auto max-w-6xl px-5 h-16 flex items-center gap-5">
+      <div className="mx-auto max-w-6xl px-4 sm:px-5 h-14 sm:h-16 flex items-center gap-3 sm:gap-5">
         <Link href="/" className="shrink-0">
-          <span className="block font-display font-bold text-xl leading-none">
+          <span className="block font-display font-bold text-[17px] sm:text-xl leading-none">
             carehomes<span className="text-teal">.lk</span>
           </span>        </Link>
 
-        <form action="/" className="flex-1 max-w-md">
+        <form action="/" className="flex-1 min-w-0 max-w-md">
           <label htmlFor="q" className="sr-only">
             Search a suburb or home
           </label>
-          <div className="flex items-center gap-2 border border-line-2 rounded-full px-4 py-2 bg-bg focus-within:border-teal">
-            <span className="text-sm text-muted shrink-0">Colombo</span>
-            <span className="w-px h-4 bg-line-2" aria-hidden />
+          <div className="flex items-center gap-2 border border-line-2 rounded-full px-3 sm:px-4 py-2 bg-bg focus-within:border-teal min-w-0">
+            <span className="hidden sm:block text-sm text-muted shrink-0">Colombo</span>
+            <span className="hidden sm:block w-px h-4 bg-line-2" aria-hidden />
             <input
               id="q"
               name="q"

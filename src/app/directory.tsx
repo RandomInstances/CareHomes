@@ -147,9 +147,9 @@ function Card({
           facilities. Everything left-aligned stacked left a dead strip down the
           right of the card, and facilities on their own row made a line taller
           than the ones around it, which read as a gap. */}
-      <div className="flex items-baseline justify-between gap-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
         <Link href={`/${home.suburb.slug}/${home.slug}`} target="_blank" rel="noopener">
-          <h3 className="font-semibold text-[16px] leading-snug">{home.name}</h3>
+          <h3 className="font-semibold text-[15px] sm:text-[16px] leading-snug">{home.name}</h3>
         </Link>
 
         <p className="inline-flex items-center gap-1.5 text-[13.5px] font-medium whitespace-nowrap shrink-0">
@@ -169,14 +169,14 @@ function Card({
         </p>
       </div>
 
-      <div className="flex items-center justify-between gap-3 mt-0.5">
-        <p className="text-[14.5px] text-ink-2 truncate">{home.suburb.name}</p>
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mt-0.5">
+        <p className="text-[13.5px] sm:text-[14.5px] text-ink-2 truncate">{home.suburb.name}</p>
 
-        <FeatureRow features={home.features} />
+        <FeatureRow features={home.features} max={3} />
       </div>
 
       {fee ? (
-        <p className="mt-1.5 text-[15.5px]">
+        <p className="mt-1.5 text-[14px] sm:text-[15.5px]">
           <span className="text-ink-2">from </span>
           <span className="font-bold tabular-nums">{fee}</span>
           <span className="text-ink-2"> / month</span>
@@ -266,7 +266,7 @@ export function Directory({
   const mappable = homes.some((h) => typeof h.lat === "number" && typeof h.lng === "number");
 
   const grid = (list: DirectoryHome[]) => (
-    <div className="grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-3 sm:gap-x-5 gap-y-6 sm:gap-y-7">
       {list.map((home) => (
         <Card key={home.id} home={home} saved={ids.includes(home.id)} onToggle={toggle} />
       ))}
