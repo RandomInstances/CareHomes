@@ -80,6 +80,18 @@ model Home {
 
   status HomeStatus @default(PENDING_REVIEW)
 
+  /// Unverified listings are free and self-serve. Verified means our team has
+  /// visited and inspected the home; the home pays LKR 50,000 for that visit,
+  /// which also covers the first twelve months listed.
+  tier HomeTier @default(UNVERIFIED)
+
+  /// Set when a field visit is completed and the tier becomes VERIFIED.
+  verifiedAt DateTime?
+
+  /// End of the paid listing period. Year one is bundled into the 50,000;
+  /// LKR 1,000/month applies from year two.
+  listingExpiresAt DateTime?
+
   /// Registered with the National Secretariat for Elders. Null = unknown.
   nseRegistered Boolean?
 
@@ -95,14 +107,16 @@ model Home {
   edits           Edit[]
   recommendations Recommendation[]
   appointments    Appointment[]
+  placements      Placement[]
   invoices        Invoice[]
   events          Event[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Verified homes rank ahead of unverified ones, so tier leads the ordering.
+  @@index([status, tier, ownerUpdatedAt])
   @@index([status, suburbId])
-  @@index([status, ownerUpdatedAt])
 }
 
 /// Sinhala/Tamil localisation is a fast-follow, but the structure exists now —
@@ -205,9 +219,12 @@ model OtpCode {
 /// There is no free-text condition field: that box is how clinical detail
 /// arrives whether or not you asked for it.
 model Enquiry {
+  /// Name and phone are OPTIONAL by design. Every call to action hands off to
+  /// WhatsApp, so identity arrives in the clinician's inbox and never here.
+  /// A typical record is "someone in Nugegoda, 78, budget 150k, two homes".
   id         String  @id @default(cuid())
-  familyName String
-  phone      String
+  familyName String?
+  phone      String?
   whatsapp   String?
   email      String?
 
@@ -221,6 +238,8 @@ model Enquiry {
 
   recommendations Recommendation[]
   appointments    Appointment[]
+  placement       Placement?
+  invoices        Invoice[]
   events          Event[]
 
   createdAt DateTime @default(now())
@@ -244,7 +263,8 @@ model Recommendation {
   @@unique([enquiryId, homeId])
 }
 
-/// Billing event is ATTENDED, never BOOKED. No-shows generate a credit.
+/// A visit we arrange for a family. Homes are NOT billed for these — families
+/// pay the placement fee, so there is no per-visit charge and no pay-to-reveal.
 model Appointment {
   id           String            @id @default(cuid())
   enquiry      Enquiry           @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
@@ -254,25 +274,43 @@ model Appointment {
   scheduledFor DateTime?
   status       AppointmentStatus @default(PROPOSED)
 
-  /// Ops sets this when bank transfer is confirmed. Family contact details are
-  /// released to the home only once it is set — "pay to reveal", done manually.
-  detailsReleasedAt DateTime?
-
-  invoice   Invoice?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([status, scheduledFor])
 }
 
-/// Invoices are issued and reconciled by hand (bank transfer). This table is a
-/// tracker for the ops console, not a payment integration.
+/// A completed placement. Reaching PLACED is what makes the family's second
+/// LKR 25,000 due, so this is the record the balance invoice hangs off.
+model Placement {
+  id        String          @id @default(cuid())
+  enquiry   Enquiry         @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  enquiryId String          @unique
+  home      Home            @relation(fields: [homeId], references: [id])
+  homeId    String
+  status    PlacementStatus @default(IN_PROGRESS)
+  movedInAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, movedInAt])
+}
+
+/// Issued and reconciled by hand (bank transfer), except the family deposit,
+/// which will move to PAYable. A tracker for the ops console, not a gateway.
+///
+/// Payer is a home (verification, renewal) or an enquiry (deposit, balance) —
+/// exactly one of homeId / enquiryId is set, enforced in application code
+/// since Prisma cannot express the constraint.
 model Invoice {
-  id            String       @id @default(cuid())
-  home          Home         @relation(fields: [homeId], references: [id])
-  homeId        String
-  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
-  appointmentId String?      @unique
+  id   String      @id @default(cuid())
+  kind InvoiceKind
+
+  home      Home?    @relation(fields: [homeId], references: [id])
+  homeId    String?
+  enquiry   Enquiry? @relation(fields: [enquiryId], references: [id])
+  enquiryId String?
 
   amountLkr       Int
   reference       String        @unique
@@ -280,10 +318,15 @@ model Invoice {
   issuedAt        DateTime      @default(now())
   paidConfirmedAt DateTime?
 
-  /// Set when this invoice is a credit note arising from a no-show.
+  /// Listing period covered, for verification and renewal invoices.
+  periodStart DateTime?
+  periodEnd   DateTime?
+
+  /// Set when this invoice is a credit note or refund against another.
   creditForInvoiceId String?
 
   @@index([status, issuedAt])
+  @@index([kind, status])
 }
 
 // ---------------------------------------------------------------------------
@@ -352,6 +395,13 @@ enum HomeStatus {
   SUSPENDED
 }
 
+/// Unverified = free self-serve listing. Verified = we visited and inspected it,
+/// which the home paid LKR 50,000 for. Verified ranks first.
+enum HomeTier {
+  UNVERIFIED
+  VERIFIED
+}
+
 enum OwnerStatus {
   PENDING
   ACTIVE
@@ -390,13 +440,29 @@ enum EnquiryStatus {
   CLOSED
 }
 
+/// No INVOICED state: homes are not billed per visit under the current model.
 enum AppointmentStatus {
   PROPOSED
-  INVOICED
   CONFIRMED
   ATTENDED
   NO_SHOW
   CANCELLED
+}
+
+enum PlacementStatus {
+  IN_PROGRESS
+  PLACED
+  CANCELLED
+}
+
+/// Home-side: verification (LKR 50,000, includes year one) and annual renewal
+/// (LKR 1,000/month from year two). Family-side: the LKR 25,000 deposit and the
+/// LKR 25,000 balance due on placement.
+enum InvoiceKind {
+  HOME_VERIFICATION
+  HOME_RENEWAL
+  FAMILY_DEPOSIT
+  FAMILY_BALANCE
 }
 
 enum InvoiceStatus {
