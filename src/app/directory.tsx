@@ -122,9 +122,9 @@ function Card({
         </Link>
 
         {home.tier === "VERIFIED" ? (
-          <span className="pointer-events-none absolute top-2.5 left-2.5 inline-flex items-center gap-1.5 bg-teal text-white rounded-full pl-2 pr-3 py-1.5 text-[12.5px] font-bold shadow-[0_2px_10px_rgba(14,92,85,0.35)]">
-            <span className="grid place-items-center w-4 h-4 rounded-full bg-white/25">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+          <span className="pointer-events-none absolute top-2 left-2 sm:top-2.5 sm:left-2.5 inline-flex items-center gap-1 sm:gap-1.5 bg-teal text-white rounded-full pl-1.5 pr-2.5 sm:pl-2 sm:pr-3 py-1 sm:py-1.5 text-[10px] sm:text-[12.5px] font-bold leading-none whitespace-nowrap shadow-[0_2px_10px_rgba(14,92,85,0.35)]">
+            <span className="grid place-items-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-white/25 shrink-0">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
                 <path d="m4 12 5 5L20 6" />
               </svg>
             </span>
@@ -180,7 +180,7 @@ function Card({
       {fee ? (
         <p className="mt-1.5 text-[13.5px] sm:text-[14.5px]">
           <span className="text-ink-2">from </span>
-          <span className="font-bold tabular-nums">{fee}</span>
+          <span className="font-bold tabular-nums whitespace-nowrap">{fee}</span>
           <span className="text-ink-2"> / month</span>
         </p>
       ) : null}
