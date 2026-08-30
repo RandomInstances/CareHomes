@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <PolicyShell title="Privacy policy" updated="29 August 2026">
+    <PolicyShell title="Privacy policy" updated="30 August 2026">
       <p>
         carehomes.lk is a directory of care homes in Colombo. You can search and browse
         it without an account, and without telling us anything about yourself.
@@ -25,6 +25,31 @@ export default function PrivacyPage() {
         the home — it does not pass through us and we never see it.
       </p>
 
+      <h2>If you create an account</h2>
+      <p>
+        You do not need an account to use this site. If you choose to create one so your
+        saved homes follow you between devices, we hold your <b>name</b> and{" "}
+        <b>email address</b>, and your <b>telephone number</b> only if you choose to add
+        one. We also hold the list of homes you have saved.
+      </p>
+      <p>
+        Signing in with Google tells us your name and email address and nothing else. We
+        never see your Google password, and we do not read your contacts, calendar or
+        anything else in your account.
+      </p>
+      <p>
+        We do not store passwords for this site at all. Signing in works by a one-time
+        link sent to your email, or through Google.
+      </p>
+
+      <h2>Updates and offers are separate, and optional</h2>
+      <p>
+        Creating an account does not sign you up to anything. Emails about beds becoming
+        available, new homes, or related services are a <b>separate tick box</b> that is
+        never pre-ticked, and you can turn it off whenever you like. We do not pass your
+        email address to care homes or to anyone else who might market to you.
+      </p>
+
       <h2>What we collect when you browse</h2>
       <ul>
         <li>
@@ -34,13 +59,14 @@ export default function PrivacyPage() {
           understand which homes families are looking for.
         </li>
         <li>
-          <b>Your shortlist</b> — kept in your own browser only. It never reaches our
-          servers, and clearing your browser data removes it.
+          <b>Your shortlist</b> — kept in your own browser while you are signed out, so it
+          never reaches our servers and clearing your browser data removes it. Once you
+          sign in it is stored against your account instead, which is what lets it follow
+          you to another device.
         </li>
       </ul>
       <p>
-        We do not ask for your name, telephone number or email address anywhere on this
-        site.
+        If you have not created an account, we hold nothing that identifies you.
       </p>
 
       <h2>Information about care homes</h2>
@@ -69,12 +95,12 @@ export default function PrivacyPage() {
 
       <h2>Your rights</h2>
       <p>
-        Sri Lanka&rsquo;s Personal Data Protection Act No. 9 of 2022 gives you rights
-        over personal data held about you. Because we hold no personal data about
-        visitors, there is generally nothing to access or delete — but if you believe we
-        hold something about you, write to{" "}
-        <a href="mailto:hello@carehomes.lk">hello@carehomes.lk</a> and we will look into
-        it.
+        Sri Lanka&rsquo;s Personal Data Protection Act No. 9 of 2022 gives you rights over
+        personal data held about you. If you have an account you can ask us for a copy of
+        what we hold, ask us to correct it, or ask us to delete the account and everything
+        in it — write to <a href="mailto:hello@carehomes.lk">hello@carehomes.lk</a> and we
+        will action it. Deleting your account removes your saved homes and your email
+        address from our records.
       </p>
     </PolicyShell>
   );

@@ -117,6 +117,7 @@ model Home {
   appointments    Appointment[]
   placements      Placement[]
   invoices        Invoice[]
+  favourites      Favourite[]
   events          Event[]
 
   createdAt DateTime @default(now())
@@ -377,6 +378,70 @@ model AuditLog {
   createdAt DateTime @default(now())
 
   @@index([entity, entityId])
+}
+
+
+// ---------------------------------------------------------------------------
+// Visitor accounts — saving favourites, comparing, and opting in to updates
+// ---------------------------------------------------------------------------
+
+/// A family member using the site. Distinct from Owner, which is a care home
+/// operator, and from the single admin account.
+model User {
+  id    String  @id @default(cuid())
+  name  String
+  email String  @unique
+  phone String?
+
+  /// Set when the account came from Google, so we know the address is verified
+  /// by them rather than by us.
+  googleId      String?   @unique
+  emailVerified DateTime?
+
+  /// Marketing consent is separate from having an account, and separately
+  /// revocable. Never pre-ticked, and never bundled into signing up.
+  marketingOptIn   Boolean   @default(false)
+  marketingOptInAt DateTime?
+
+  favourites Favourite[]
+  createdAt  DateTime    @default(now())
+  lastSeenAt DateTime    @default(now())
+
+  @@index([email])
+}
+
+/// A saved home. Kept server-side so it follows the person between devices —
+/// which is the whole reason to have an account.
+model Favourite {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  home   Home   @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  homeId String
+
+  /// Private to the person who saved it; never shown to the home.
+  note String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, homeId])
+  @@index([userId, createdAt])
+}
+
+/// Single-use sign-in link. Hashed, short-lived, and deleted once spent.
+model LoginToken {
+  id        String   @id @default(cuid())
+  email     String
+  tokenHash String   @unique
+  name      String?
+  /// Carried through the link so the opt-in the person actually ticked is the
+  /// one recorded, rather than being lost between the form and the account.
+  marketingOptIn Boolean @default(false)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([email, expiresAt])
 }
 
 // ---------------------------------------------------------------------------

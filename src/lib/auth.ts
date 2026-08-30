@@ -64,8 +64,8 @@ export async function requireAdmin(): Promise<SessionPayload> {
   return session;
 }
 
-export async function requireOwner(): Promise<SessionPayload & { ownerId: string }> {
+export async function requireOwner(): Promise<SessionPayload & { subjectId: string }> {
   const session = await getSession();
-  if (session?.role !== "owner" || !session.ownerId) redirect("/owner/login");
-  return { ...session, ownerId: session.ownerId };
+  if (session?.role !== "owner" || !session.subjectId) redirect("/owner/login");
+  return { ...session, subjectId: session.subjectId };
 }

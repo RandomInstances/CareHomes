@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import dynamic from "next/dynamic";
 
 import { FilterBar } from "@/app/filters";
 import { FeatureRow } from "@/app/feature-icon";
+import { SignUpPrompt } from "@/app/signup-prompt";
 import { CARE_LABEL, LANGUAGE_LABEL } from "@/lib/catalog";
 import { HomeScene } from "@/app/home-scene";
 
@@ -68,39 +69,123 @@ function feeText(from: number | null, to: number | null) {
 function useShortlist() {
   const [ids, setIds] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  const [promptOpen, setPromptOpen] = useState(false);
+  const promptShown = useRef(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORE_KEY);
-      if (raw) setIds(JSON.parse(raw));
-    } catch {
-      // Private browsing, or storage disabled. Shortlist just will not persist.
-    }
-    setReady(true);
+    let cancelled = false;
+
+    const local = (): string[] => {
+      try {
+        return JSON.parse(localStorage.getItem(STORE_KEY) ?? "[]");
+      } catch {
+        return [];
+      }
+    };
+
+    (async () => {
+      const localIds = local();
+      let account: { signedIn: boolean; favourites: string[] } = {
+        signedIn: false,
+        favourites: [],
+      };
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) account = await res.json();
+      } catch {
+        // Offline or the endpoint is down: fall back to the browser copy.
+      }
+      if (cancelled) return;
+
+      if (account.signedIn) {
+        // Merge anything saved before signing in, then let the account be the
+        // single source of truth.
+        const missing = localIds.filter((id) => !account.favourites.includes(id));
+        await Promise.all(
+          missing.map((homeId) =>
+            fetch("/api/favourites", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ homeId }),
+            }).catch(() => undefined)
+          )
+        );
+        try {
+          localStorage.removeItem(STORE_KEY);
+        } catch {
+          // Nothing to clean up.
+        }
+        if (!cancelled) {
+          setSignedIn(true);
+          setIds([...account.favourites, ...missing]);
+        }
+      } else {
+        setIds(localIds);
+      }
+      if (!cancelled) setReady(true);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const toggle = useCallback((id: string) => {
-    setIds((current) => {
-      const next = current.includes(id) ? current.filter((x) => x !== id) : [...current, id];
-      try {
-        localStorage.setItem(STORE_KEY, JSON.stringify(next));
-      } catch {
-        // Ignore: the in-memory shortlist still works for this visit.
-      }
-      return next;
-    });
-  }, []);
+  const persistLocal = (next: string[]) => {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify(next));
+    } catch {
+      // Private browsing: the shortlist still works for this visit.
+    }
+  };
+
+  const toggle = useCallback(
+    (id: string) => {
+      setIds((current) => {
+        const adding = !current.includes(id);
+        const next = adding ? [...current, id] : current.filter((x) => x !== id);
+
+        if (signedIn) {
+          fetch("/api/favourites", {
+            method: adding ? "POST" : "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ homeId: id }),
+          }).catch(() => undefined);
+        } else {
+          persistLocal(next);
+          // Offered once per visit, and only when saving rather than removing.
+          // The heart has already worked; this is an upsell, not a toll gate.
+          if (adding && !promptShown.current) {
+            promptShown.current = true;
+            setPromptOpen(true);
+          }
+        }
+        return next;
+      });
+    },
+    [signedIn]
+  );
 
   const clear = useCallback(() => {
-    setIds([]);
-    try {
-      localStorage.removeItem(STORE_KEY);
-    } catch {
-      // Ignore.
+    if (signedIn) {
+      ids.forEach((homeId) =>
+        fetch("/api/favourites", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ homeId }),
+        }).catch(() => undefined)
+      );
+    } else {
+      try {
+        localStorage.removeItem(STORE_KEY);
+      } catch {
+        // Ignore.
+      }
     }
-  }, []);
+    setIds([]);
+  }, [signedIn, ids]);
 
-  return { ids, toggle, clear, ready };
+  return { ids, toggle, clear, ready, signedIn, promptOpen, setPromptOpen };
 }
 
 function Card({
@@ -192,7 +277,7 @@ function Card({
   );
 }
 
-function CompareTable({ homes, onClose }: { homes: DirectoryHome[]; onClose: () => void }) {
+export function CompareTable({ homes, onClose }: { homes: DirectoryHome[]; onClose: () => void }) {
   const row = (label: string, render: (h: DirectoryHome) => React.ReactNode) => (
     <tr className="border-t border-line align-top">
       <th className="text-left font-semibold text-[13px] text-ink-2 py-3 pr-4 whitespace-nowrap">{label}</th>
@@ -262,7 +347,7 @@ export function Directory({
   homes: DirectoryHome[];
   basePath: string;
 }) {
-  const { ids, toggle, clear, ready } = useShortlist();
+  const { ids, toggle, clear, ready, signedIn, promptOpen, setPromptOpen } = useShortlist();
   const [comparing, setComparing] = useState(false);
   const [mapOpen, setMapOpen] = useState(false);
 
@@ -347,6 +432,7 @@ export function Directory({
 
       {comparing ? <CompareTable homes={saved} onClose={() => setComparing(false)} /> : null}
       {mapOpen ? <MapView homes={homes} onClose={() => setMapOpen(false)} /> : null}
+      <SignUpPrompt open={promptOpen} onClose={() => setPromptOpen(false)} savedCount={ids.length} />
     </>
   );
 }

@@ -75,12 +75,23 @@ export function SiteHeader({ query, activeCare }: { query?: string; activeCare?:
           ))}
         </nav>
 
-        <Link
-          href="/list-your-home"
-          className="hidden sm:flex row-start-1 col-start-3 justify-self-end items-center text-[14px] font-medium text-ink-2 whitespace-nowrap hover:text-teal hover:underline underline-offset-4 transition-colors"
-        >
-          List your care home
-        </Link>
+        <div className="hidden sm:flex row-start-1 col-start-3 justify-self-end items-center gap-5">
+          <Link
+            href="/list-your-home"
+            className="text-[14px] font-medium text-ink-2 whitespace-nowrap hover:text-teal hover:underline underline-offset-4 transition-colors"
+          >
+            List your care home
+          </Link>
+          <Link
+            href="/account"
+            className="flex items-center gap-1.5 text-[14px] font-medium text-ink-2 whitespace-nowrap hover:text-turmeric transition-colors"
+          >
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M12 21s-7.5-4.7-7.5-10A4.4 4.4 0 0 1 12 7.6 4.4 4.4 0 0 1 19.5 11c0 5.3-7.5 10-7.5 10z" />
+            </svg>
+            Saved
+          </Link>
+        </div>
 
         <div className="row-start-2 col-start-1 col-span-2 sm:col-span-3 pt-3 sm:pt-4 pb-4 sm:pb-5 flex justify-center">
           <SearchTrigger query={query} />

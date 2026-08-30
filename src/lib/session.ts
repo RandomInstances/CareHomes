@@ -10,9 +10,9 @@ const SESSION_COOKIE = "ch_session";
 const SESSION_DAYS = 7;
 
 export type SessionPayload = {
-  role: "admin" | "owner";
-  /// Owner id for owner sessions. Absent for admin.
-  ownerId?: string;
+  role: "admin" | "owner" | "member";
+  /// Owner id for an owner, user id for a signed-in visitor. Absent for admin.
+  subjectId?: string;
   name?: string;
 };
 
@@ -43,10 +43,10 @@ export async function decryptSession(
       algorithms: ["HS256"],
     });
     const role = payload.role;
-    if (role !== "admin" && role !== "owner") return null;
+    if (role !== "admin" && role !== "owner" && role !== "member") return null;
     return {
       role,
-      ownerId: typeof payload.ownerId === "string" ? payload.ownerId : undefined,
+      subjectId: typeof payload.subjectId === "string" ? payload.subjectId : undefined,
       name: typeof payload.name === "string" ? payload.name : undefined,
     };
   } catch {
